@@ -37,6 +37,13 @@ public class VisionSubsystem extends SubsystemBase {
         //List<PhotonTrackedTarget> targets = frontCamResult.getTargets();
         PhotonTrackedTarget frontTarget = frontCamResult.getBestTarget();
         frontTargetId = frontTarget.getFiducialId();
+        double yaw = frontTarget.getYaw();
+        double pitch = frontTarget.getPitch();
+        double area = frontTarget.getArea();
+        //Transform2d pose = frontTarget.getCameraToTarget();
+        SmartDashboard.putNumber("Yaw", yaw);
+        SmartDashboard.putNumber("pitch", pitch);
+        SmartDashboard.putNumber("area", area);
         //System.out.println(frontTargetId);
       }
     }

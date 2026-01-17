@@ -120,8 +120,7 @@ public class RobotContainer {
   
   public void periodic() {
     /* 
-    SmartDashboard.putNumber("Not working",1);
-    SmartDashboard.putNumber("IAUSHDIUAHIWDHIAUHWDUH",m_robotDrive.getSpeed());
+   
 
     if(Math.abs(m_elevator.getElevatorPosition())>5){
         speedScale = 0.1;
