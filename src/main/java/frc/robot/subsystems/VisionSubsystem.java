@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.List;
+
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
@@ -17,11 +19,17 @@ public class VisionSubsystem extends SubsystemBase {
   PhotonCamera rearCamera;
   int frontTargetId;
   int rearTargetId;
+  double frontyaw;
+  double frontpitch;
+  double frontarea;
 
   public VisionSubsystem(){
     frontCamera = new PhotonCamera("FrontCam");
     rearCamera = new PhotonCamera("RearCam");
     frontTargetId = 0;
+    frontyaw = 0;
+    frontpitch = 0;
+    frontarea = 0;
     rearTargetId = 0;
   }
 
@@ -30,24 +38,30 @@ public class VisionSubsystem extends SubsystemBase {
   public void periodic(){
     //System.out.println("test");
     var frontCamResults = frontCamera.getAllUnreadResults();
-    frontTargetId = 0;
+    
     if(!frontCamResults.isEmpty()){
       PhotonPipelineResult frontCamResult = frontCamResults.get(0);
       if(frontCamResult.hasTargets()){
         //List<PhotonTrackedTarget> targets = frontCamResult.getTargets();
         PhotonTrackedTarget frontTarget = frontCamResult.getBestTarget();
         frontTargetId = frontTarget.getFiducialId();
-        double yaw = frontTarget.getYaw();
-        double pitch = frontTarget.getPitch();
-        double area = frontTarget.getArea();
+        frontyaw = frontTarget.getYaw();
+        frontpitch = frontTarget.getPitch();
+        frontarea = frontTarget.getArea();
         //Transform2d pose = frontTarget.getCameraToTarget();
-        SmartDashboard.putNumber("Yaw", yaw);
-        SmartDashboard.putNumber("pitch", pitch);
-        SmartDashboard.putNumber("area", area);
-        //System.out.println(frontTargetId);
       }
+      else{
+      frontTargetId = 0;
+      frontyaw = 0;
+      frontpitch = 0;
+      frontarea = 0;
     }
+    }
+    
     SmartDashboard.putNumber("Front target id",frontTargetId);
+    SmartDashboard.putNumber("Yaw", frontyaw);
+    SmartDashboard.putNumber("pitch", frontpitch);
+    SmartDashboard.putNumber("area", frontarea);
     
     var rearCamResults = rearCamera.getAllUnreadResults();
     rearTargetId = 0;
