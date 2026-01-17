@@ -13,25 +13,25 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ClimbConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   SparkMax m_climber;
   SparkMax m_climber_follower;
   double goalPos;
-  double currentElevatorSpeed;
+  double currentclimbSpeed;
   String currentConfig;
   double prevPos = 0;
-  PIDController pid = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI, ElevatorConstants.kD);
+  PIDController pid = new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
 
   public ClimbSubsystem(){
     pid.setTolerance(1);
 
 
 
-    m_climber = new SparkMax(ElevatorConstants.kElevatorCanId, MotorType.kBrushless);
-    m_climber_follower = new SparkMax(ElevatorConstants.kElevatorFollowerCanId, MotorType.kBrushless);
+    m_climber = new SparkMax(ClimbConstants.kClimbCanId, MotorType.kBrushless);
+    m_climber_follower = new SparkMax(ClimbConstants.kClimbFollowerCanId, MotorType.kBrushless);
     SparkMaxConfig globalConfig = new SparkMaxConfig();
     SparkMaxConfig leaderConfig = new SparkMaxConfig();
     SparkMaxConfig followerConfig = new SparkMaxConfig();
@@ -41,14 +41,14 @@ public class ClimbSubsystem extends SubsystemBase {
 
     softLimitConfig
       .forwardSoftLimit(0)//positive //need to figure out limits
-      .reverseSoftLimit(-ElevatorConstants.maxNeededElevatorHeight)//negative(direction we want to go)
+      .reverseSoftLimit(-ClimbConstants.kClimbLowerLimit)//negative(direction we want to go)
       .forwardSoftLimitEnabled(true)
       .reverseSoftLimitEnabled(true);
 
     globalConfig
     .apply(softLimitConfig)
-      .smartCurrentLimit(ElevatorConstants.kElevatorCurrentLimit)
-      .idleMode(ElevatorConstants.kElevatorIdleMode);
+      .smartCurrentLimit(ClimbConstants.kClimbCurrentLimit)
+      .idleMode(ClimbConstants.kClimbIdleMode);
       
     leaderConfig
       .apply(globalConfig)
@@ -64,14 +64,14 @@ public class ClimbSubsystem extends SubsystemBase {
   }
   
   /**
-   * Method to lift the elevator using joystick info.
+   * Method to lift the climb using joystick info.
    *
    */
   
   public void climb(double xSpeed) {
     m_climber.set(xSpeed);
   }
-  public double getElevatorPosition(){
+  public double getclimbPosition(){
     return m_climber.getEncoder().getPosition();
   }
   public void climb_stop() {
@@ -105,7 +105,7 @@ public class ClimbSubsystem extends SubsystemBase {
     }
     m_climber.set(speed);
   }
-  public void elevatorResetEncoders(){
+  public void climbResetEncoders(){
     m_climber.getEncoder().setPosition(0);
     m_climber_follower.getEncoder().setPosition(0);
   }

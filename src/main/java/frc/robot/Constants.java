@@ -62,29 +62,16 @@ public final class Constants {
     public static final boolean kGyroReversed = false;
   }
 
-  public static final class ElevatorConstants {
-    public static final int kElevatorCanId = 9;
-    public static final int kElevatorFollowerCanId = 10;
-    public static final int kElevatorCurrentLimit = 30;
-    public static final IdleMode kElevatorIdleMode = IdleMode.kBrake;
-    public static final int maxElevatorHeightTest = 150;//-154.06716918 unsure if this is accurate
-    public static final double maxNeededElevatorHeight = 137.5;
+  public static final class ClimbConstants {
+    public static final int kClimbCanId = 9;
+    public static final int kClimbFollowerCanId = 10;
+    public static final int kClimbCurrentLimit = 30;
+    public static final IdleMode kClimbIdleMode = IdleMode.kBrake;
     public static final double kP = 1;
     public static final double kI = 1;
     public static final double kD = 1;
-    public static final double kLevelTwoCoralHeight = 35.0;
-    public static final double kLevelThreeCoralHeight = 77.0;
+    public static final double kClimbLowerLimit = 35.0;//need to figure this out
 
-  }
-  public static final class ReefConstants{
-    public static final int kCoralCanId = 11;
-    public static final int kAlgaeCanId = 12;
-    public static final int kFunnelBeamBreakDIO = 0;
-    public static final int kCoralBeamBreakDIO = 1;
-    public static final double kCoralPassivePower = 0.02;
-    public static final double kCoralAutoLoadSpeed = 0.2;
-    public static final double kAlgaeAutoLoadSpeed = 0;
-    public static final int AlgaeCurrentLimit = 5;
   }
   
 
@@ -107,7 +94,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final int kElevatorControllerPort = 1;
+    public static final int kClimbControllerPort = 1;
     public static final double kDriveDeadband = 0.07;
   }
 

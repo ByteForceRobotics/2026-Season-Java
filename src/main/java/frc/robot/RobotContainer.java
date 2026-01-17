@@ -5,27 +5,23 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 
 //import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
-//import edu.wpi.first.wpilibj.ADXL345_I2C.Axes;
-import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.ElevatorConstants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /*
@@ -45,7 +41,7 @@ public class RobotContainer {
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
-  XboxController m_climberController = new XboxController(OIConstants.kElevatorControllerPort);
+  XboxController m_climberController = new XboxController(OIConstants.kClimbControllerPort);
   //CommandXboxController m_commanddriverController = new CommandXboxController(OIConstants.kDriverControllerPort);
   
   
@@ -120,7 +116,7 @@ public class RobotContainer {
     
     new JoystickButton(m_climberController, Button.kStart.value)//sets current elevator pos to min
         .whileTrue(new RunCommand(
-            () -> m_climber.elevatorResetEncoders(),m_climber));
+            () -> m_climber.climbResetEncoders(),m_climber));
     
     /*
     new JoystickButton(m_climberController, Button.kBack.value)//toggles limits on and off
@@ -141,13 +137,7 @@ public class RobotContainer {
             .onFalse(new InstantCommand(
                 () -> m_reef.moveCoral_stop(),m_reef));
     */
-    
-    new JoystickButton(m_climberController, Button.kB.value)
-        .whileTrue(new RunCommand(
-            () -> m_climber.goToPosition(-ElevatorConstants.kLevelTwoCoralHeight),//goes to level 2
-            m_climber)).onFalse(new InstantCommand(
-                () -> m_climber.climb_stop(),
-                m_climber));
+  
 
     new JoystickButton(m_climberController, Button.kA.value)
         .whileTrue(new RunCommand(
