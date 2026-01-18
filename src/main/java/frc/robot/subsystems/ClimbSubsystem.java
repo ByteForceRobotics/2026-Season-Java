@@ -11,7 +11,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 
@@ -19,14 +18,9 @@ public class ClimbSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   SparkMax m_climber;
   SparkMax m_climber_follower;
-  double goalPos;
   double currentclimbSpeed;
-  String currentConfig;
-  double prevPos = 0;
-  PIDController pid = new PIDController(ClimbConstants.kP, ClimbConstants.kI, ClimbConstants.kD);
 
   public ClimbSubsystem(){
-    pid.setTolerance(1);
 
 
 
@@ -36,7 +30,6 @@ public class ClimbSubsystem extends SubsystemBase {
     SparkMaxConfig leaderConfig = new SparkMaxConfig();
     SparkMaxConfig followerConfig = new SparkMaxConfig();
     SoftLimitConfig softLimitConfig = new SoftLimitConfig();
-    currentConfig = "default";
 
 
     softLimitConfig
