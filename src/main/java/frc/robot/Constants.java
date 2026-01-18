@@ -75,12 +75,14 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int kIntakeCanId = 16;
-    public static final int kIntakeCurrentLimit = 30;
+    public static final int kIntakeCanId = 16;//set this
+    public static final int kIntakeCurrentLimit = 30;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kBrake;
-    public static final double kP = 1;
-    public static final double kI = 1;
-    public static final double kD = 1;
+  }
+  public static final class LauncherConstants {
+    public static final int kLauncherCanId = 16;//set this
+    public static final int kLauncherCurrentLimit = 30;//set this
+    public static final IdleMode kLauncherIdleMode = IdleMode.kBrake;
   }
   
 

@@ -12,32 +12,32 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LauncherConstants;
 
 
-public class IntakeSubsystem extends SubsystemBase {
+public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
-  SparkMax m_intake;
+  SparkMax m_launcher;
 
 
-  public IntakeSubsystem(){
-    m_intake = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
+  public LauncherSubsystem(){
+    m_launcher = new SparkMax(LauncherConstants.kLauncherCanId, MotorType.kBrushless);
 
 
 
 
 
-    SparkMaxConfig intakeConfig =new SparkMaxConfig();
+    SparkMaxConfig LauncherConfig =new SparkMaxConfig();
 
-    intakeConfig
-      .smartCurrentLimit(IntakeConstants.kIntakeCurrentLimit);
+    LauncherConfig
+      .smartCurrentLimit(LauncherConstants.kLauncherCurrentLimit);
   }
-  public void intake(double xSpeed) {
-    m_intake.set(xSpeed);
+  public void launch(double xSpeed) {
+    m_launcher.set(xSpeed);
   }
 
-  public void intakeStop() {
-    m_intake.set(0.0);
+  public void launchStop() {
+    m_launcher.set(0.0);
 
   }
 
