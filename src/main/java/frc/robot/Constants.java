@@ -73,6 +73,15 @@ public final class Constants {
     public static final double kClimbLowerLimit = 35.0;//need to figure this out
 
   }
+
+  public static final class IntakeConstants {
+    public static final int kIntakeCanId = 16;
+    public static final int kIntakeCurrentLimit = 30;
+    public static final IdleMode kIntakeIdleMode = IdleMode.kBrake;
+    public static final double kP = 1;
+    public static final double kI = 1;
+    public static final double kD = 1;
+  }
   
 
   public static final class ModuleConstants {
