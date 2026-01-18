@@ -9,14 +9,14 @@ import java.util.List;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
-
+import frc.robot.subsystems.Camera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 public class VisionSubsystem extends SubsystemBase {
-  PhotonCamera frontCamera;
-  PhotonCamera rearCamera;
+  Camera frontCamera;
+  Camera rearCamera;
   int frontTargetId;
   int rearTargetId;
   double frontyaw;
@@ -24,8 +24,8 @@ public class VisionSubsystem extends SubsystemBase {
   double frontarea;
 
   public VisionSubsystem(){
-    frontCamera = new PhotonCamera("FrontCam");
-    rearCamera = new PhotonCamera("RearCam");
+    frontCamera = new Camera(new PhotonCamera("FrontCam"));
+    rearCamera = new Camera(new PhotonCamera("RearCam"));
     frontTargetId = 0;
     frontyaw = 0;
     frontpitch = 0;
@@ -36,45 +36,8 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic(){
-    //System.out.println("test");
-    var frontCamResults = frontCamera.getAllUnreadResults();
+    frontCamera.refreshCam();
+    rearCamera.refreshCam();
     
-    if(!frontCamResults.isEmpty()){
-      PhotonPipelineResult frontCamResult = frontCamResults.get(0);
-      if(frontCamResult.hasTargets()){
-        //List<PhotonTrackedTarget> targets = frontCamResult.getTargets();
-        PhotonTrackedTarget frontTarget = frontCamResult.getBestTarget();
-        frontTargetId = frontTarget.getFiducialId();
-        frontyaw = frontTarget.getYaw();
-        frontpitch = frontTarget.getPitch();
-        frontarea = frontTarget.getArea();
-        //Transform2d pose = frontTarget.getCameraToTarget();
-      }
-      else{
-      frontTargetId = 0;
-      frontyaw = 0;
-      frontpitch = 0;
-      frontarea = 0;
-    }
-    }
-    
-    SmartDashboard.putNumber("Front target id",frontTargetId);
-    SmartDashboard.putNumber("Yaw", frontyaw);
-    SmartDashboard.putNumber("pitch", frontpitch);
-    SmartDashboard.putNumber("area", frontarea);
-    
-    var rearCamResults = rearCamera.getAllUnreadResults();
-    rearTargetId = 0;
-    if(!rearCamResults.isEmpty()){
-      PhotonPipelineResult rearCamResult = rearCamResults.get(0);
-      if(rearCamResult.hasTargets()){
-        //List<PhotonTrackedTarget> targets = rearCamResult.getTargets();
-        PhotonTrackedTarget rearTarget = rearCamResult.getBestTarget();
-        rearTargetId = rearTarget.getFiducialId();
-        System.out.println("rearTargetId: " + rearTargetId);
-      }
-    }
-    SmartDashboard.putNumber("Rear target id",rearTargetId);
-
   }
 }
