@@ -143,7 +143,7 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_climber.goToPosition(0),//lowers all the way, need to figure out unit amount
             m_climber)).onFalse(new InstantCommand(
-                () -> m_climber.climb_stop(),
+                () -> m_climber.pull_stop(),
                 m_climber));
     /*
     trigger buttons, might be useful

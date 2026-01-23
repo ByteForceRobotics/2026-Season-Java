@@ -19,6 +19,7 @@ public class ClimbSubsystem extends SubsystemBase {
   SparkMax m_climber;
   SparkMax m_climber_follower;
   double currentclimbSpeed;
+  boolean extend;
 
   public ClimbSubsystem(){
 
@@ -26,6 +27,7 @@ public class ClimbSubsystem extends SubsystemBase {
 
     m_climber = new SparkMax(ClimbConstants.kClimbCanId, MotorType.kBrushless);
     m_climber_follower = new SparkMax(ClimbConstants.kClimbFollowerCanId, MotorType.kBrushless);
+    extend = false;
     SparkMaxConfig globalConfig = new SparkMaxConfig();
     SparkMaxConfig leaderConfig = new SparkMaxConfig();
     SparkMaxConfig followerConfig = new SparkMaxConfig();
@@ -61,23 +63,15 @@ public class ClimbSubsystem extends SubsystemBase {
    *
    */
   
-  public void climb(double xSpeed) {
+  public void pull(double xSpeed) {
     m_climber.set(xSpeed);
   }
   public double getclimbPosition(){
     return m_climber.getEncoder().getPosition();
   }
-  public void climb_stop() {
-    if(Math.abs(m_climber.getEncoder().getPosition())<2){
-      m_climber.set(0.0);
-    }
-    else if(Math.abs(m_climber.getEncoder().getPosition())<73){
-      m_climber.set(-0.01); 
-    }
-    else{
-      m_climber.set(-0.02);
-    }
-     //make sure its negative if using passive pwoer
+  public void pull_stop() {
+    m_climber.set(0.0);
+     //figure out passive power to set
     
   }
   @Deprecated // not working well
@@ -89,6 +83,8 @@ public class ClimbSubsystem extends SubsystemBase {
     }
     return speed;
   }
+
+
   public void goToPosition(double position){
     double speed = calc_speed(position);
     if(Math.abs(m_climber.getEncoder().getPosition())>Math.abs(position)){
@@ -105,5 +101,16 @@ public class ClimbSubsystem extends SubsystemBase {
   
   public void periodic(){
 
+  }
+  public void climblvl1(){
+
+  }
+  public void climb(){
+    if(m_climber.getEncoder().getPosition()<ClimbConstants.kMaxRetract){
+      extend = true;
+    }
+    if(m_climber.getEncoder().getPosition()<ClimbConstants.kMaxExtend){
+      extend = true;
+    }
   }
 }
