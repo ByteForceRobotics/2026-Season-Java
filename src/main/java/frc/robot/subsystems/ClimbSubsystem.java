@@ -105,12 +105,13 @@ public class ClimbSubsystem extends SubsystemBase {
   public void climblvl1(){
 
   }
-  public void climb(){
+  public void climb(double speed){
     if(m_climber.getEncoder().getPosition()<ClimbConstants.kMaxRetract){
       extend = true;
     }
     if(m_climber.getEncoder().getPosition()<ClimbConstants.kMaxExtend){
-      extend = true;
+      extend = false;
     }
+    m_climber.set(speed);
   }
 }
