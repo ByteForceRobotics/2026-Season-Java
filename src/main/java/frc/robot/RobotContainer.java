@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -61,6 +62,9 @@ public class RobotContainer {
   double speedScaleHigh = 1.0;
   double speedScaleLow= 0.33;
   double speedScale = speedScaleHigh;
+  Command deployCoralCommmand= new RunCommand(
+        () -> m_climber.climb(ClimbConstants.kClimbSpeed),
+        m_climber).withTimeout(1.0);
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();

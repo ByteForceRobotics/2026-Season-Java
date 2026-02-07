@@ -102,9 +102,7 @@ public class ClimbSubsystem extends SubsystemBase {
   public void periodic(){
 
   }
-  public void climblvl1(){
-
-  }
+  
   public void climb(double speed){
     if(m_climber.getEncoder().getPosition()<ClimbConstants.kMaxRetract){
       extend = true;
