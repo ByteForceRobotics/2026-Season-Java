@@ -74,6 +74,7 @@ public final class Constants {
     public static final double kMaxRetract = 35.0;//this one too
     public static final double kMaxExtend = 0;//this one as well
     public static final double kClimbSpeed = 0.5;// figure this out
+    public static final double kLevelOneTime = 1.0;//seconds, figure this one out
 
   }
 

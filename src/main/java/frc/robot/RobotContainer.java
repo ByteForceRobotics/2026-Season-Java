@@ -62,9 +62,12 @@ public class RobotContainer {
   double speedScaleHigh = 1.0;
   double speedScaleLow= 0.33;
   double speedScale = speedScaleHigh;
-  Command deployCoralCommmand= new RunCommand(
-        () -> m_climber.climb(ClimbConstants.kClimbSpeed),
-        m_climber).withTimeout(1.0);
+
+  SequentialCommandGroup climblvl1= new RunCommand(
+        () -> m_climber.climb(ClimbConstants.kClimbSpeed),// note: i dont know if this will stop climbing the moment the time runs out
+        m_climber).withTimeout(ClimbConstants.kLevelOneTime).andThen(new InstantCommand(
+                () -> m_climber.pull_stop(),
+                m_climber));
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
@@ -143,12 +146,19 @@ public class RobotContainer {
     */
   
 
-    new JoystickButton(m_climberController, Button.kA.value)
+    new POVButton(m_driverController, 0)
         .whileTrue(new RunCommand(
-            () -> m_climber.goToPosition(0),//lowers all the way, need to figure out unit amount
+            () -> m_climber.climb(ClimbConstants.kClimbSpeed),
             m_climber)).onFalse(new InstantCommand(
                 () -> m_climber.pull_stop(),
                 m_climber));
+    new POVButton(m_driverController, 180)
+        .whileTrue(new RunCommand(
+            () -> m_climber.climb(-ClimbConstants.kClimbSpeed),
+            m_climber)).onFalse(new InstantCommand(
+                () -> m_climber.pull_stop(),
+                m_climber));
+                
     /*
     trigger buttons, might be useful
     triggerButton(m_climberController,Axis.kLeftTrigger).whileTrue(new RunCommand(
