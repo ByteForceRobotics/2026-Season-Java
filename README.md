@@ -5,14 +5,15 @@ TODO:
 
 * Climber
   * figure out units limit for climber
-  * create methods to auto climb to top/level 1
+  * create methods to auto climb to top/level 1 DONE
+  * add managing the hooks(i kinda forgot the mechanism we were planning on using so i didnt add it)
 
 * launcher
   * create class for launcher
     * add methods, should be rudimentary
 
 * intake
-  * create class for launcher
+  * create class for intake
     * add methods, should be rudimentary
 
 
