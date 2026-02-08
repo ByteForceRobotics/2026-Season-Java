@@ -20,9 +20,13 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /*
@@ -38,13 +42,16 @@ public class RobotContainer {
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ClimbSubsystem m_climber = new ClimbSubsystem();
   private final VisionSubsystem m_vision = new VisionSubsystem();
+  private final LauncherSubsystem m_launcher = new LauncherSubsystem();
+  private final IntakeSubsystem m_intake = new IntakeSubsystem();
   
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_climberController = new XboxController(OIConstants.kClimbControllerPort);
   //CommandXboxController m_commanddriverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  
+  //https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=&rightTrigger=slow+down%2C+to+be+added&rightBumper=&leftBumper=&leftStickClick=change+scale&leftStick=movement%2Fdriving&rightStick=rotation&xButton=&aButton=spin+intake+motors&yButton=launch+balls+&startButton=&bButton=reset+heading&dpadUp=climb+up&dpadDown=climb+reverse&dpadRight=deploy+lifter&dpadLeft=retract+lifter
+  // this is the link to the controller keybinds
   
 
 
@@ -140,7 +147,13 @@ public class RobotContainer {
             .onFalse(new InstantCommand(
                 () -> m_reef.moveCoral_stop(),m_reef));
     */
-  
+
+    new JoystickButton(m_driverController, Button.kLeftStick.value)
+        .onTrue(new InstantCommand(
+            () -> changeScale()));//make this trigger
+
+
+
 
     new POVButton(m_driverController, 0)
         .whileTrue(new RunCommand(
@@ -154,6 +167,19 @@ public class RobotContainer {
             m_climber)).onFalse(new InstantCommand(
                 () -> m_climber.pull_stop(),
                 m_climber));
+    
+    new POVButton(m_driverController, 90)
+        .whileTrue(new RunCommand(
+            () -> m_intake.lift(IntakeConstants.kLiftDefaultSpeed),
+            m_intake)).onFalse(new InstantCommand(
+                () -> m_intake.lift_stop(),
+                m_intake));
+    new POVButton(m_driverController, 270)
+        .whileTrue(new RunCommand(
+            () -> m_intake.lift(-IntakeConstants.kLiftDefaultSpeed),
+            m_intake)).onFalse(new InstantCommand(
+                () -> m_intake.lift_stop(),
+                m_intake));
                 
     /*
     trigger buttons, might be useful
@@ -170,22 +196,28 @@ public class RobotContainer {
             m_climber));
     */
 
-
-
+    
+    new JoystickButton(m_driverController, Button.kY.value)
+        .whileTrue(new RunCommand(
+            () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
+            m_launcher)).onFalse(new InstantCommand(
+            () -> m_launcher.launch_stop(),
+            m_launcher));   
 
     
     new JoystickButton(m_driverController, Button.kB.value)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.zeroHeading(),
-            m_robotDrive));         
+            m_robotDrive));     
+            
     
-    new JoystickButton(m_driverController, Button.kLeftStick.value)
-        .onTrue(new InstantCommand(
-            () -> changeScale()));//make this trigger
-
-    new JoystickButton(m_driverController, Button.kY.value)
+     new JoystickButton(m_driverController, Button.kA.value)
         .whileTrue(new RunCommand(
-            () -> m_robotDrive.driveResetEncoders(),m_robotDrive));
+            () -> m_intake.intake(IntakeConstants.kIntakeDefaultSpeed),
+            m_intake)).onFalse(new InstantCommand(
+            () -> m_intake.intake_stop(),
+            m_intake));   
+    
     //add POV buttons(d-pad) for strafing
     /* 
     new POVButton(m_driverController, 0)

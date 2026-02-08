@@ -17,14 +17,14 @@ import frc.robot.Constants.LauncherConstants;
 public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   SparkMax m_launcher1;
-  SparkMax m_launcher2;
+  SparkMax m_launcher2;//bottom 
 
   public LauncherSubsystem(){
 
 
 
-    m_launcher1 = new SparkMax(ClimbConstants.kClimbCanId, MotorType.kBrushless);
-    m_launcher2 = new SparkMax(ClimbConstants.kClimbFollowerCanId, MotorType.kBrushless);
+    m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);
+    m_launcher2 = new SparkMax(LauncherConstants.kLauncher2CanId, MotorType.kBrushless);
     SparkMaxConfig globalConfig = new SparkMaxConfig();
     SparkMaxConfig launcher1Config = new SparkMaxConfig();
     SparkMaxConfig launcher2Config = new SparkMaxConfig();

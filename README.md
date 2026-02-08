@@ -2,6 +2,7 @@ TODO:
 
 * General
   * figure out balancing via the Navx
+  * figure out how to tie command groups to buttons
 
 * Autonomous
   * figure out detecting mutlipe april tags
@@ -13,8 +14,7 @@ TODO:
   * add managing the hooks(i kinda forgot the mechanism we were planning on using so i didnt add it)
 
 * launcher
-  * create class for launcher
-    * add methods, should be rudimentary
+  * create a command group to start launching it, with like a delway so it can spin up
 
 * intake
   * create class for intake

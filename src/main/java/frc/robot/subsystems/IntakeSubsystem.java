@@ -49,7 +49,7 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intake.set(xSpeed);
   }
 
-  public void intakeStop() {
+  public void intake_stop() {
     m_intake.set(0.0);
 
   }
