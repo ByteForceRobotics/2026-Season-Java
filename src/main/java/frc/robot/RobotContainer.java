@@ -121,10 +121,6 @@ public class RobotContainer {
         m_climber)));
     */
     
-    new JoystickButton(m_climberController, Button.kStart.value)//sets current elevator pos to min
-        .whileTrue(new RunCommand(
-            () -> m_climber.climbResetEncoders(),m_climber));
-    
     /*
     new JoystickButton(m_climberController, Button.kBack.value)//toggles limits on and off
         .onTrue(new InstantCommand(
@@ -177,15 +173,6 @@ public class RobotContainer {
 
 
 
-
-
-
-
-    new JoystickButton(m_driverController, Button.kX.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
-
     
     new JoystickButton(m_driverController, Button.kB.value)
         .whileTrue(new RunCommand(
@@ -194,12 +181,13 @@ public class RobotContainer {
     
     new JoystickButton(m_driverController, Button.kLeftStick.value)
         .onTrue(new InstantCommand(
-            () -> changeScale()));
+            () -> changeScale()));//make this trigger
 
     new JoystickButton(m_driverController, Button.kY.value)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.driveResetEncoders(),m_robotDrive));
     //add POV buttons(d-pad) for strafing
+    /* 
     new POVButton(m_driverController, 0)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.bumper(0.5, 0),m_robotDrive));
@@ -212,6 +200,7 @@ public class RobotContainer {
     new POVButton(m_driverController, 270)
         .whileTrue(new RunCommand(
             () -> m_robotDrive.bumper(0.5, 270),m_robotDrive));
+     */
   }
 
   public void changeScale(){

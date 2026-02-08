@@ -64,7 +64,7 @@ public final class Constants {
 
   public static final class ClimbConstants {
     public static final int kClimbCanId = 9;
-    public static final int kClimbFollowerCanId = 10;
+    public static final int kClimbFollowerCanId = 10;//might not need
     public static final int kClimbCurrentLimit = 30;
     public static final IdleMode kClimbIdleMode = IdleMode.kBrake;
     public static final double kP = 1;
@@ -79,13 +79,17 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int kIntakeCanId = 16;//set this
+    public static final int kIntakeLifterCanId = 11;//set this
+    public static final int kIntakeCanId = 12;//set this
     public static final int kIntakeCurrentLimit = 30;//set this
+    public static final int kIntakeLifterCurrentLimit = 30;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kBrake;
+    public static final double kLifterMaxHeight = 30; //set this
   }
   public static final class LauncherConstants {
-    public static final int kLauncherCanId = 16;//set this
-    public static final int kLauncherCurrentLimit = 30;//set this
+    public static final int kLauncherCanId = 13;//set this
+    public static final int kLauncher1CurrentLimit = 30;//set this
+    public static final int kLauncher2CurrentLimit = 30;//set this
     public static final IdleMode kLauncherIdleMode = IdleMode.kBrake;
   }
   

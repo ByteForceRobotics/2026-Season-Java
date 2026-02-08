@@ -18,19 +18,32 @@ import frc.robot.Constants.IntakeConstants;
 public class IntakeSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   SparkMax m_intake;
+  SparkMax m_intakeLifter;
 
 
   public IntakeSubsystem(){
     m_intake = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
-
-
+    m_intakeLifter = new SparkMax(IntakeConstants.kIntakeLifterCanId, MotorType.kBrushless);
 
 
 
     SparkMaxConfig intakeConfig =new SparkMaxConfig();
+    SparkMaxConfig intakeLifterConfig =new SparkMaxConfig();
+    SoftLimitConfig softLimitConfig = new SoftLimitConfig();
+  
+    softLimitConfig
+      .forwardSoftLimit(0)//positive
+      .reverseSoftLimit(-IntakeConstants.kLifterMaxHeight)
+      .forwardSoftLimitEnabled(true)
+      .reverseSoftLimitEnabled(true);
 
     intakeConfig
       .smartCurrentLimit(IntakeConstants.kIntakeCurrentLimit);
+
+
+    intakeLifterConfig
+      .apply(softLimitConfig)
+      .smartCurrentLimit(IntakeConstants.kIntakeLifterCurrentLimit);
   }
   public void intake(double xSpeed) {
     m_intake.set(xSpeed);
@@ -38,6 +51,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public void intakeStop() {
     m_intake.set(0.0);
+
+  }
+  public void lift(double xSpeed) {
+    m_intakeLifter.set(xSpeed);
+  }
+
+  public void lift_stop() {
+    m_intakeLifter.set(0.0);
 
   }
 

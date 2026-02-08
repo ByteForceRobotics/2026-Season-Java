@@ -8,53 +8,38 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.LauncherConstants;
 
 public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
-  SparkMax m_launcher;
-  SparkMax m_launcher_follower;
-  double currentclimbSpeed;
-  boolean extend;
+  SparkMax m_launcher1;
+  SparkMax m_launcher2;
 
   public LauncherSubsystem(){
 
 
 
-    m_launcher = new SparkMax(ClimbConstants.kClimbCanId, MotorType.kBrushless);
-    m_launcher_follower = new SparkMax(ClimbConstants.kClimbFollowerCanId, MotorType.kBrushless);
-    extend = false;
+    m_launcher1 = new SparkMax(ClimbConstants.kClimbCanId, MotorType.kBrushless);
+    m_launcher2 = new SparkMax(ClimbConstants.kClimbFollowerCanId, MotorType.kBrushless);
     SparkMaxConfig globalConfig = new SparkMaxConfig();
-    SparkMaxConfig leaderConfig = new SparkMaxConfig();
-    SparkMaxConfig followerConfig = new SparkMaxConfig();
-    SoftLimitConfig softLimitConfig = new SoftLimitConfig();
-
-
-    softLimitConfig
-      .forwardSoftLimit(0)//positive //need to figure out limits
-      .reverseSoftLimit(-ClimbConstants.kClimbLowerLimit)//negative(direction we want to go)
-      .forwardSoftLimitEnabled(true)
-      .reverseSoftLimitEnabled(true);
+    SparkMaxConfig launcher1Config = new SparkMaxConfig();
+    SparkMaxConfig launcher2Config = new SparkMaxConfig();
 
     globalConfig
-    .apply(softLimitConfig)
-      .smartCurrentLimit(ClimbConstants.kClimbCurrentLimit)
-      .idleMode(ClimbConstants.kClimbIdleMode);
+      .idleMode(LauncherConstants.kLauncherIdleMode);
       
-    leaderConfig
-      .apply(globalConfig)
-      .inverted(false);
+    launcher1Config
+      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit);
       
-    followerConfig
-      .apply(globalConfig)
-      .follow(m_launcher,true);
+    launcher2Config
+      .smartCurrentLimit(LauncherConstants.kLauncher2CurrentLimit);
 
-    m_launcher.configure(leaderConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_launcher_follower.configure(followerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcher1.configure(launcher1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcher2.configure(launcher2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
   }
   
@@ -64,11 +49,12 @@ public class LauncherSubsystem extends SubsystemBase {
    */
   
   public void launch(double xSpeed) {
-    m_launcher.set(xSpeed);
+    m_launcher1.set(xSpeed);
+    m_launcher2.set(xSpeed/2);
   }
-  public void pull_stop() {
-    m_launcher.set(0.0);
-     //figure out passive power to set
+  public void launch_stop() {
+    m_launcher1.set(0.0);
+    m_launcher2.set(0.0);
     
   }
   public void periodic(){

@@ -1,4 +1,8 @@
 TODO:
+
+* General
+  * figure out balancing via the Navx
+
 * Autonomous
   * figure out detecting mutlipe april tags
   * make functions like drive to april tags n stuff
