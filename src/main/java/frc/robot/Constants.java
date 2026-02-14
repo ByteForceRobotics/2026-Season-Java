@@ -96,6 +96,11 @@ public final class Constants {
     public static final IdleMode kLauncherIdleMode = IdleMode.kBrake;
     public static final double kLauncherDefaultSpeed = 0.85;
   }
+  public static final class CameraConstants {
+    public static final double kFrontCamHeight = 0;//set this
+    public static final double kRearCamHeight = 0;//set this
+  }
+
   
 
   public static final class ModuleConstants {

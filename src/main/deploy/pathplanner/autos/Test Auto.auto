@@ -11,15 +11,15 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ShootOneSec"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "OtherPath"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootOneSec"
           }
         }
       ]

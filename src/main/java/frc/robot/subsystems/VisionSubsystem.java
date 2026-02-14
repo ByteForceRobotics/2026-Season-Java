@@ -12,6 +12,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.subsystems.Camera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CameraConstants;
 
 
 public class VisionSubsystem extends SubsystemBase {
@@ -24,8 +25,8 @@ public class VisionSubsystem extends SubsystemBase {
   double frontarea;
 
   public VisionSubsystem(){
-    frontCamera = new Camera(new PhotonCamera("FrontCam"));
-    rearCamera = new Camera(new PhotonCamera("RearCam"));
+    frontCamera = new Camera(new PhotonCamera("FrontCam"),CameraConstants.kFrontCamHeight);
+    rearCamera = new Camera(new PhotonCamera("RearCam"),CameraConstants.kRearCamHeight);
     frontTargetId = 0;
     frontyaw = 0;
     frontpitch = 0;
