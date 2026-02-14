@@ -23,8 +23,8 @@ public class LauncherSubsystem extends SubsystemBase {
 
 
 
-    m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);
-    m_launcher2 = new SparkMax(LauncherConstants.kLauncher2CanId, MotorType.kBrushless);
+    m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);//top
+    m_launcher2 = new SparkMax(LauncherConstants.kLauncher2CanId, MotorType.kBrushless);//bottom
     SparkMaxConfig globalConfig = new SparkMaxConfig();
     SparkMaxConfig launcher1Config = new SparkMaxConfig();
     SparkMaxConfig launcher2Config = new SparkMaxConfig();
@@ -33,10 +33,13 @@ public class LauncherSubsystem extends SubsystemBase {
       .idleMode(LauncherConstants.kLauncherIdleMode);
       
     launcher1Config
+    .inverted(true)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit);
       
     launcher2Config
+    .inverted(true)
       .smartCurrentLimit(LauncherConstants.kLauncher2CurrentLimit);
+      
 
     m_launcher1.configure(launcher1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcher2.configure(launcher2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -50,7 +53,7 @@ public class LauncherSubsystem extends SubsystemBase {
   
   public void launch(double xSpeed) {
     m_launcher1.set(xSpeed);
-    m_launcher2.set(xSpeed/2);
+    m_launcher2.set(0.6);
   }
   public void launch_stop() {
     m_launcher1.set(0.0);

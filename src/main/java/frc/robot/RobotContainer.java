@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 //import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,7 +45,7 @@ public class RobotContainer {
   private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
-  
+  private double slowdownMultiplier = 1;
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -88,9 +89,9 @@ public class RobotContainer {
       // fieldRelative
       new RunCommand(
         () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(m_driverController.getLeftY()*speedScale, OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_driverController.getLeftX()*speedScale, OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_driverController.getRightX()*speedScale, OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_driverController.getLeftY()*speedScale*slowdownMultiplier, OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_driverController.getLeftX()*speedScale*slowdownMultiplier, OIConstants.kDriveDeadband),
+            -MathUtil.applyDeadband(m_driverController.getRightX()*speedScale*slowdownMultiplier, OIConstants.kDriveDeadband),
             fieldRelative),
         m_robotDrive));
     
@@ -105,6 +106,7 @@ public class RobotContainer {
   }
   
   public void periodic() {
+    
     
   }
 
@@ -180,7 +182,12 @@ public class RobotContainer {
             m_intake)).onFalse(new InstantCommand(
                 () -> m_intake.lift_stop(),
                 m_intake));
-                
+
+
+
+    triggerButton(m_driverController,Axis.kRightTrigger).whileTrue(new RunCommand(
+        () -> slowdown(m_driverController.getRawAxis(Axis.kRightTrigger.value))))
+        .onFalse(new InstantCommand(()->slowdown_stop()));
     /*
     trigger buttons, might be useful
     triggerButton(m_climberController,Axis.kLeftTrigger).whileTrue(new RunCommand(
@@ -241,5 +248,14 @@ public class RobotContainer {
     } else {
       speedScale = speedScaleHigh;
     }
+  }
+
+  public void slowdown(double val){
+    slowdownMultiplier = 1-val;
+    SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
+  }
+  public void slowdown_stop(){
+    slowdownMultiplier = 1;
+    SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
   }
 }

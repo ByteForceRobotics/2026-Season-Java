@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SoftLimitConfig;
@@ -27,15 +29,15 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
 
-    SparkMaxConfig intakeConfig =new SparkMaxConfig();
-    SparkMaxConfig intakeLifterConfig =new SparkMaxConfig();
+    SparkMaxConfig intakeConfig = new SparkMaxConfig();
+    SparkMaxConfig intakeLifterConfig = new SparkMaxConfig();
     SoftLimitConfig softLimitConfig = new SoftLimitConfig();
   
     softLimitConfig
-      .forwardSoftLimit(0)//positive
-      .reverseSoftLimit(-IntakeConstants.kLifterMaxHeight)
-      .forwardSoftLimitEnabled(true)
-      .reverseSoftLimitEnabled(true);
+      .forwardSoftLimit(IntakeConstants.kLifterMaxHeight)//positive
+      .reverseSoftLimit(0)
+      .forwardSoftLimitEnabled(false)
+      .reverseSoftLimitEnabled(false);
 
     intakeConfig
       .smartCurrentLimit(IntakeConstants.kIntakeCurrentLimit);
@@ -44,6 +46,9 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeLifterConfig
       .apply(softLimitConfig)
       .smartCurrentLimit(IntakeConstants.kIntakeLifterCurrentLimit);
+
+     m_intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+     m_intakeLifter.configure(intakeLifterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   public void intake(double xSpeed) {
     m_intake.set(xSpeed);
@@ -65,5 +70,7 @@ public class IntakeSubsystem extends SubsystemBase {
   
   @Override
   public void periodic(){
+    double lifterPos = m_intakeLifter.getEncoder().getPosition();
+    SmartDashboard.putNumber("lifterPos", lifterPos);
   }
 }
