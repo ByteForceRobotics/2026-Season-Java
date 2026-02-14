@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 //import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
@@ -72,11 +73,14 @@ public class RobotContainer {
   double speedScale = speedScaleHigh;
 
   SequentialCommandGroup climblvl1= new RunCommand(
-        () -> m_climber.climb(ClimbConstants.kClimbSpeed),// note: i dont know if this will stop climbing the moment the time runs out
+        () -> m_climber.climb(ClimbConstants.kClimbSpeed),
         m_climber).withTimeout(ClimbConstants.kLevelOneTime).andThen(new InstantCommand(
                 () -> m_climber.pull_stop(),
                 m_climber));
+  SequentialCommandGroup autoShoot = new RunCommand(()-> m_launcher.launch(.8),m_launcher).withTimeout(1).andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
   public RobotContainer() {
+    NamedCommands.registerCommand("LevelOneClimb", climblvl1);
+    NamedCommands.registerCommand("ShootOneSec", autoShoot);
     // Configure the button bindings
     configureButtonBindings();
     
@@ -94,11 +98,13 @@ public class RobotContainer {
             -MathUtil.applyDeadband(m_driverController.getRightX()*speedScale*slowdownMultiplier, OIConstants.kDriveDeadband),
             fieldRelative),
         m_robotDrive));
+
+      
     
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-
+    
     SmartDashboard.putData("Auto Chooser", autoChooser);
   }
   public Command getAutonomousCommand() {
