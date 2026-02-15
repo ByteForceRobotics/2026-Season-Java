@@ -5,13 +5,18 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.subsystems.Camera;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
@@ -20,30 +25,24 @@ import frc.robot.Constants.CameraConstants;
 public class VisionSubsystem extends SubsystemBase {
   Camera frontCamera;
   Camera rearCamera;
-  int frontTargetId;
-  int rearTargetId;
-  double frontyaw;
-  double frontpitch;
-  double frontarea;
+  AprilTagFieldLayout m_fieldLayout;
 
   public VisionSubsystem(){
-    frontCamera = new Camera(new PhotonCamera("FrontCam"),CameraConstants.kFrontCamHeight,CameraConstants.kFrontXOffset,CameraConstants.kFrontYOffset,CameraConstants.kFrontRotation);
-    rearCamera = new Camera(new PhotonCamera("RearCam"),CameraConstants.kRearCamHeight,CameraConstants.kRearXOffset,CameraConstants.kRearYOffset,CameraConstants.kRearRotation);
-    frontTargetId = 0;
-    frontyaw = 0;
-    frontpitch = 0;
-    frontarea = 0;
-    rearTargetId = 0;
+    Path path = Filesystem.getDeployDirectory().toPath().resolve("aprilTagFieldLayout.json");
+        try{
+            m_fieldLayout = new AprilTagFieldLayout(path);
+            frontCamera = new Camera("FrontCam",m_fieldLayout);
+            rearCamera = new Camera("RearCam",m_fieldLayout);
+        }
+        catch(IOException e){}
+    
   }
-
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPoseFront(){
+    return frontCamera.getEstimatedGlobalPose();
+  }
 
   @Override
   public void periodic(){
-    frontCamera.refreshCam();
-    rearCamera.refreshCam();
     
-  }
-  public Pose2d getPose(){
-    return frontCamera.getPose2d();
   }
 }

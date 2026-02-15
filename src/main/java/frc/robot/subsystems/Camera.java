@@ -3,9 +3,15 @@ package frc.robot.subsystems;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.proto.Photon;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -13,106 +19,42 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.geometry.Transform2d;
-
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Camera 
 {
-    PhotonCamera camera;
-    int targetId;
-    double yaw;
-    double pitch;
-    double area;
-    double cameraHeight;
-    double distance;
-    double targetHeight = 0;
-    double xOffset;
-    double yOffset;
-    double rotation;
-    Pose2d robotPose;
-    public Camera(PhotonCamera cam, double camHeight,double x,double y, double rot){
-        this.camera = cam;
-        this.cameraHeight = camHeight;
-        this.xOffset = x;
-        this.yOffset = y;
-        this.rotation = rot;
-        this.robotPose = new Pose2d();
-        this.targetId = 0;
+    PhotonCamera m_camera;
+    private final AprilTagFieldLayout m_fieldLayout;
+    private final Transform3d m_robotToCam = new Transform3d(
+        new Translation3d(0.3,0.0,0.5),
+        new Rotation3d(0, Math.toRadians(-15),0)//set these
+    );
+    
+    private final PhotonPoseEstimator m_photonPoseEstimator;
+
+    public Camera(String name,AprilTagFieldLayout fieldLayout){
+        m_camera = new PhotonCamera(name);
+        this.m_fieldLayout = fieldLayout;
+
+        m_photonPoseEstimator = new PhotonPoseEstimator(
+            m_fieldLayout,
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+            m_robotToCam);
 
     }
-    public void refreshCam(){
-    var CamResults = camera.getAllUnreadResults();
-        
-        if(!CamResults.isEmpty()){
-            PhotonPipelineResult CamResult = CamResults.get(0);
-            if(CamResult.hasTargets()){
-                //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
-                PhotonTrackedTarget target = CamResult.getBestTarget();
-                this.targetId = target.getFiducialId();
-                this.yaw = target.getYaw();
-                this.pitch = target.getPitch();
-                this.area = target.getArea();
-                //camToTargetTranslation
-                double distToTarget = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, 0, pitch);
-                Translation2d  camToTargetTranslation = PhotonUtils.estimateCameraToTargetTranslation(distToTarget,Rotation2d.fromDegrees(-yaw));
-                //fieldToTarget
-                try{
-                    
-                    Path path  = Filesystem.getDeployDirectory().toPath().resolve("aprilTagFieldLayout.json");
-                    AprilTagFieldLayout tagFieldLayout = new AprilTagFieldLayout(path);
-                    var optTagPose3d = tagFieldLayout.getTagPose(targetId);
-                    if (optTagPose3d.isPresent()) {
-                        var tagPose3d = optTagPose3d.get();
-                        Pose2d tagPose = tagPose3d.toPose2d();
-                        targetHeight = tagPose3d.getZ();
-
-                        //gyroAngle
-                        Rotation2d gyroAngle = Rotation2d.fromDegrees(0);//set this
-                        
-                        //cameraToTarget
-                        Transform2d cameraToTarget = PhotonUtils.estimateCameraToTarget(camToTargetTranslation, tagPose, gyroAngle);
-                        
-                        //cameraTransform2d
-                            Translation2d translation = new Translation2d(this.xOffset, this.yOffset);
-                            // Create a rotation
-                            Rotation2d rotation = Rotation2d.fromDegrees(this.rotation);
-                            
-                        // Create the transform
-                        Transform2d cameraToRobot = new Transform2d(translation, rotation);
-
-                        //finalRobotPose
-                        robotPose = PhotonUtils.estimateFieldToRobot(cameraToTarget,tagPose,cameraToRobot);
-                    }
-                }
-                catch(IOException e){
-                    this.targetId = 1;
-                    this.yaw = 1;
-                    this.pitch = 1;
-                    this.area = 1;
-                    this.distance=1;
-                    robotPose = new Pose2d();
-                }
-
-            }
-            else{
-                this.targetId = 2;
-                this.yaw = 0;
-                this.pitch = 0;
-                this.area = 0;
-                this.distance=0;
-                robotPose = new Pose2d();
-            }
+    public Optional<EstimatedRobotPose> getEstimatedGlobalPose(){
+        List<PhotonPipelineResult> camResults = m_camera.getAllUnreadResults();
+        if(!camResults.isEmpty()){
+            PhotonPipelineResult camResult = camResults.get(0);
+            return m_photonPoseEstimator.update(camResult);
         }
-        SmartDashboard.putNumber(this.camera.getName(),targetId);
-        SmartDashboard.putNumber("Yaw", yaw);
-        SmartDashboard.putNumber("pitch", pitch);
-        SmartDashboard.putNumber("area", area);
-        SmartDashboard.putNumber("distance", distance);
+        return null;
     }
-    public Pose2d getPose2d(){
-        return robotPose;
-    }
+
 }

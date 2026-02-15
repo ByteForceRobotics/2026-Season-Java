@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.io.IOException;
+
 import org.photonvision.EstimatedRobotPose;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -30,7 +32,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
-public class DriveSubsystem extends SubsystemBase {
+public class DriveSubsystem extends SubsystemBase{
   // Create MAXSwerveModules
   private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
       DriveConstants.kFrontLeftDrivingCanId,
@@ -70,11 +72,12 @@ public class DriveSubsystem extends SubsystemBase {
           m_rearLeft.getPosition(),
           m_rearRight.getPosition()
       }, new Pose2d(0,0, new Rotation2d()));//in meters//1.0, 4.034663
-  double speed  = 0;
+  VisionSubsystem m_vision;
 
   /** Creates a new DriveSubsystem. */
 
-  public DriveSubsystem() {
+  public DriveSubsystem(){
+    m_vision = new VisionSubsystem();
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
     RobotConfig config;
@@ -127,7 +130,7 @@ public class DriveSubsystem extends SubsystemBase {
     
     
     
-    var visionUpdate = m_vision.getEstimatedGlobalPose();
+    var visionUpdate = m_vision.getEstimatedGlobalPoseFront();
     if(visionUpdate.isPresent()){
       EstimatedRobotPose camPose =visionUpdate.get();
 
@@ -143,7 +146,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     SmartDashboard.putData("Field", m_field);
     // Do this in either robot periodic or subsystem periodic
-    m_field.setRobotPose(m_driveEstimator.getPoseMeters());
+    m_field.setRobotPose(m_driveEstimator.getEstimatedPosition());
     SmartDashboard.putNumber("gyro Heading", getHeading()); //keeps counting past 180
     SmartDashboard.putNumber("gyro Angle", m_gyro.getAngle());
     SmartDashboard.putNumber("X Pose", getPose().getX());
@@ -162,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_driveEstimator.getPoseMeters();
+    return m_driveEstimator.getEstimatedPosition();
   }
 
   /**
@@ -204,7 +207,6 @@ public class DriveSubsystem extends SubsystemBase {
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
-    this.speed = Math.sqrt(Math.pow(xSpeedDelivered,2)+Math.pow(ySpeedDelivered,2));
 
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative

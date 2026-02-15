@@ -44,7 +44,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final ClimbSubsystem m_climber = new ClimbSubsystem();
-  private final VisionSubsystem m_vision = new VisionSubsystem();
+  //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private double slowdownMultiplier = 1;
@@ -263,11 +263,6 @@ public class RobotContainer {
     SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
   }
   public void periodic() {
-    Pose2d visionPose = m_vision.getPose();
-    if(!visionPose.equals(new Pose2d())){
-      
-    }
-    m_robotDrive.resetOdometry(visionPose);
-    
+
   }
 }
