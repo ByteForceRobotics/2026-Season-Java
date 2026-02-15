@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonUtils;
@@ -8,14 +10,13 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.math.geometry.Transform2d;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Camera 
@@ -39,6 +40,7 @@ public class Camera
         this.yOffset = y;
         this.rotation = rot;
         this.robotPose = new Pose2d();
+        this.targetId = 0;
 
     }
     public void refreshCam(){
@@ -49,7 +51,7 @@ public class Camera
             if(CamResult.hasTargets()){
                 //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
                 PhotonTrackedTarget target = CamResult.getBestTarget();
-                targetId = target.getFiducialId();
+                this.targetId = target.getFiducialId();
                 this.yaw = target.getYaw();
                 this.pitch = target.getPitch();
                 this.area = target.getArea();
@@ -58,7 +60,9 @@ public class Camera
                 Translation2d  camToTargetTranslation = PhotonUtils.estimateCameraToTargetTranslation(distToTarget,Rotation2d.fromDegrees(-yaw));
                 //fieldToTarget
                 try{
-                    AprilTagFieldLayout tagFieldLayout = new AprilTagFieldLayout("..\\2026 Season Java\\aprilTagFieldLayout.json");
+                    
+                    Path path  = Filesystem.getDeployDirectory().toPath().resolve("aprilTagFieldLayout.json");
+                    AprilTagFieldLayout tagFieldLayout = new AprilTagFieldLayout(path);
                     var optTagPose3d = tagFieldLayout.getTagPose(targetId);
                     if (optTagPose3d.isPresent()) {
                         var tagPose3d = optTagPose3d.get();
@@ -84,17 +88,17 @@ public class Camera
                     }
                 }
                 catch(IOException e){
-                    this.targetId = 0;
-                    this.yaw = 0;
-                    this.pitch = 0;
-                    this.area = 0;
-                    this.distance=0;
+                    this.targetId = 1;
+                    this.yaw = 1;
+                    this.pitch = 1;
+                    this.area = 1;
+                    this.distance=1;
                     robotPose = new Pose2d();
                 }
 
             }
             else{
-                this.targetId = 0;
+                this.targetId = 2;
                 this.yaw = 0;
                 this.pitch = 0;
                 this.area = 0;
@@ -102,7 +106,7 @@ public class Camera
                 robotPose = new Pose2d();
             }
         }
-        SmartDashboard.putNumber("Front target id",targetId);
+        SmartDashboard.putNumber(this.camera.getName(),targetId);
         SmartDashboard.putNumber("Yaw", yaw);
         SmartDashboard.putNumber("pitch", pitch);
         SmartDashboard.putNumber("area", area);

@@ -265,8 +265,9 @@ public class RobotContainer {
   public void periodic() {
     Pose2d visionPose = m_vision.getPose();
     if(!visionPose.equals(new Pose2d())){
-      m_robotDrive.resetOdometry(visionPose);
+      
     }
+    m_robotDrive.resetOdometry(visionPose);
     
   }
 }

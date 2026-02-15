@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import org.photonvision.EstimatedRobotPose;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -14,6 +16,7 @@ import com.studica.frc.AHRS.NavXComType;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -58,7 +61,7 @@ public class DriveSubsystem extends SubsystemBase {
   private final Field2d m_field = new Field2d();
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
+  SwerveDrivePoseEstimator m_driveEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
       Rotation2d.fromDegrees(m_gyro.getAngle()),
       new SwerveModulePosition[] {
@@ -113,7 +116,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
+    m_driveEstimator.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -121,14 +124,31 @@ public class DriveSubsystem extends SubsystemBase {
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
         });
+    
+    
+    
+    var visionUpdate = m_vision.getEstimatedGlobalPose();
+    if(visionUpdate.isPresent()){
+      EstimatedRobotPose camPose =visionUpdate.get();
+
+
+      //add vision "correction"
+      m_driveEstimator.addVisionMeasurement(
+        camPose.estimatedPose.toPose2d(),
+        camPose.timestampSeconds);
+    }
+
+
+
+
     SmartDashboard.putData("Field", m_field);
     // Do this in either robot periodic or subsystem periodic
-    m_field.setRobotPose(m_odometry.getPoseMeters());
-    SmartDashboard.putNumber("Heading", getHeading()); //keeps counting past 180
-    SmartDashboard.putNumber("Angle", m_gyro.getAngle());
+    m_field.setRobotPose(m_driveEstimator.getPoseMeters());
+    SmartDashboard.putNumber("gyro Heading", getHeading()); //keeps counting past 180
+    SmartDashboard.putNumber("gyro Angle", m_gyro.getAngle());
     SmartDashboard.putNumber("X Pose", getPose().getX());
     SmartDashboard.putNumber("Y Pose", getPose().getY());
-    SmartDashboard.putNumber("Pose Angle", getPose().getRotation().getDegrees());
+    SmartDashboard.putNumber("gyro Pose Angle", getPose().getRotation().getDegrees());
     SmartDashboard.putNumber("rightFront", m_frontRight.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("leftFront", m_frontLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("rightrear", m_rearRight.getPosition().angle.getDegrees());
@@ -142,24 +162,23 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return m_driveEstimator.getPoseMeters();
   }
 
   /**
-   * updates the odometry to the specified pose.
+   * updates/resetws the odometry to the specified pose.
    *
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
+    m_driveEstimator.resetPosition(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
             m_rearRight.getPosition()
-        },
-        pose);
+        },  new Pose2d(4,0, new Rotation2d()));
   }
   public ChassisSpeeds getRobotRelativeSpeeds(){
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
