@@ -11,6 +11,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.subsystems.Camera;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
@@ -41,5 +42,8 @@ public class VisionSubsystem extends SubsystemBase {
     frontCamera.refreshCam();
     rearCamera.refreshCam();
     
+  }
+  public Pose2d getPose(){
+    return frontCamera.getPose2d();
   }
 }

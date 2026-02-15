@@ -106,5 +106,7 @@ public class Camera
         SmartDashboard.putNumber("area", area);
         SmartDashboard.putNumber("distance", distance);
     }
-    
+    public Pose2d getPose2d(){
+        return robotPose;
+    }
 }

@@ -111,10 +111,7 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
   
-  public void periodic() {
-    
-    
-  }
+  
 
   public static Trigger triggerButton (XboxController controller, XboxController.Axis axis) {
     return new Trigger(() -> controller.getRawAxis(axis.value) >= Constants.OIConstants.kDriveDeadband);
@@ -263,5 +260,9 @@ public class RobotContainer {
   public void slowdown_stop(){
     slowdownMultiplier = 1;
     SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
+  }
+  public void periodic() {
+    m_robotDrive.resetOdometry(m_vision.getPose());
+    
   }
 }
