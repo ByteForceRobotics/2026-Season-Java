@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 //import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -262,7 +263,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
   }
   public void periodic() {
-    m_robotDrive.resetOdometry(m_vision.getPose());
+    Pose2d visionPose = m_vision.getPose();
+    if(!visionPose.equals(new Pose2d())){
+      m_robotDrive.resetOdometry(visionPose);
+    }
     
   }
 }

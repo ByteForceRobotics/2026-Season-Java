@@ -89,6 +89,7 @@ public class Camera
                     this.pitch = 0;
                     this.area = 0;
                     this.distance=0;
+                    robotPose = new Pose2d();
                 }
 
             }
@@ -98,6 +99,7 @@ public class Camera
                 this.pitch = 0;
                 this.area = 0;
                 this.distance=0;
+                robotPose = new Pose2d();
             }
         }
         SmartDashboard.putNumber("Front target id",targetId);
