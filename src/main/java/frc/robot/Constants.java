@@ -99,6 +99,13 @@ public final class Constants {
   public static final class CameraConstants {
     public static final double kFrontCamHeight = 0;//set this
     public static final double kRearCamHeight = 0;//set this
+    public static final double kFrontXOffset = 0;
+    public static final double kFrontYOffset = 0;
+    public static final double kFrontRotation = 0;
+    public static final double kRearXOffset = 0;
+    public static final double kRearYOffset = 0;
+    public static final double kRearRotation = 0;
+
   }
 
   

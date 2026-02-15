@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.photonvision.PhotonCamera;
@@ -25,8 +26,8 @@ public class VisionSubsystem extends SubsystemBase {
   double frontarea;
 
   public VisionSubsystem(){
-    frontCamera = new Camera(new PhotonCamera("FrontCam"),CameraConstants.kFrontCamHeight);
-    rearCamera = new Camera(new PhotonCamera("RearCam"),CameraConstants.kRearCamHeight);
+    frontCamera = new Camera(new PhotonCamera("FrontCam"),CameraConstants.kFrontCamHeight,CameraConstants.kFrontXOffset,CameraConstants.kFrontYOffset,CameraConstants.kFrontRotation);
+    rearCamera = new Camera(new PhotonCamera("RearCam"),CameraConstants.kRearCamHeight,CameraConstants.kRearXOffset,CameraConstants.kRearYOffset,CameraConstants.kRearRotation);
     frontTargetId = 0;
     frontyaw = 0;
     frontpitch = 0;
