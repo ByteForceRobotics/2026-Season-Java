@@ -38,6 +38,7 @@ public class VisionSubsystem extends SubsystemBase {
     
   }
   public Optional<EstimatedRobotPose> getEstimatedGlobalPoseFront(){
+    SmartDashboard.putNumber("wehope", 93);
     return frontCamera.getEstimatedGlobalPose();
   }
 
