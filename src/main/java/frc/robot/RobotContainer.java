@@ -9,7 +9,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 //import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -26,12 +25,12 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
-
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -39,14 +38,17 @@ import frc.robot.subsystems.VisionSubsystem;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 
+
 public class RobotContainer {
   // The robot's subsystems
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final VisionSubsystem m_vision = new VisionSubsystem(m_robotDrive::addVisionMeasurement);
   private final ClimbSubsystem m_climber = new ClimbSubsystem();
   //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
+  private final AgitatorSubsystem m_agitator = new AgitatorSubsystem();
   private double slowdownMultiplier = 1;
 
   // The driver's controller
@@ -228,6 +230,11 @@ public class RobotContainer {
             m_intake)).onFalse(new InstantCommand(
             () -> m_intake.intake_stop(),
             m_intake));   
+      
+    new JoystickButton(m_driverController, Button.kX.value)
+      .onTrue(new InstantCommand(
+          () -> m_agitator.agitate_toggle(),
+          m_intake));   
     
     //add POV buttons(d-pad) for strafing
     /* 
