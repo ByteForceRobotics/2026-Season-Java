@@ -43,7 +43,13 @@ public class RobotContainer {
   // The robot's subsystems
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private final VisionSubsystem m_vision = new VisionSubsystem(m_robotDrive::addVisionMeasurement);
+  private final VisionSubsystem m_vision = new VisionSubsystem((pose, timestamp, stdDevs, forceReset) -> {
+    if (forceReset) {
+      m_robotDrive.resetOdometry(pose);
+    } else {
+      m_robotDrive.addVisionMeasurement(pose, timestamp, stdDevs);
+    }
+  }, m_robotDrive::getPose);
   private final ClimbSubsystem m_climber = new ClimbSubsystem();
   //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();

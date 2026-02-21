@@ -133,16 +133,13 @@ public class DriveSubsystem extends SubsystemBase{
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_driveEstimator.update(
+    Pose2d robPose = m_driveEstimator.update(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         getModulePositions());
     
     
     // Do this in either robot periodic or subsystem periodic
     m_field.setRobotPose(m_driveEstimator.getEstimatedPosition());
-
-
-    SmartDashboard.putNumber("test", -3);
 
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("gyro Heading", getHeading()); //keeps counting past 180
