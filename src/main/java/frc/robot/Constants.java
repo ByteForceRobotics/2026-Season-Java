@@ -91,28 +91,29 @@ public final class Constants {
     public static final int kIntakeLifterCanId = 11;
     public static final int kIntakeCanId = 12;
     public static final int kIntakeCurrentLimit = 30;//set this
-    public static final int kIntakeLifterCurrentLimit = 30;//set this
-    public static final IdleMode kIntakeIdleMode = IdleMode.kBrake;
+    public static final int kIntakeLifterCurrentLimit = 40;//set this
+    public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
+    public static final IdleMode kLifterIdleMode = IdleMode.kBrake;
     public static final double kLifterMaxHeight = 4; //set this
     public static final double kIntakeDefaultSpeed = 0.6;
-    public static final double kLiftDefaultSpeed = 0.1;
+    public static final double kLiftDefaultSpeed = 0.15;
   }
+  
   public static final class LauncherConstants {
     public static final int kLauncher1CanId = 13;//top
     public static final int kLauncher2CanId = 14;//bottom
     public static final int kLauncher1CurrentLimit = 30;//set this
     public static final int kLauncher2CurrentLimit = 30;//set this
     public static final IdleMode kLauncherIdleMode = IdleMode.kBrake;
-    public static final double kLauncherDefaultSpeed = 0.85;
+    public static final double kLauncherDefaultSpeed = 0.6;
   }
-public static final class AgitatorConstants{
-  public static final int kAgitatorCanId = 15;
-  public static final int kAgitatorCurrentLimit = 30;//set this
-  public static final IdleMode kAgitatorIdleMode = IdleMode.kCoast;
-  public static final double kAgitatorDefaultSpeed = 0.85;//set this
-}
-
-
+  
+  public static final class AgitatorConstants{
+    public static final int kAgitatorCanId = 15;
+    public static final int kAgitatorCurrentLimit = 30;//set this
+    public static final IdleMode kAgitatorIdleMode = IdleMode.kCoast;
+    public static final double kAgitatorDefaultSpeed = 1;//set this
+  }
 
   public static final class CameraConstants {
         
@@ -130,8 +131,6 @@ public static final class AgitatorConstants{
         public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
         public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
-
-  
 
   public static final class ModuleConstants {
     // The MAXSwerve module can be configured with one of three pinion gears: 12T,

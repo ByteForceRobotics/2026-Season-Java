@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 
 
@@ -40,12 +41,14 @@ public class IntakeSubsystem extends SubsystemBase {
       .reverseSoftLimitEnabled(false);
 
     intakeConfig
-      .smartCurrentLimit(IntakeConstants.kIntakeCurrentLimit);
+      .smartCurrentLimit(IntakeConstants.kIntakeCurrentLimit)
+      .idleMode(IntakeConstants.kIntakeIdleMode);
 
 
     intakeLifterConfig
       .apply(softLimitConfig)
-      .smartCurrentLimit(IntakeConstants.kIntakeLifterCurrentLimit);
+      .smartCurrentLimit(IntakeConstants.kIntakeLifterCurrentLimit)
+      .idleMode(IntakeConstants.kLifterIdleMode);
 
      m_intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
      m_intakeLifter.configure(intakeLifterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -63,7 +66,16 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void lift_stop() {
-    m_intakeLifter.set(0.0);
+    if(m_intakeLifter.getEncoder().getPosition() >3.9){
+      double passivePower = 0.05;//to hold the lifter down when intaking
+      m_intakeLifter.set(passivePower);
+    }
+    else if(m_intakeLifter.getEncoder().getPosition() <0.1){
+      m_intakeLifter.set(-0.01);
+    }
+    else{
+      m_intakeLifter.set(0.0);
+    }
 
   }
 

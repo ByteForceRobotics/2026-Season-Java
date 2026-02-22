@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 //import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.AgitatorConstants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
@@ -197,9 +199,13 @@ public class RobotContainer {
 
 
 
-    triggerButton(m_driverController,Axis.kRightTrigger).whileTrue(new RunCommand(
-        () -> slowdown(m_driverController.getRawAxis(Axis.kRightTrigger.value))))
+    triggerButton(m_driverController,Axis.kLeftTrigger).whileTrue(new RunCommand(
+        () -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))
         .onFalse(new InstantCommand(()->slowdown_stop()));
+
+    triggerButton(m_driverController,Axis.kRightTrigger).whileTrue(new RunCommand(
+        () -> m_launcher.launch(m_driverController.getRawAxis(Axis.kRightTrigger.value)),m_launcher))
+        .onFalse(new InstantCommand(()->m_launcher.launch_stop(),m_launcher));
     /*
     trigger buttons, might be useful
     triggerButton(m_climberController,Axis.kLeftTrigger).whileTrue(new RunCommand(
@@ -214,15 +220,43 @@ public class RobotContainer {
             () -> m_climber.climb_stop(),
             m_climber));
     */
-
-    
-    new JoystickButton(m_driverController, Button.kY.value)
+    ///*
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
         .whileTrue(new RunCommand(
             () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
-            m_launcher)).onFalse(new InstantCommand(
+            m_launcher).alongWith(new RunCommand(
+            () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
+            m_agitator)).beforeStarting(new RunCommand(
+            () -> m_launcher.launchTop(LauncherConstants.kLauncherDefaultSpeed),
+            m_launcher).withTimeout(0.5)))
+            .onFalse(new InstantCommand(
+            () -> m_launcher.launch_stop(),
+            m_launcher).alongWith(new RunCommand(
+            () -> m_agitator.agitate_stop(),
+            m_agitator))); 
+    //*/
+    /* 
+    SequentialCommandGroup launchSuperCool = new RunCommand(
+        () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
+        m_launcher).alongWith(new RunCommand(
+        () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
+        m_agitator)).beforeStarting(new RunCommand(
+        () -> m_launcher.launchTop(LauncherConstants.kLauncherDefaultSpeed),
+        m_launcher).withTimeout(0.5)).andThen(new InstantCommand(
+        () -> m_launcher.launch_stop(),
+        m_launcher).alongWith(new RunCommand(
+        () -> m_agitator.agitate_stop(),
+        m_agitator)));
+      */
+    /*
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
+        .whileTrue(new RunCommand(
+            () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
+            m_launcher))
+            .onFalse(new InstantCommand(
             () -> m_launcher.launch_stop(),
             m_launcher));   
-
+    */
     
     new JoystickButton(m_driverController, Button.kB.value)
         .whileTrue(new RunCommand(
@@ -230,7 +264,7 @@ public class RobotContainer {
             m_robotDrive));     
             
     
-     new JoystickButton(m_driverController, Button.kA.value)
+     new JoystickButton(m_driverController, Button.kA.value)// make the intake toggleable/ and or left bumper
         .whileTrue(new RunCommand(
             () -> m_intake.intake(IntakeConstants.kIntakeDefaultSpeed),
             m_intake)).onFalse(new InstantCommand(

@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AgitatorConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -22,7 +23,7 @@ public class AgitatorSubsystem extends SubsystemBase {
   boolean agitateVar = false;
 
   public AgitatorSubsystem(){
-    m_agitator = new SparkMax(AgitatorConstants.kAgitatorCanId, MotorType.kBrushless);
+    m_agitator = new SparkMax(AgitatorConstants.kAgitatorCanId, MotorType.kBrushed);
 
     SparkMaxConfig agitatorConfig = new SparkMaxConfig();
 
@@ -42,12 +43,13 @@ public class AgitatorSubsystem extends SubsystemBase {
   public void agitate_toggle(){
     if(agitateVar == true){
       agitateVar = false;
-      agitate_stop();
+      m_agitator.set(0);
     }
     else{
       agitateVar = true;
-      agitate(AgitatorConstants.kAgitatorDefaultSpeed);
+      m_agitator.set(AgitatorConstants.kAgitatorDefaultSpeed);
     }
+    SmartDashboard.putBoolean("agitate toggle", agitateVar);
   }
 
 

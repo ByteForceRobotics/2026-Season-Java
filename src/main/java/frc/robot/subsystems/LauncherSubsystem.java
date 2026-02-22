@@ -51,13 +51,21 @@ public class LauncherSubsystem extends SubsystemBase {
    *
    */
   
+  public void launchTop(double xSpeed) {
+    m_launcher1.set(-xSpeed);
+  }
+  public void launchBottom(double xSpeed) {
+    m_launcher2.set(xSpeed);
+  }
+  public void launch_stop() {
+    double passivePower = -0.05;//to eject balls when not launching
+    m_launcher1.set(passivePower);
+    m_launcher2.set(passivePower);
+    
+  }
   public void launch(double xSpeed) {
     m_launcher1.set(xSpeed);
     m_launcher2.set(0.6);
-  }
-  public void launch_stop() {
-    m_launcher1.set(0.0);
-    m_launcher2.set(0.0);
     
   }
   public void periodic(){
