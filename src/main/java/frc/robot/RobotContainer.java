@@ -265,11 +265,8 @@ public class RobotContainer {
             
     
      new JoystickButton(m_driverController, Button.kA.value)// make the intake toggleable/ and or left bumper
-        .whileTrue(new RunCommand(
-            () -> m_intake.intake(IntakeConstants.kIntakeDefaultSpeed),
-            m_intake)).onFalse(new InstantCommand(
-            () -> m_intake.intake_stop(),
-            m_intake));   
+        .whileTrue(new RunCommand(() -> m_intake.intake(IntakeConstants.kIntakeDefaultSpeed), m_intake))
+            .onFalse(new InstantCommand(() -> m_intake.intake_stop(), m_intake));
       
     new JoystickButton(m_driverController, Button.kX.value)
       .onTrue(new InstantCommand(

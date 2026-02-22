@@ -28,8 +28,6 @@ public class IntakeSubsystem extends SubsystemBase {
     m_intake = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
     m_intakeLifter = new SparkMax(IntakeConstants.kIntakeLifterCanId, MotorType.kBrushless);
 
-
-
     SparkMaxConfig intakeConfig = new SparkMaxConfig();
     SparkMaxConfig intakeLifterConfig = new SparkMaxConfig();
     SoftLimitConfig softLimitConfig = new SoftLimitConfig();

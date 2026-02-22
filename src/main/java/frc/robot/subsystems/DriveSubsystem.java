@@ -33,7 +33,6 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase{
@@ -82,14 +81,6 @@ public class DriveSubsystem extends SubsystemBase{
       new Pose2d(),
       stateStdDevs,
       visionStdDevs);
-
-
-
-
-
-
-
-
     
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
@@ -101,10 +92,8 @@ public class DriveSubsystem extends SubsystemBase{
       // Handle exception as needed
       e.printStackTrace();
     }
-    
 
     // Configure AutoBuilder last
-
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier
             this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
@@ -137,7 +126,6 @@ public class DriveSubsystem extends SubsystemBase{
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         getModulePositions());
     
-    
     // Do this in either robot periodic or subsystem periodic
     m_field.setRobotPose(m_driveEstimator.getEstimatedPosition());
 
@@ -151,7 +139,6 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("leftFront", m_frontLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("rightrear", m_rearRight.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("leftrear", m_rearLeft.getPosition().angle.getDegrees());
-
   }
 
   /**
