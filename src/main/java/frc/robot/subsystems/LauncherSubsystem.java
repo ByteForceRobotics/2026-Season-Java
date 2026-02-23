@@ -11,7 +11,6 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.LauncherConstants;
 
 public class LauncherSubsystem extends SubsystemBase {
