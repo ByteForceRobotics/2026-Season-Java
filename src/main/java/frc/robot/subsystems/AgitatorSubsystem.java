@@ -20,7 +20,7 @@ public class AgitatorSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   SparkMax m_agitator;
   SparkMax m_agitatorLifter;
-  boolean agitateVar = false;
+  public boolean agitateVar = false;
 
   public AgitatorSubsystem(){
     m_agitator = new SparkMax(AgitatorConstants.kAgitatorCanId, MotorType.kBrushed);
@@ -49,7 +49,6 @@ public class AgitatorSubsystem extends SubsystemBase {
       agitateVar = true;
       m_agitator.set(AgitatorConstants.kAgitatorDefaultSpeed);
     }
-    SmartDashboard.putBoolean("agitate toggle", agitateVar);
   }
 
 

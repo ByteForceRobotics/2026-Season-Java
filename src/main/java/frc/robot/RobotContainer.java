@@ -58,6 +58,8 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private final AgitatorSubsystem m_agitator = new AgitatorSubsystem();
   private double slowdownMultiplier = 1;
+  double launcherSpeed = LauncherConstants.kLauncherDefaultSpeed;
+  boolean agitatorToggle = false;
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -82,6 +84,7 @@ public class RobotContainer {
   double speedScaleHigh = 1.0;
   double speedScaleLow= 0.33;
   double speedScale = speedScaleHigh;
+  
 
   SequentialCommandGroup climblvl1= new RunCommand(
         () -> m_climber.climb(ClimbConstants.kClimbSpeed),
@@ -223,11 +226,11 @@ public class RobotContainer {
     ///*
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .whileTrue(new RunCommand(
-            () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
+            () -> m_launcher.launch(launcherSpeed),
             m_launcher).alongWith(new RunCommand(
             () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
             m_agitator)).beforeStarting(new RunCommand(
-            () -> m_launcher.launchTop(LauncherConstants.kLauncherDefaultSpeed),
+            () -> m_launcher.launchTop(launcherSpeed),
             m_launcher).withTimeout(0.5)))
             .onFalse(new InstantCommand(
             () -> m_launcher.launch_stop(),
@@ -307,6 +310,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
   }
   public void periodic() {
-
+    launcherSpeed = SmartDashboard.getNumber("Launcher Speed", launcherSpeed);
+    m_agitator.agitateVar = SmartDashboard.getBoolean("Agitator Toggle", m_agitator.agitateVar);
+    SmartDashboard.putBoolean("Agitator Toggle", m_agitator.agitateVar);
+    SmartDashboard.putNumber("Launcher Speed", launcherSpeed);
   }
 }
