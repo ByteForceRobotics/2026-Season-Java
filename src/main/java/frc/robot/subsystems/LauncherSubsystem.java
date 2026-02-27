@@ -15,28 +15,26 @@ import frc.robot.Constants.LauncherConstants;
 
 public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
-  SparkMax m_launcher1;
-  SparkMax m_launcher2;//bottom 
+  SparkMax m_launcher1; //top flywheel
+  SparkMax m_launcher2; //bottom 
 
   public LauncherSubsystem(){
 
 
     m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);//top
     m_launcher2 = new SparkMax(LauncherConstants.kLauncher2CanId, MotorType.kBrushless);//bottom
-    SparkMaxConfig globalConfig = new SparkMaxConfig();
     SparkMaxConfig launcher1Config = new SparkMaxConfig();
     SparkMaxConfig launcher2Config = new SparkMaxConfig();
-
-    globalConfig
-      .idleMode(LauncherConstants.kLauncherIdleMode);
       
     launcher1Config
     .inverted(true)
-      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit);
+    .idleMode(LauncherConstants.kLauncherIdleMode)
+    .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit);
       
     launcher2Config
     .inverted(true)
-      .smartCurrentLimit(LauncherConstants.kLauncher2CurrentLimit);
+    .idleMode(LauncherConstants.kLauncherIdleMode)
+    .smartCurrentLimit(LauncherConstants.kLauncher2CurrentLimit);
       
 
     m_launcher1.configure(launcher1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -50,22 +48,29 @@ public class LauncherSubsystem extends SubsystemBase {
    */
   
   public void launchTop(double xSpeed) {
-    m_launcher1.set(-xSpeed);
+    m_launcher1.set(xSpeed);
   }
+
   public void launchBottom(double xSpeed) {
     m_launcher2.set(xSpeed);
   }
+
   public void launch_stop() {
-    double passivePower = -0.05;//to eject balls when not launching
-    m_launcher1.set(passivePower);
-    m_launcher2.set(passivePower);
-    
+    double passivePower = -0.00;//to eject balls when not launching
+    launchTop(passivePower);
+    launchBottom(passivePower);
   }
+
   public void launch(double xSpeed) {
-    m_launcher1.set(xSpeed);
-    m_launcher2.set(0.6);
-    
+    launchTop(xSpeed);
+    launchBottom(0.6);
   }
+
+  public void eject() {
+    launchTop(-1);
+    launchBottom(-1);
+  }
+
   public void periodic(){
 
   }

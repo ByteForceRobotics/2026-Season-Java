@@ -28,12 +28,18 @@ public class AgitatorSubsystem extends SubsystemBase {
     SparkMaxConfig agitatorConfig = new SparkMaxConfig();
 
     agitatorConfig
-      .smartCurrentLimit(IntakeConstants.kIntakeCurrentLimit);
+      .smartCurrentLimit(AgitatorConstants.kAgitatorCurrentLimit);
 
      m_agitator.configure(agitatorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   public void agitate(double xSpeed) {
     m_agitator.set(xSpeed);
+    if (xSpeed != 0){
+      agitateVar = true;
+    }
+    else{
+      agitateVar = false;
+    }
   }
 
   public void agitate_stop() {
@@ -42,19 +48,15 @@ public class AgitatorSubsystem extends SubsystemBase {
   }
   public void agitate_toggle(){
     if(agitateVar == true){
-      agitateVar = false;
-      m_agitator.set(0);
+      agitate_stop();
     }
     else{
-      agitateVar = true;
-      m_agitator.set(AgitatorConstants.kAgitatorDefaultSpeed);
+      agitate(AgitatorConstants.kAgitatorDefaultSpeed);
     }
   }
-
-
   
   @Override
   public void periodic(){
-    
+    SmartDashboard.putBoolean("agitator enabled", agitateVar);
   }
 }

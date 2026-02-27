@@ -65,7 +65,6 @@ public class IntakeSubsystem extends SubsystemBase {
     if(intakeOn){
       intakeOn = false;
       m_intake.set(0);
-      
     }
     else{
       intakeOn = true;

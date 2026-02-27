@@ -45,6 +45,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  /* 
   private final VisionSubsystem m_vision = new VisionSubsystem((pose, timestamp, stdDevs, forceReset) -> {
     if (forceReset) {
       m_robotDrive.resetOdometry(pose);
@@ -52,6 +53,7 @@ public class RobotContainer {
       m_robotDrive.addVisionMeasurement(pose, timestamp, stdDevs);
     }
   }, m_robotDrive::getPose);
+  */
   private final ClimbSubsystem m_climber = new ClimbSubsystem();
   //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
@@ -59,7 +61,6 @@ public class RobotContainer {
   private final AgitatorSubsystem m_agitator = new AgitatorSubsystem();
   private double slowdownMultiplier = 1;
   double launcherSpeed = LauncherConstants.kLauncherDefaultSpeed;
-  boolean agitatorToggle = false;
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -168,11 +169,7 @@ public class RobotContainer {
     */
 
     new JoystickButton(m_driverController, Button.kLeftStick.value)
-        .onTrue(new InstantCommand(
-            () -> changeScale()));//make this trigger
-
-
-
+        .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
 
     new POVButton(m_driverController, 0)
         .whileTrue(new RunCommand(
@@ -180,6 +177,7 @@ public class RobotContainer {
             m_climber)).onFalse(new InstantCommand(
                 () -> m_climber.pull_stop(),
                 m_climber));
+    
     new POVButton(m_driverController, 180)
         .whileTrue(new RunCommand(
             () -> m_climber.climb(-ClimbConstants.kClimbSpeed),
@@ -193,6 +191,7 @@ public class RobotContainer {
             m_intake)).onFalse(new InstantCommand(
                 () -> m_intake.lift_stop(),
                 m_intake));
+
     new POVButton(m_driverController, 270)
         .whileTrue(new RunCommand(
             () -> m_intake.lift(-IntakeConstants.kLiftDefaultSpeed),
@@ -200,15 +199,13 @@ public class RobotContainer {
                 () -> m_intake.lift_stop(),
                 m_intake));
 
+    triggerButton(m_driverController,Axis.kLeftTrigger)
+      .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))
+      .onFalse(new InstantCommand(() -> slowdown_stop()));
 
-
-    triggerButton(m_driverController,Axis.kLeftTrigger).whileTrue(new RunCommand(
-        () -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))
-        .onFalse(new InstantCommand(()->slowdown_stop()));
-
-    triggerButton(m_driverController,Axis.kRightTrigger).whileTrue(new RunCommand(
-        () -> m_launcher.launch(m_driverController.getRawAxis(Axis.kRightTrigger.value)),m_launcher))
-        .onFalse(new InstantCommand(()->m_launcher.launch_stop(),m_launcher));
+    triggerButton(m_driverController,Axis.kRightTrigger)
+      .whileTrue(new RunCommand(() -> m_launcher.launch(m_driverController.getRawAxis(Axis.kRightTrigger.value)), m_launcher))
+      .onFalse(new InstantCommand(() -> m_launcher.launch_stop(), m_launcher));
     /*
     trigger buttons, might be useful
     triggerButton(m_climberController,Axis.kLeftTrigger).whileTrue(new RunCommand(
@@ -225,18 +222,12 @@ public class RobotContainer {
     */
     ///*
     new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(new RunCommand(
-            () -> m_launcher.launch(launcherSpeed),
-            m_launcher).alongWith(new RunCommand(
-            () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
-            m_agitator)).beforeStarting(new RunCommand(
-            () -> m_launcher.launchTop(launcherSpeed),
-            m_launcher).withTimeout(0.5)))
-            .onFalse(new InstantCommand(
-            () -> m_launcher.launch_stop(),
-            m_launcher).alongWith(new RunCommand(
-            () -> m_agitator.agitate_stop(),
-            m_agitator))); 
+        .whileTrue(
+            new RunCommand(() -> m_launcher.launch(launcherSpeed), m_launcher)
+                .alongWith(new RunCommand(() -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator))
+                .beforeStarting(new RunCommand(() -> m_launcher.launchTop(launcherSpeed), m_launcher).withTimeout(2))
+        )
+        .onFalse(new InstantCommand(() -> { m_launcher.launch_stop(); m_agitator.agitate_stop(); }, m_launcher, m_agitator));
     //*/
     /* 
     SequentialCommandGroup launchSuperCool = new RunCommand(
@@ -251,30 +242,24 @@ public class RobotContainer {
         () -> m_agitator.agitate_stop(),
         m_agitator)));
       */
-    /*
-    new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(new RunCommand(
-            () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
-            m_launcher))
-            .onFalse(new InstantCommand(
-            () -> m_launcher.launch_stop(),
-            m_launcher));   
-    */
-    
+    ///*
+    new JoystickButton(m_driverController, Button.kRightStick.value)
+        .whileTrue(new RunCommand(() -> m_launcher.eject(), m_launcher))
+        .onFalse(new InstantCommand(() -> m_launcher.launch_stop(), m_launcher));
+
     new JoystickButton(m_driverController, Button.kB.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.zeroHeading(),
-            m_robotDrive));     
-            
-    
-     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
-        .whileTrue(new RunCommand(() -> m_intake.intake_toggle(), m_intake));
-            //.onFalse(new InstantCommand(() -> m_intake.intake_stop(), m_intake));
+        .whileTrue(new RunCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+
+    new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
+        .whileTrue(new RunCommand(() -> m_intake.intake(Constants.IntakeConstants.kIntakeDefaultSpeed), m_intake))
+        .onFalse(new InstantCommand(() -> m_intake.intake_stop(), m_intake));
       
     new JoystickButton(m_driverController, Button.kX.value)
-      .onTrue(new InstantCommand(
-          () -> m_agitator.agitate_toggle(),
-          m_intake));   
+      .onTrue(new RunCommand(() -> m_agitator.agitate_toggle(), m_agitator));
+    
+    new JoystickButton(m_driverController, Button.kStart.value)
+      .whileTrue(new RunCommand(() -> m_agitator.agitate(1), m_agitator))
+      .onFalse(new InstantCommand(() -> m_agitator.agitate_stop(), m_agitator));
     
     //add POV buttons(d-pad) for strafing
     /* 
@@ -303,16 +288,14 @@ public class RobotContainer {
 
   public void slowdown(double val){
     slowdownMultiplier = 1-val;
-    SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
+    SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
   public void slowdown_stop(){
     slowdownMultiplier = 1;
-    SmartDashboard.putNumber("slowdown multiplier",slowdownMultiplier);
+    SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
   public void periodic() {
     launcherSpeed = SmartDashboard.getNumber("Launcher Speed", launcherSpeed);
-    m_agitator.agitateVar = SmartDashboard.getBoolean("Agitator Toggle", m_agitator.agitateVar);
-    SmartDashboard.putBoolean("Agitator Toggle", m_agitator.agitateVar);
     SmartDashboard.putNumber("Launcher Speed", launcherSpeed);
   }
 }
