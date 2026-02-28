@@ -197,10 +197,18 @@ public class RobotContainer {
                 m_climber));
     
     new POVButton(m_driverController, 90)
-        .whileTrue(m_intake.liftCommand(IntakeConstants.kLiftDefaultSpeed)).onFalse(m_intake.liftStopCommand());
+        .whileTrue(new InstantCommand(
+            () -> m_intake.lift(IntakeConstants.kLiftDefaultSpeed),
+            m_intake)).onFalse(new InstantCommand(
+                () -> m_intake.lift_stop(),
+                m_intake));
 
     new POVButton(m_driverController, 270)
-        .whileTrue(m_intake.liftCommand(-IntakeConstants.kLiftDefaultSpeed)).onFalse(m_intake.liftStopCommand());
+        .whileTrue(new InstantCommand(
+            () -> m_intake.lift(-IntakeConstants.kLiftDefaultSpeed),
+            m_intake)).onFalse(new InstantCommand(
+                () -> m_intake.lift_stop(),
+                m_intake));
 
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))
@@ -227,29 +235,43 @@ public class RobotContainer {
     ///*
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .whileTrue(
-            m_launcher.launchCommand(launcherSpeed)
-                .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-                .beforeStarting(m_launcher.launchTopCommand(launcherSpeed).withTimeout(2).alongWith(m_agitator.agitateStopCommand(AgitatorConstants.kAgitatorDefaultSpeed))))
-        .onFalse(m_launcher.launchStopCommand().alongWith(m_agitator.agitateStopCommand(AgitatorConstants.kAgitatorDefaultSpeed)));
-    
+            new InstantCommand(() -> m_launcher.launchTop(launcherSpeed), m_launcher).withTimeout(2)
+                .beforeStarting(() -> m_launcher.launch(launcherSpeed), m_launcher)
+                .alongWith(new InstantCommand(() -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator)))
         
+        .onFalse(new InstantCommand(() -> { m_launcher.launch_stop(); m_agitator.agitate_stop(AgitatorConstants.kAgitatorDefaultSpeed); }, m_launcher, m_agitator));
+    //*/
+    /* 
+    SequentialCommandGroup launchSuperCool = new RunCommand(
+        () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
+        m_launcher).alongWith(new RunCommand(
+        () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
+        m_agitator)).beforeStarting(new RunCommand(
+        () -> m_launcher.launchTop(LauncherConstants.kLauncherDefaultSpeed),
+        m_launcher).withTimeout(0.5)).andThen(new InstantCommand(
+        () -> m_launcher.launch_stop(),
+        m_launcher).alongWith(new RunCommand(
+        () -> m_agitator.agitate_stop(),
+        m_agitator)));
+      */
+    ///*
     new JoystickButton(m_driverController, Button.kRightStick.value)
-        .whileTrue(m_launcher.ejectCommand())
-        .onFalse(m_launcher.launchStopCommand());
+        .whileTrue(new InstantCommand(() -> m_launcher.eject(), m_launcher))
+        .onFalse(new InstantCommand(() -> m_launcher.launch_stop(), m_launcher));
 
     new JoystickButton(m_driverController, Button.kB.value)
         .whileTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
-        .whileTrue(m_intake.intakeCommand(IntakeConstants.kIntakeDefaultSpeed))
-        .onFalse( m_intake.intakeStopCommand());
+        .whileTrue(new InstantCommand(() -> m_intake.intake(Constants.IntakeConstants.kIntakeDefaultSpeed), m_intake))
+        .onFalse(new InstantCommand(() -> m_intake.intake_stop(), m_intake));
       
     new JoystickButton(m_driverController, Button.kX.value)
-      .onTrue(m_agitator.agitateToggleCommand());
+      .onTrue(new InstantCommand(() -> m_agitator.agitate_toggle(), m_agitator));
     
     new JoystickButton(m_driverController, Button.kStart.value)
-      .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-      .onFalse(m_agitator.agitateStopCommand(AgitatorConstants.kAgitatorDefaultSpeed));
+      .whileTrue(new RunCommand(() -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator))
+      .onFalse(new InstantCommand(() -> m_agitator.agitate_stop(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator));
     
     //add POV buttons(d-pad) for strafing
     /* 
@@ -281,7 +303,8 @@ public class RobotContainer {
     SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
   public void slowdown_stop(){
-    slowdown(0);
+    slowdownMultiplier = 1;
+    SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
   public void periodic() {
     // Read the launcher speed from the dashboard so it can be tuned at runtime
