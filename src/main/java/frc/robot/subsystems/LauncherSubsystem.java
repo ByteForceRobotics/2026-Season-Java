@@ -10,6 +10,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LauncherConstants;
 
@@ -19,6 +20,7 @@ public class LauncherSubsystem extends SubsystemBase {
   SparkMax m_launcher2; //bottom 
 
   public LauncherSubsystem(){
+    
 
 
     m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);//top
@@ -64,6 +66,21 @@ public class LauncherSubsystem extends SubsystemBase {
   public void launch(double xSpeed) {
     launchTop(xSpeed);
     launchBottom(0.6);
+  }
+
+  public Command launchCommand(double xSpeed) {
+    return this.runOnce(() -> launch(xSpeed));
+  }
+
+  public Command launchTopCommand(double xSpeed) {
+    return this.runOnce(() -> launch(xSpeed));
+  }
+
+  public Command launchStopCommand() {
+    return this.runOnce(() -> launchCommand(0).withTimeout(0.1).andThen(() -> launch_stop()));
+  }
+  public Command ejectCommand() {
+    return this.runOnce(() -> eject());
   }
 
   public void eject() {

@@ -80,8 +80,12 @@ public class VisionSubsystem extends SubsystemBase {
         this.estConsumer = estConsumer;
         this.currentPoseSupplier = currentPoseSupplier;
     camera = new PhotonCamera(kCameraName);
-    // Use the same strategy as our other Camera helper: prefer multi-tag PNP on coprocessor when available
-    photonEstimator = new PhotonPoseEstimator(kTagLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, kRobotToCam);
+    // PhotonPoseEstimator expects the transform from the camera to the robot (camera->robot).
+    // Our constant is robot->camera, so invert it when constructing the estimator.
+    photonEstimator = new PhotonPoseEstimator(
+        kTagLayout,
+        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+        kRobotToCam.inverse());
         // default to single-tag std devs until we calculate better values
         curStdDevs = kSingleTagStdDevs;
         // Dashboard defaults for tuning and snap policy. Only write defaults if keys are missing so we don't
@@ -132,9 +136,11 @@ public class VisionSubsystem extends SubsystemBase {
         tunedMultiTagStd = VecBuilder.fill(mX, mY, mT);
 
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
-        // Diagnostic: print camera connection and name
+        // Diagnostic: print camera connection and name only when camera is connected
         try {
-            System.out.println("[Vision] cameraName=" + camera.getName() + " isConnected=" + camera.isConnected());
+            if (camera.isConnected()) {
+                System.out.println("[Vision] cameraName=" + camera.getName() + " isConnected=" + camera.isConnected());
+            }
         } catch (Throwable ignored) {
         }
 
@@ -142,7 +148,7 @@ public class VisionSubsystem extends SubsystemBase {
         if (result != null) {
             // More detailed diagnostics about the pipeline result
             try {
-                if(!camera.isConnected()){
+                if (camera.isConnected()) {
                     System.out.println("[Vision] latestResult hasTargets=" + result.hasTargets() + " targetsCount=" + result.getTargets().size() + " bestId=" + (result.getBestTarget() != null ? result.getBestTarget().getFiducialId() : "none"));
                     for (var t : result.getTargets()) {
                         System.out.println("[Vision] target: id=" + t.getFiducialId() + " bestCamToTarget=" + t.getBestCameraToTarget());
@@ -172,7 +178,7 @@ public class VisionSubsystem extends SubsystemBase {
                     } catch (Throwable ignored) {
                     }
                     var maybeTagPose = photonEstimator.getFieldTags().getTagPose(id);
-                    if(!camera.isConnected()){
+                    if (camera.isConnected()) {
                         System.out.println("[Vision][DBG] target id=" + id + " ambiguity=" + ambiguity + " hasFieldPose=" + maybeTagPose.isPresent());
                     }
                     if (maybeTagPose.isPresent()) {
@@ -186,15 +192,16 @@ public class VisionSubsystem extends SubsystemBase {
                             Pose2d manual = robotPoseField.toPose2d();
                             manualPoses.add(manual);
                             ambiguities.add(ambiguity);
-                            if(!camera.isConnected()){
+                            if (camera.isConnected()) {
                                 System.out.println("[Vision][DBG] computed robotPose from target " + id + " = " + manual);
                             }
                         } catch (Throwable e) {
-                            
-                            System.out.println("[Vision][DBG] error computing manual pose for tag " + id + ": " + e);
+                            if (camera.isConnected()) {
+                                System.out.println("[Vision][DBG] error computing manual pose for tag " + id + ": " + e);
+                            }
                         }
                     } else {
-                        if(!camera.isConnected()){
+                        if (camera.isConnected()) {
                             System.out.println("[Vision][DBG] no field pose for tag " + id + "; check aprilTagFieldLayout.json and tag IDs");
                         }
                     }
@@ -223,7 +230,7 @@ public class VisionSubsystem extends SubsystemBase {
                         if (latencyObj instanceof Number) {
                             double latencyMs = ((Number) latencyObj).doubleValue();
                             visionTimestamp = Timer.getFPGATimestamp() - (latencyMs / 1000.0);
-                            if(!camera.isConnected()){
+                            if (camera.isConnected()) {
                                 System.out.println("[Vision] fallback latencyMs=" + latencyMs + " computedTimestamp=" + visionTimestamp);
                             }
                         }
@@ -232,7 +239,7 @@ public class VisionSubsystem extends SubsystemBase {
 
                     // Use a conservative std dev (larger than single-tag) so estimator treats this as low-confidence
                     var fallbackStd = kSingleTagStdDevs.times(5);
-                    if(!camera.isConnected()){
+                    if (camera.isConnected()) {
                         System.out.println("[Vision] prepared fallback manualPose=" + averaged + " timestamp=" + visionTimestamp + " stdDevs=" + fallbackStd);
                     }
                     // set candidate to be considered by stability filter
@@ -250,7 +257,7 @@ public class VisionSubsystem extends SubsystemBase {
             visionEst.ifPresent(est -> {
                 SmartDashboard.putNumber("Vision/Estimate_Timestamp", est.timestampSeconds);
             });
-            if(!camera.isConnected()){
+            if (camera.isConnected()) {
                 System.out.println("[Vision] detections=" + result.getTargets().size() + " estimatePresent=" + visionEst.isPresent() + " fpgaTime=" + Timer.getFPGATimestamp());
             }
             if (visionEst.isPresent()) {
@@ -259,7 +266,7 @@ public class VisionSubsystem extends SubsystemBase {
                 var estStdDevs = getEstimationStdDevs();
 
                 // Log the estimated pose before forwarding
-                if(!camera.isConnected()){
+                if (camera.isConnected()) {
                     System.out.println("[Vision] estimatedPose=" + est.estimatedPose.toPose2d() + " estTimestamp=" + est.timestampSeconds + " stdDevs=" + estStdDevs);
                 }
                 // Compute a WPILib-friendly timestamp for the vision measurement.
@@ -271,7 +278,7 @@ public class VisionSubsystem extends SubsystemBase {
                     if (latencyObj instanceof Number) {
                         double latencyMs = ((Number) latencyObj).doubleValue();
                         visionTimestamp = Timer.getFPGATimestamp() - (latencyMs / 1000.0);
-                        if(!camera.isConnected()){
+                        if (camera.isConnected()) {
                             System.out.println("[Vision] latencyMs=" + latencyMs + " computedTimestamp=" + visionTimestamp);
                         }
                     }
@@ -303,7 +310,7 @@ public class VisionSubsystem extends SubsystemBase {
                         double dist = cur.getTranslation().getDistance(visionPose.getTranslation());
                         if (dist > snapDistance) {
                             snapConfirmationCount++;
-                            if(!camera.isConnected()){
+                            if (camera.isConnected()) {
                                 System.out.println("[Vision] snap candidate dist=" + dist + " confirmation=" + snapConfirmationCount + "/" + snapNeeded);
                             }
                             if (snapConfirmationCount >= snapNeeded) {
@@ -356,14 +363,16 @@ public class VisionSubsystem extends SubsystemBase {
                     }
                     if (stable) {
                         var usedStd = candidateStd != null ? candidateStd : (visibleTags > 1 ? tunedMultiTagStd : tunedSingleTagStd);
-                        if(!camera.isConnected()){
+                        if (camera.isConnected()) {
                             System.out.println("[Vision] stable average pose=" + avg + " forwarding with std=" + usedStd);
                         }
                         estConsumer.accept(avg, candidateTimestamp, usedStd, false);
                         curStdDevs = usedStd;
                         poseBuffer.clear();
                     } else {
-                        System.out.println("[Vision] candidate not yet stable; bufferSize=" + poseBuffer.size());
+                        if (camera.isConnected()) {
+                            System.out.println("[Vision] candidate not yet stable; bufferSize=" + poseBuffer.size());
+                        }
                     }
                 }
             }
@@ -372,7 +381,9 @@ public class VisionSubsystem extends SubsystemBase {
             SmartDashboard.putNumber("Vision/Detections", 0);
             SmartDashboard.putString("Vision/LastEstimate", "Optional.empty");
             SmartDashboard.putNumber("Vision/FPGA_Time", Timer.getFPGATimestamp());
-            System.out.println("[Vision] detections=0 estimatePresent=false fpgaTime=" + Timer.getFPGATimestamp());
+            if (camera.isConnected()) {
+                System.out.println("[Vision] detections=0 estimatePresent=false fpgaTime=" + Timer.getFPGATimestamp());
+            }
         }
     }
 

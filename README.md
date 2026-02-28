@@ -6,7 +6,9 @@ TODO:
 
 * Autonomous
   * figure out detecting mutlipe april tags
+    * work with copilot to make the robot go to field rather than april tag 
   * make functions like drive to april tags n stuff
+
 
 * Climber
   * figure out units limit for climber
@@ -15,11 +17,15 @@ TODO:
 
 * launcher
   * create a command group to start launching it, with like a delway so it can spin up
+  *  finish working with copilot to add a slider/changeable value
 
 * intake
   * create class for intake
     * add methods, should be rudimentary
 
+* agitator
+  * make it spin backwards when not feeding shooter
+  * 
 
 * photon vision
   * April Tag detection
@@ -29,6 +35,7 @@ TODO:
 * drive
   * quality of life: fix the bug that has the wheels snap to position when going to deadband
     * look into advantage scope
+    * play with PID controls
   * look into exponential drive
   * look into adding a trigger for driving slowdown
 

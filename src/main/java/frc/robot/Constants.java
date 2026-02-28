@@ -95,15 +95,15 @@ public final class Constants {
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kBrake;
     public static final double kLifterMaxHeight = 4; //set this
-    public static final double kIntakeDefaultSpeed = 0.6;
-    public static final double kLiftDefaultSpeed = 0.15;
+    public static final double kIntakeDefaultSpeed = 0.65;
+    public static final double kLiftDefaultSpeed = 0.3;
   }
   
   public static final class LauncherConstants {
     public static final int kLauncher1CanId = 13;//top
     public static final int kLauncher2CanId = 14;//bottom
-    public static final int kLauncher1CurrentLimit = 30;//set this
-    public static final int kLauncher2CurrentLimit = 30;//set this
+    public static final int kLauncher1CurrentLimit = 40;//set this
+    public static final int kLauncher2CurrentLimit = 40;//set this
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
     public static final double kLauncherDefaultSpeed = 0.6;
   }
@@ -111,8 +111,8 @@ public final class Constants {
   public static final class AgitatorConstants{
     public static final int kAgitatorCanId = 15;
     public static final int kAgitatorCurrentLimit = 40;//set this
-    public static final IdleMode kAgitatorIdleMode = IdleMode.kCoast;
-    public static final double kAgitatorDefaultSpeed = 1;//set this
+    public static final IdleMode kAgitatorIdleMode = IdleMode.kBrake;
+    public static final double kAgitatorDefaultSpeed = 1;
   }
 
   public static final class CameraConstants {

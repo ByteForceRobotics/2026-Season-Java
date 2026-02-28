@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AgitatorConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -34,7 +35,7 @@ public class AgitatorSubsystem extends SubsystemBase {
   }
   public void agitate(double xSpeed) {
     m_agitator.set(xSpeed);
-    if (xSpeed != 0){
+    if (xSpeed >0){
       agitateVar = true;
     }
     else{
@@ -42,17 +43,26 @@ public class AgitatorSubsystem extends SubsystemBase {
     }
   }
 
-  public void agitate_stop() {
-    m_agitator.set(0.0);
-
+  public void agitate_stop(double xSpeed) {
+    agitate(0);
   }
+
   public void agitate_toggle(){
     if(agitateVar == true){
-      agitate_stop();
+      agitate_stop(AgitatorConstants.kAgitatorDefaultSpeed);
     }
     else{
       agitate(AgitatorConstants.kAgitatorDefaultSpeed);
     }
+  }
+  public Command agitateCommand(double xSpeed) {
+    return this.runOnce(() -> agitate(xSpeed));
+  }
+  public Command agitateStopCommand(double xSpeed) {
+    return this.runOnce(() -> agitate_stop(xSpeed));
+  }
+  public Command agitateToggleCommand() {
+    return this.runOnce(() -> agitate_toggle());
   }
   
   @Override

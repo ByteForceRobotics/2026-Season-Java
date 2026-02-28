@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
@@ -54,20 +55,24 @@ public class IntakeSubsystem extends SubsystemBase {
      m_intakeLifter.configure(intakeLifterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   public void intake(double xSpeed) {
+    if(xSpeed == 0){
+      intakeOn = false;
+    }
+    else{
+      intakeOn = true;
+    }
     m_intake.set(xSpeed);
   }
 
   public void intake_stop() {
-    m_intake.set(0.0);
+    intake(0.0);
 
   }
   public void intake_toggle(){
     if(intakeOn){
-      intakeOn = false;
-      m_intake.set(0);
+      intake(0);
     }
     else{
-      intakeOn = true;
       m_intake.set(IntakeConstants.kIntakeDefaultSpeed);
     }
   }
@@ -87,6 +92,18 @@ public class IntakeSubsystem extends SubsystemBase {
       m_intakeLifter.set(0.0);
     }
 
+  }
+  public Command liftCommand(double xSpeed) {
+    return this.runOnce(() -> lift(xSpeed));
+  }
+  public Command liftStopCommand() {
+    return this.runOnce(() -> lift_stop());
+  }
+  public Command intakeCommand(double xSpeed) {
+    return this.runOnce(() -> intake(xSpeed));
+  }
+  public Command intakeStopCommand() {
+    return this.runOnce(() -> intake_stop());
   }
 
   

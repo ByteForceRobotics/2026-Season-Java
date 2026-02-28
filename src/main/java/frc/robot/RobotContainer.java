@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import java.util.Map;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -45,7 +48,6 @@ public class RobotContainer {
   // The robot's subsystems
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  /* 
   private final VisionSubsystem m_vision = new VisionSubsystem((pose, timestamp, stdDevs, forceReset) -> {
     if (forceReset) {
       m_robotDrive.resetOdometry(pose);
@@ -53,7 +55,6 @@ public class RobotContainer {
       m_robotDrive.addVisionMeasurement(pose, timestamp, stdDevs);
     }
   }, m_robotDrive::getPose);
-  */
   private final ClimbSubsystem m_climber = new ClimbSubsystem();
   //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
@@ -121,6 +122,16 @@ public class RobotContainer {
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
     
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    // Add a SmartDashboard tunable for launcher speed but don't overwrite any existing value
+    if (!SmartDashboard.containsKey("Launcher/Speed")) {
+      SmartDashboard.putNumber("Launcher/Speed", launcherSpeed);
+    }
+    // Add a Shuffleboard slider bound to the same NetworkTable key so users can edit it visually
+    var launcherTab = Shuffleboard.getTab("Launcher");
+    launcherTab.add("Launcher/Speed", SmartDashboard.getNumber("Launcher/Speed", launcherSpeed))
+        .withWidget(BuiltInWidgets.kNumberSlider)
+        .withProperties(Map.of("min", 0, "max", 1));
+    launcherTab.addNumber("Speed Current", () -> launcherSpeed);
   }
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
@@ -172,40 +183,33 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
 
     new POVButton(m_driverController, 0)
-        .whileTrue(new RunCommand(
+        .whileTrue(new InstantCommand(
             () -> m_climber.climb(ClimbConstants.kClimbSpeed),
             m_climber)).onFalse(new InstantCommand(
                 () -> m_climber.pull_stop(),
                 m_climber));
     
     new POVButton(m_driverController, 180)
-        .whileTrue(new RunCommand(
+        .whileTrue(new InstantCommand(
             () -> m_climber.climb(-ClimbConstants.kClimbSpeed),
             m_climber)).onFalse(new InstantCommand(
                 () -> m_climber.pull_stop(),
                 m_climber));
     
     new POVButton(m_driverController, 90)
-        .whileTrue(new RunCommand(
-            () -> m_intake.lift(IntakeConstants.kLiftDefaultSpeed),
-            m_intake)).onFalse(new InstantCommand(
-                () -> m_intake.lift_stop(),
-                m_intake));
+        .whileTrue(m_intake.liftCommand(IntakeConstants.kLiftDefaultSpeed)).onFalse(m_intake.liftStopCommand());
 
     new POVButton(m_driverController, 270)
-        .whileTrue(new RunCommand(
-            () -> m_intake.lift(-IntakeConstants.kLiftDefaultSpeed),
-            m_intake)).onFalse(new InstantCommand(
-                () -> m_intake.lift_stop(),
-                m_intake));
+        .whileTrue(m_intake.liftCommand(-IntakeConstants.kLiftDefaultSpeed)).onFalse(m_intake.liftStopCommand());
 
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))
       .onFalse(new InstantCommand(() -> slowdown_stop()));
-
+    /* 
     triggerButton(m_driverController,Axis.kRightTrigger)
       .whileTrue(new RunCommand(() -> m_launcher.launch(m_driverController.getRawAxis(Axis.kRightTrigger.value)), m_launcher))
       .onFalse(new InstantCommand(() -> m_launcher.launch_stop(), m_launcher));
+    */
     /*
     trigger buttons, might be useful
     triggerButton(m_climberController,Axis.kLeftTrigger).whileTrue(new RunCommand(
@@ -223,43 +227,29 @@ public class RobotContainer {
     ///*
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .whileTrue(
-            new RunCommand(() -> m_launcher.launch(launcherSpeed), m_launcher)
-                .alongWith(new RunCommand(() -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator))
-                .beforeStarting(new RunCommand(() -> m_launcher.launchTop(launcherSpeed), m_launcher).withTimeout(2))
-        )
-        .onFalse(new InstantCommand(() -> { m_launcher.launch_stop(); m_agitator.agitate_stop(); }, m_launcher, m_agitator));
-    //*/
-    /* 
-    SequentialCommandGroup launchSuperCool = new RunCommand(
-        () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
-        m_launcher).alongWith(new RunCommand(
-        () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
-        m_agitator)).beforeStarting(new RunCommand(
-        () -> m_launcher.launchTop(LauncherConstants.kLauncherDefaultSpeed),
-        m_launcher).withTimeout(0.5)).andThen(new InstantCommand(
-        () -> m_launcher.launch_stop(),
-        m_launcher).alongWith(new RunCommand(
-        () -> m_agitator.agitate_stop(),
-        m_agitator)));
-      */
-    ///*
+            m_launcher.launchCommand(launcherSpeed)
+                .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
+                .beforeStarting(m_launcher.launchTopCommand(launcherSpeed).withTimeout(2).alongWith(m_agitator.agitateStopCommand(AgitatorConstants.kAgitatorDefaultSpeed))))
+        .onFalse(m_launcher.launchStopCommand().alongWith(m_agitator.agitateStopCommand(AgitatorConstants.kAgitatorDefaultSpeed)));
+    
+        
     new JoystickButton(m_driverController, Button.kRightStick.value)
-        .whileTrue(new RunCommand(() -> m_launcher.eject(), m_launcher))
-        .onFalse(new InstantCommand(() -> m_launcher.launch_stop(), m_launcher));
+        .whileTrue(m_launcher.ejectCommand())
+        .onFalse(m_launcher.launchStopCommand());
 
     new JoystickButton(m_driverController, Button.kB.value)
-        .whileTrue(new RunCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+        .whileTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
-        .whileTrue(new RunCommand(() -> m_intake.intake(Constants.IntakeConstants.kIntakeDefaultSpeed), m_intake))
-        .onFalse(new InstantCommand(() -> m_intake.intake_stop(), m_intake));
+        .whileTrue(m_intake.intakeCommand(IntakeConstants.kIntakeDefaultSpeed))
+        .onFalse( m_intake.intakeStopCommand());
       
     new JoystickButton(m_driverController, Button.kX.value)
-      .onTrue(new RunCommand(() -> m_agitator.agitate_toggle(), m_agitator));
+      .onTrue(m_agitator.agitateToggleCommand());
     
     new JoystickButton(m_driverController, Button.kStart.value)
-      .whileTrue(new RunCommand(() -> m_agitator.agitate(1), m_agitator))
-      .onFalse(new InstantCommand(() -> m_agitator.agitate_stop(), m_agitator));
+      .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
+      .onFalse(m_agitator.agitateStopCommand(AgitatorConstants.kAgitatorDefaultSpeed));
     
     //add POV buttons(d-pad) for strafing
     /* 
@@ -291,11 +281,11 @@ public class RobotContainer {
     SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
   public void slowdown_stop(){
-    slowdownMultiplier = 1;
-    SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
+    slowdown(0);
   }
   public void periodic() {
-    launcherSpeed = SmartDashboard.getNumber("Launcher Speed", launcherSpeed);
-    SmartDashboard.putNumber("Launcher Speed", launcherSpeed);
+    // Read the launcher speed from the dashboard so it can be tuned at runtime
+    launcherSpeed = SmartDashboard.getNumber("Launcher/Speed", launcherSpeed);
+    SmartDashboard.putNumber("Launcher/Speed_Current", launcherSpeed);
   }
 }
