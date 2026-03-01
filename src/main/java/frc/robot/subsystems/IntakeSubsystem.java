@@ -94,13 +94,13 @@ public class IntakeSubsystem extends SubsystemBase {
 
   }
   public Command liftCommand(double xSpeed) {
-    return this.runOnce(() -> lift(xSpeed));
+    return this.runOnce(() -> lift(xSpeed)).finallyDo(() -> lift_stop());
   }
   public Command liftStopCommand() {
     return this.runOnce(() -> lift_stop());
   }
   public Command intakeCommand(double xSpeed) {
-    return this.runOnce(() -> intake(xSpeed));
+    return this.runOnce(() -> intake(xSpeed)).finallyDo(() -> intake_stop());
   }
   public Command intakeStopCommand() {
     return this.runOnce(() -> intake_stop());

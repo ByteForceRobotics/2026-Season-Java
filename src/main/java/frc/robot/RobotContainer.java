@@ -61,7 +61,7 @@ public class RobotContainer {
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private final AgitatorSubsystem m_agitator = new AgitatorSubsystem();
   private double slowdownMultiplier = 1;
-  double launcherSpeed = LauncherConstants.kLauncherDefaultSpeed;
+  double launcherSpeed = LauncherConstants.kLauncherSpeed;
 
   // The driver's controller
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
@@ -93,7 +93,7 @@ public class RobotContainer {
         m_climber).withTimeout(ClimbConstants.kLevelOneTime).andThen(new InstantCommand(
                 () -> m_climber.pull_stop(),
                 m_climber));
-  SequentialCommandGroup autoShoot = new RunCommand(()-> m_launcher.launch(.8),m_launcher).withTimeout(1).andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
+  SequentialCommandGroup autoShoot = new RunCommand(()-> m_launcher.launchBoth(.8),m_launcher).withTimeout(1).andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
   public RobotContainer() {
     NamedCommands.registerCommand("LevelOneClimb", climblvl1);
     NamedCommands.registerCommand("ShootOneSec", autoShoot);
@@ -108,12 +108,22 @@ public class RobotContainer {
       // Turning is controlled by the X axis of the right stick.
       // fieldRelative
       new RunCommand(
-        () -> m_robotDrive.drive(
-            -MathUtil.applyDeadband(m_driverController.getLeftY()*speedScale*slowdownMultiplier, OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_driverController.getLeftX()*speedScale*slowdownMultiplier, OIConstants.kDriveDeadband),
-            -MathUtil.applyDeadband(m_driverController.getRightX()*speedScale*slowdownMultiplier, OIConstants.kDriveDeadband),
-            fieldRelative),
-        m_robotDrive));
+      () -> {
+        double rawLeftY = m_driverController.getLeftY() * speedScale * slowdownMultiplier;
+        double rawLeftX = m_driverController.getLeftX() * speedScale * slowdownMultiplier;
+        double rawRightX = m_driverController.getRightX() * speedScale * slowdownMultiplier;
+
+        double dbLeftY = MathUtil.applyDeadband(rawLeftY, OIConstants.kDriveDeadband);
+        double dbLeftX = MathUtil.applyDeadband(rawLeftX, OIConstants.kDriveDeadband);
+        double dbRightX = MathUtil.applyDeadband(rawRightX, OIConstants.kDriveDeadband);
+
+        double sqLeftY = Math.copySign(dbLeftY * dbLeftY, dbLeftY);
+        double sqLeftX = Math.copySign(dbLeftX * dbLeftX, dbLeftX);
+        double sqRightX = Math.copySign(dbRightX * dbRightX, dbRightX);
+
+        m_robotDrive.drive(-sqLeftY, -sqLeftX, -sqRightX, fieldRelative);
+      },
+      m_robotDrive));
 
       
     
@@ -197,18 +207,12 @@ public class RobotContainer {
                 m_climber));
     
     new POVButton(m_driverController, 90)
-        .whileTrue(new InstantCommand(
-            () -> m_intake.lift(IntakeConstants.kLiftDefaultSpeed),
-            m_intake)).onFalse(new InstantCommand(
-                () -> m_intake.lift_stop(),
-                m_intake));
+        .whileTrue(m_intake.liftCommand(IntakeConstants.kLiftDefaultSpeed))
+        .onFalse(m_intake.liftStopCommand());
 
     new POVButton(m_driverController, 270)
-        .whileTrue(new InstantCommand(
-            () -> m_intake.lift(-IntakeConstants.kLiftDefaultSpeed),
-            m_intake)).onFalse(new InstantCommand(
-                () -> m_intake.lift_stop(),
-                m_intake));
+        .whileTrue(m_intake.liftCommand(-IntakeConstants.kLiftDefaultSpeed))
+        .onFalse(m_intake.liftStopCommand());
 
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))
@@ -233,21 +237,20 @@ public class RobotContainer {
             m_climber));
     */
     ///*
-    new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(
-            new InstantCommand(() -> m_launcher.launchTop(launcherSpeed), m_launcher).withTimeout(2)
-                .beforeStarting(() -> m_launcher.launch(launcherSpeed), m_launcher)
-                .alongWith(new InstantCommand(() -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator)))
-        
-        .onFalse(new InstantCommand(() -> { m_launcher.launch_stop(); m_agitator.agitate_stop(AgitatorConstants.kAgitatorDefaultSpeed); }, m_launcher, m_agitator));
-    //*/
+      new JoystickButton(m_driverController, Button.kRightBumper.value)
+        .whileTrue(m_launcher.launchCommand(launcherSpeed)
+            .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
+            .beforeStarting(m_launcher.launchTopCommand(launcherSpeed)
+            .withTimeout(1)))
+        .onFalse(m_launcher.launchStopCommand()
+            .alongWith(m_agitator.agitateStopCommand(0))); 
     /* 
     SequentialCommandGroup launchSuperCool = new RunCommand(
-        () -> m_launcher.launch(LauncherConstants.kLauncherDefaultSpeed),
+        () -> m_launcher.launch(LauncherConstants.kLauncherSpeed),
         m_launcher).alongWith(new RunCommand(
         () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
         m_agitator)).beforeStarting(new RunCommand(
-        () -> m_launcher.launchTop(LauncherConstants.kLauncherDefaultSpeed),
+        () -> m_launcher.launchTop(LauncherConstants.kLauncherSpeed),
         m_launcher).withTimeout(0.5)).andThen(new InstantCommand(
         () -> m_launcher.launch_stop(),
         m_launcher).alongWith(new RunCommand(
@@ -256,38 +259,26 @@ public class RobotContainer {
       */
     ///*
     new JoystickButton(m_driverController, Button.kRightStick.value)
-        .whileTrue(new InstantCommand(() -> m_launcher.eject(), m_launcher))
-        .onFalse(new InstantCommand(() -> m_launcher.launch_stop(), m_launcher));
+        .whileTrue(m_launcher.ejectCommand())
+        .onFalse(m_launcher.launchStopCommand());
 
     new JoystickButton(m_driverController, Button.kB.value)
-        .whileTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+        .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
-        .whileTrue(new InstantCommand(() -> m_intake.intake(Constants.IntakeConstants.kIntakeDefaultSpeed), m_intake))
-        .onFalse(new InstantCommand(() -> m_intake.intake_stop(), m_intake));
+        .whileTrue(m_intake.intakeCommand(Constants.IntakeConstants.kIntakeDefaultSpeed))
+        .onFalse(m_intake.intakeStopCommand());
       
     new JoystickButton(m_driverController, Button.kX.value)
-      .onTrue(new InstantCommand(() -> m_agitator.agitate_toggle(), m_agitator));
+        .onTrue(m_agitator.agitateToggleCommand());
     
     new JoystickButton(m_driverController, Button.kStart.value)
-      .whileTrue(new RunCommand(() -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator))
-      .onFalse(new InstantCommand(() -> m_agitator.agitate_stop(AgitatorConstants.kAgitatorDefaultSpeed), m_agitator));
+        .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
+        .onFalse(m_agitator.agitateStopCommand(0));
     
-    //add POV buttons(d-pad) for strafing
-    /* 
-    new POVButton(m_driverController, 0)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.bumper(0.5, 0),m_robotDrive));
-    new POVButton(m_driverController, 90)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.bumper(0.5, 90),m_robotDrive));
-    new POVButton(m_driverController, 180)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.bumper(0.5, 180),m_robotDrive));
-    new POVButton(m_driverController, 270)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.bumper(0.5, 270),m_robotDrive));
-     */
+
+
+   
   }
 
   public void changeScale(){
@@ -300,15 +291,15 @@ public class RobotContainer {
 
   public void slowdown(double val){
     slowdownMultiplier = 1-val;
-    SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
+
   public void slowdown_stop(){
     slowdownMultiplier = 1;
-    SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
   public void periodic() {
     // Read the launcher speed from the dashboard so it can be tuned at runtime
     launcherSpeed = SmartDashboard.getNumber("Launcher/Speed", launcherSpeed);
     SmartDashboard.putNumber("Launcher/Speed_Current", launcherSpeed);
+    SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
   }
 }

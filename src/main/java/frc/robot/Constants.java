@@ -96,7 +96,7 @@ public final class Constants {
     public static final IdleMode kLifterIdleMode = IdleMode.kBrake;
     public static final double kLifterMaxHeight = 4; //set this
     public static final double kIntakeDefaultSpeed = 0.6;
-    public static final double kLiftDefaultSpeed = 0.5;
+    public static final double kLiftDefaultSpeed = 0.7;
   }
   
   public static final class LauncherConstants {
@@ -105,7 +105,7 @@ public final class Constants {
     public static final int kLauncher1CurrentLimit = 40;//set this
     public static final int kLauncher2CurrentLimit = 40;//set this
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
-    public static final double kLauncherDefaultSpeed = 0.60;
+    public static final double kLauncherSpeed = 0.55;
   }
   
   public static final class AgitatorConstants{
@@ -120,7 +120,7 @@ public final class Constants {
     public static final String kCameraName = "FrontCam";
         // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
         public static final Transform3d kRobotToCam =
-                new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0, 0, 0));
+                new Transform3d(new Translation3d(0, 0.0, 0), new Rotation3d(0, 0, 0));
 
         // The layout of the AprilTags on the field
         public static final AprilTagFieldLayout kTagLayout =

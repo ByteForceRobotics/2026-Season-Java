@@ -63,24 +63,24 @@ public class LauncherSubsystem extends SubsystemBase {
     launchBottom(passivePower);
   }
 
-  public void launch(double xSpeed) {
+  public void launchBoth(double xSpeed) {
     launchTop(xSpeed);
     launchBottom(0.6);
   }
 
   public Command launchCommand(double xSpeed) {
-    return this.runOnce(() -> launch(xSpeed));
+    return this.run(() -> launchBoth(xSpeed)).finallyDo(() -> launch_stop());
   }
 
   public Command launchTopCommand(double xSpeed) {
-    return this.runOnce(() -> launch(xSpeed));
-  }
+    return this.run(() -> launchTop(xSpeed)).finallyDo(() -> launch_stop());
+ }
 
   public Command launchStopCommand() {
-    return this.runOnce(() -> launchCommand(0).withTimeout(0.1).andThen(() -> launch_stop()));
+    return this.runOnce(() -> launch_stop());
   }
   public Command ejectCommand() {
-    return this.runOnce(() -> eject());
+    return this.run(() -> eject()).finallyDo(() -> launch_stop());
   }
 
   public void eject() {

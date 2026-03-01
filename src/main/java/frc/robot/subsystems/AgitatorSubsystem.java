@@ -56,7 +56,7 @@ public class AgitatorSubsystem extends SubsystemBase {
     }
   }
   public Command agitateCommand(double xSpeed) {
-    return this.runOnce(() -> agitate(xSpeed));
+    return this.run(() -> agitate(xSpeed)).finallyDo(() -> agitate_stop(xSpeed));
   }
   public Command agitateStopCommand(double xSpeed) {
     return this.runOnce(() -> agitate_stop(xSpeed));

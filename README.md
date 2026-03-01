@@ -18,6 +18,7 @@ TODO:
 * launcher
   * create a command group to start launching it, with like a delway so it can spin up
   *  finish working with copilot to add a slider/changeable value
+  * make a way  to have  it spin to a certain speed rather than have the motor provide x% of power
 
 * intake
   * create class for intake
