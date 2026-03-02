@@ -134,6 +134,7 @@ public class VisionSubsystem extends SubsystemBase {
         double mY = SmartDashboard.getNumber("Vision/MultiStdY", tunedMultiTagStd.get(1, 0));
         double mT = SmartDashboard.getNumber("Vision/MultiStdTheta", tunedMultiTagStd.get(2, 0));
         tunedMultiTagStd = VecBuilder.fill(mX, mY, mT);
+        
 
         Optional<EstimatedRobotPose> visionEst = Optional.empty();
         // Diagnostic: print camera connection and name only when camera is connected
@@ -185,10 +186,19 @@ public class VisionSubsystem extends SubsystemBase {
                         try {
                             var tagPose = maybeTagPose.get();
                             var camToTarget = tgt.getBestCameraToTarget();
-                            // Compute camera pose in field: tagPose * inverse(camToTarget)
-                            var camPoseField = tagPose.transformBy(camToTarget.inverse());
-                            // Compute robot pose in field: cameraPose * inverse(robotToCam)
-                            var robotPoseField = camPoseField.transformBy(kRobotToCam.inverse());
+                            // Transform chain: AprilTag (field) -> Camera (field) -> Robot (field)
+                            // Step 1: camToTarget is camera->tag, so invert to get tag->camera
+                            var tagToCamera = camToTarget.inverse();
+                            // Step 2: Apply tag->camera to tag's field pose to get camera's field pose
+                            var camPoseField = tagPose.transformBy(tagToCamera);
+                            if (camera.isConnected()) {
+                                System.out.println("[Vision][DBG] tag " + id + " field pose: " + tagPose.toPose2d());
+                                System.out.println("[Vision][DBG] computed camera field pose: " + camPoseField.toPose2d());
+                            }
+                            // Step 3: kRobotToCam is robot->camera, so invert to get camera->robot
+                            var cameraToRobot = kRobotToCam.inverse();
+                            // Step 4: Apply camera->robot to camera's field pose to get robot's field pose
+                            var robotPoseField = camPoseField.transformBy(cameraToRobot);
                             Pose2d manual = robotPoseField.toPose2d();
                             manualPoses.add(manual);
                             ambiguities.add(ambiguity);
@@ -257,6 +267,17 @@ public class VisionSubsystem extends SubsystemBase {
             visionEst.ifPresent(est -> {
                 SmartDashboard.putNumber("Vision/Estimate_Timestamp", est.timestampSeconds);
             });
+            
+            // Publish distances and yaws to SmartDashboard for each detected tag
+            Pose2d currentPose = currentPoseSupplier.get();
+            for (var target : result.getTargets()) {
+                int tagId = target.getFiducialId();
+                double distance = getDistanceToTagFromRobot(tagId, currentPose);
+                double yaw = getYawToTag(tagId, currentPose);
+                SmartDashboard.putNumber("Vision/Tag_" + tagId + "/Distance", distance);
+                SmartDashboard.putNumber("Vision/Tag_" + tagId + "/Yaw", yaw);
+            }
+            
             if (camera.isConnected()) {
                 System.out.println("[Vision] detections=" + result.getTargets().size() + " estimatePresent=" + visionEst.isPresent() + " fpgaTime=" + Timer.getFPGATimestamp());
             }
@@ -444,6 +465,73 @@ public class VisionSubsystem extends SubsystemBase {
      */
     public Matrix<N3, N1> getEstimationStdDevs() {
         return curStdDevs;
+    }
+
+    /**
+     * Get the distance from the camera to a specific AprilTag (in meters).
+     * @param tagId The AprilTag ID to measure distance to
+     * @param cameraPose The current camera pose in the field frame
+     * @return Distance in meters, or -1 if tag not found in layout
+     */
+    public double getDistanceToTag(int tagId, Pose2d cameraPose) {
+        var maybeTagPose = photonEstimator.getFieldTags().getTagPose(tagId);
+        if (maybeTagPose.isEmpty()) {
+            return -1.0;
+        }
+        return cameraPose.getTranslation().getDistance(maybeTagPose.get().toPose2d().getTranslation());
+    }
+
+    /**
+     * Get the yaw (rotation) angle from the camera to a specific AprilTag (in degrees).
+     * Positive = counterclockwise from robot forward.
+     * @param tagId The AprilTag ID to measure yaw to
+     * @param cameraPose The current camera pose in the field frame
+     * @return Yaw in degrees, or 0 if tag not found in layout
+     */
+    public double getYawToTag(int tagId, Pose2d cameraPose) {
+        var maybeTagPose = photonEstimator.getFieldTags().getTagPose(tagId);
+        if (maybeTagPose.isEmpty()) {
+            return 0.0;
+        }
+        var tagTranslation = maybeTagPose.get().toPose2d().getTranslation();
+        var cameraTranslation = cameraPose.getTranslation();
+        var delta = tagTranslation.minus(cameraTranslation);
+        return Math.toDegrees(Math.atan2(delta.getY(), delta.getX()));
+    }
+
+    /**
+     * Get the roll, pitch, and yaw angles (in degrees) from the camera to a specific AprilTag.
+     * Returns a double array [roll, pitch, yaw] derived from the camera-to-target rotation.
+     * @param tagId The AprilTag ID to measure to
+     * @param cameraToTargetTransform The camera-to-target transform from Photon
+     * @return [roll (deg), pitch (deg), yaw (deg)], or null if tag not found
+     */
+    public double[] getEulerAngles(int tagId, edu.wpi.first.math.geometry.Transform3d cameraToTargetTransform) {
+        var maybeTagPose = photonEstimator.getFieldTags().getTagPose(tagId);
+        if (maybeTagPose.isEmpty()) {
+            return null;
+        }
+        var rotation = cameraToTargetTransform.getRotation();
+        // Extract roll, pitch, yaw from the Rotation3d
+        double roll = Math.toDegrees(rotation.getX());
+        double pitch = Math.toDegrees(rotation.getY());
+        double yaw = Math.toDegrees(rotation.getZ());
+        
+        return new double[] {roll, pitch, yaw};
+    }
+
+    /**
+     * Get the distance from the robot to a specific AprilTag (in meters).
+     * @param tagId The AprilTag ID
+     * @param robotPose The current robot pose in the field frame
+     * @return Distance in meters, or -1 if tag not found
+     */
+    public double getDistanceToTagFromRobot(int tagId, Pose2d robotPose) {
+        var maybeTagPose = photonEstimator.getFieldTags().getTagPose(tagId);
+        if (maybeTagPose.isEmpty()) {
+            return -1.0;
+        }
+        return robotPose.getTranslation().getDistance(maybeTagPose.get().toPose2d().getTranslation());
     }
        
 

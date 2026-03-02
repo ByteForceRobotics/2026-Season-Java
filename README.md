@@ -2,7 +2,7 @@ TODO:
 
 * General
   * figure out balancing via the Navx
-  * figure out how to tie command groups to buttons
+  
 
 * Autonomous
   * figure out detecting mutlipe april tags
@@ -16,13 +16,9 @@ TODO:
   * add managing the hooks(i kinda forgot the mechanism we were planning on using so i didnt add it)
 
 * launcher
-  * create a command group to start launching it, with like a delway so it can spin up
-  *  finish working with copilot to add a slider/changeable value
+  * finish working with copilot to add a slider/changeable value
   * make a way  to have  it spin to a certain speed rather than have the motor provide x% of power
 
-* intake
-  * create class for intake
-    * add methods, should be rudimentary
 
 * agitator
   * make it spin backwards when not feeding shooter

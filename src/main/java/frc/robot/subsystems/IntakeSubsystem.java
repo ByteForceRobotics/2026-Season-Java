@@ -47,7 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
     intakeLifterConfig
-      .apply(softLimitConfig)
+      //.apply(softLimitConfig)
       .smartCurrentLimit(IntakeConstants.kIntakeLifterCurrentLimit)
       .idleMode(IntakeConstants.kLifterIdleMode);
 
@@ -81,26 +81,18 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void lift_stop() {
-    if(m_intakeLifter.getEncoder().getPosition() >3.9){
-      double passivePower = 0.05;//to hold the lifter down when intaking
-      m_intakeLifter.set(passivePower);
-    }
-    else if(m_intakeLifter.getEncoder().getPosition() <0.1){
-      m_intakeLifter.set(-0.01);
-    }
-    else{
-      m_intakeLifter.set(0.0);
-    }
+    m_intakeLifter.set(0.0);
+    
 
   }
   public Command liftCommand(double xSpeed) {
-    return this.runOnce(() -> lift(xSpeed)).finallyDo(() -> lift_stop());
+    return this.run(() -> lift(xSpeed)).finallyDo(() -> lift_stop());
   }
   public Command liftStopCommand() {
     return this.runOnce(() -> lift_stop());
   }
   public Command intakeCommand(double xSpeed) {
-    return this.runOnce(() -> intake(xSpeed)).finallyDo(() -> intake_stop());
+    return this.run(() -> intake(xSpeed)).finallyDo(() -> intake_stop());
   }
   public Command intakeStopCommand() {
     return this.runOnce(() -> intake_stop());
