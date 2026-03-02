@@ -116,20 +116,15 @@ public final class Constants {
   }
 
   public static final class CameraConstants {
-        
-    public static final String kCameraName = "FrontCam";
-        // Cam mounted facing forward, half a meter forward of center, half a meter up from center.
-        public static final Transform3d kRobotToCam =
-                new Transform3d(new Translation3d(0, 0.0, 0), new Rotation3d(0, 0, 0));
+    public static final double kFrontCamHeight = 0;//set this
+    public static final double kRearCamHeight = 0;//set this
+    public static final double kFrontXOffset = 0;
+    public static final double kFrontYOffset = 0;
+    public static final double kFrontRotation = 0;
+    public static final double kRearXOffset = 0;
+    public static final double kRearYOffset = 0;
+    public static final double kRearRotation = 0;
 
-        // The layout of the AprilTags on the field
-        public static final AprilTagFieldLayout kTagLayout =
-                AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltAndymark);
-
-        // The standard deviations of our vision estimated poses, which affect correction rate
-        // (Fake values. Experiment and determine estimation noise on an actual robot.)
-        public static final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(4, 4, 8);
-        public static final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.5, 0.5, 1);
   }
 
   public static final class ModuleConstants {
