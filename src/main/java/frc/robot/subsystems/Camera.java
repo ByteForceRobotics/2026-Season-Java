@@ -28,17 +28,18 @@ public class Camera
     double area;
     double cameraHeight;
     double distance;
-    double targetHeight = 0;
+    double targetHeight = 1;
     double xOffset;
     double yOffset;
-    double rotation;
+    double camRotation;
     Pose2d robotPose;
+    
     public Camera(PhotonCamera cam, double camHeight,double x,double y, double rot){
         this.camera = cam;
         this.cameraHeight = camHeight;
         this.xOffset = x;
         this.yOffset = y;
-        this.rotation = rot;
+        this.camRotation = rot;
         this.robotPose = new Pose2d();
         this.targetId = 0;
 
@@ -52,23 +53,24 @@ public class Camera
                 //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
                 PhotonTrackedTarget target = CamResult.getBestTarget();
                 this.targetId = target.getFiducialId();
-                this.yaw = target.getYaw();
+                this.yaw = target.getYaw();// horizontal  rotation
                 this.pitch = target.getPitch();
                 this.area = target.getArea();
                 System.out.println(this.yaw+"    "+this.pitch);
                 //camToTargetTranslation
-                double distToTarget = PhotonUtils.calculateDistanceToTargetMeters(cameraHeight, targetHeight, 0, pitch);
-                Translation2d  camToTargetTranslation = PhotonUtils.estimateCameraToTargetTranslation(distToTarget,Rotation2d.fromDegrees(-yaw));
+                this.distance = PhotonUtils.calculateDistanceToTargetMeters(this.cameraHeight, this.targetHeight, 0, Math.toRadians(-this.pitch));
+    
+                Translation2d  camToTargetTranslation = PhotonUtils.estimateCameraToTargetTranslation(this.distance,Rotation2d.fromDegrees(-this.yaw));
                 //fieldToTarget
                 try{
                     
                     Path path  = Filesystem.getDeployDirectory().toPath().resolve("aprilTagFieldLayout.json");
                     AprilTagFieldLayout tagFieldLayout = new AprilTagFieldLayout(path);
-                    var optTagPose3d = tagFieldLayout.getTagPose(targetId);
+                    var optTagPose3d = tagFieldLayout.getTagPose(this.targetId);
                     if (optTagPose3d.isPresent()) {
                         var tagPose3d = optTagPose3d.get();
                         Pose2d tagPose = tagPose3d.toPose2d();
-                        targetHeight = tagPose3d.getZ();
+                        this.targetHeight = tagPose3d.getZ();
 
                         //gyroAngle
                         Rotation2d gyroAngle = Rotation2d.fromDegrees(0);//set this
@@ -77,15 +79,15 @@ public class Camera
                         Transform2d cameraToTarget = PhotonUtils.estimateCameraToTarget(camToTargetTranslation, tagPose, gyroAngle);
                         
                         //cameraTransform2d
-                            Translation2d translation = new Translation2d(this.xOffset, this.yOffset);
-                            // Create a rotation
-                            Rotation2d rotation = Rotation2d.fromDegrees(this.rotation);
-                            
+                        Translation2d translation = new Translation2d(this.xOffset, this.yOffset);
+                        // Create a rotation
+                        Rotation2d rotation = Rotation2d.fromDegrees(this.camRotation);
+                        
                         // Create the transform
                         Transform2d cameraToRobot = new Transform2d(translation, rotation);
 
                         //finalRobotPose
-                        robotPose = PhotonUtils.estimateFieldToRobot(cameraToTarget,tagPose,cameraToRobot);
+                        this.robotPose = PhotonUtils.estimateFieldToRobot(cameraToTarget,tagPose,cameraToRobot);
                     }
                 }
                 catch(IOException e){
@@ -94,7 +96,7 @@ public class Camera
                     this.pitch = 1;
                     this.area = 1;
                     this.distance=1;
-                    robotPose = new Pose2d();
+                    this.robotPose = new Pose2d();
                 }
 
             }
@@ -104,7 +106,7 @@ public class Camera
                 this.pitch = -1;
                 this.area = -1;
                 this.distance=-1;
-                robotPose = new Pose2d();
+                this.robotPose = new Pose2d();
             }
         }
         SmartDashboard.putNumber(this.camera.getName(),this.targetId);
@@ -114,6 +116,6 @@ public class Camera
         SmartDashboard.putNumber("distance", this.distance);
     }
     public Pose2d getPose2d(){
-        return robotPose;
+        return this.robotPose;
     }
 }

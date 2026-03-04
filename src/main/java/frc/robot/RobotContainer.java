@@ -7,9 +7,7 @@ package frc.robot;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-//import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
@@ -36,14 +34,13 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
  * periodic methods (other than the scheduler calls).  Instead, the structure of the robot
  * (including subsystems, commands, and button mappings) should be declared here.
  */
-
-
 public class RobotContainer {
   // The robot's subsystems
   private final SendableChooser<Command> autoChooser;
@@ -64,8 +61,6 @@ public class RobotContainer {
   //https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=&rightTrigger=slow+down%2C+to+be+added&rightBumper=&leftBumper=&leftStickClick=change+scale&leftStick=movement%2Fdriving&rightStick=rotation&xButton=&aButton=spin+intake+motors&yButton=launch+balls+&startButton=&bButton=reset+heading&dpadUp=climb+up&dpadDown=climb+reverse&dpadRight=deploy+lifter&dpadLeft=retract+lifter
   // this is the link to the controller keybinds
   
-
-
   boolean fieldRelative = true;
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -83,11 +78,13 @@ public class RobotContainer {
   
 
   SequentialCommandGroup climblvl1= new RunCommand(
-        () -> m_climber.climb(ClimbConstants.kClimbSpeed),
-        m_climber).withTimeout(ClimbConstants.kLevelOneTime).andThen(new InstantCommand(
-                () -> m_climber.pull_stop(),
-                m_climber));
-  SequentialCommandGroup autoShoot = new RunCommand(()-> m_launcher.launchBoth(.8),m_launcher).withTimeout(1).andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
+        () -> m_climber.climb(ClimbConstants.kClimbSpeed), m_climber)
+        .withTimeout(ClimbConstants.kLevelOneTime)
+        .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
+
+  SequentialCommandGroup autoShoot = new RunCommand(()-> m_launcher.launchBoth(.8),m_launcher)
+    .withTimeout(1).andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
+
   public RobotContainer() {
     NamedCommands.registerCommand("LevelOneClimb", climblvl1);
     NamedCommands.registerCommand("ShootOneSec", autoShoot);
@@ -119,9 +116,6 @@ public class RobotContainer {
       },
       m_robotDrive));
 
-      
-    
-
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
     
@@ -137,15 +131,15 @@ public class RobotContainer {
         .withProperties(Map.of("min", 0, "max", 1));
     launcherTab.addNumber("Speed Current", () -> launcherSpeed);
   }
+
   public Command getAutonomousCommand() {
     return autoChooser.getSelected();
   }
-  
-  
 
   public static Trigger triggerButton (XboxController controller, XboxController.Axis axis) {
     return new Trigger(() -> controller.getRawAxis(axis.value) >= Constants.OIConstants.kDriveDeadband);
   }
+
   /**
    * Use this method to define your button->command mappings. Buttons can be
    * created by
@@ -290,6 +284,7 @@ public class RobotContainer {
   public void slowdown_stop(){
     slowdownMultiplier = 1;
   }
+
   public void periodic() {
     // Read the launcher speed from the dashboard so it can be tuned at runtime
     launcherSpeed = SmartDashboard.getNumber("Launcher/Speed", launcherSpeed);

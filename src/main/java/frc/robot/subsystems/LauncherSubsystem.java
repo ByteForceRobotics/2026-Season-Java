@@ -20,9 +20,6 @@ public class LauncherSubsystem extends SubsystemBase {
   SparkMax m_launcher2; //bottom 
 
   public LauncherSubsystem(){
-    
-
-
     m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);//top
     m_launcher2 = new SparkMax(LauncherConstants.kLauncher2CanId, MotorType.kBrushless);//bottom
     SparkMaxConfig launcher1Config = new SparkMaxConfig();
