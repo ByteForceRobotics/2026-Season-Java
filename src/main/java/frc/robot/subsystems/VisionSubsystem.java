@@ -39,11 +39,21 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic(){
+    
     frontCamera.refreshCam();
     //rearCamera.refreshCam();
     
   }
   public Pose2d getPose(){
     return frontCamera.getPose2d();
+  }
+  public double getDistance(){
+    return frontCamera.getDistance();
+  }
+  public double getPitch(){
+    return frontCamera.getPitch();
+  }
+  public double getYaw(){
+    return frontCamera.getYaw();
   }
 }

@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
@@ -13,11 +14,9 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
-import java.util.Map;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -75,24 +74,32 @@ public class RobotContainer {
   double speedScaleHigh = 1.0;
   double speedScaleLow= 0.33;
   double speedScale = speedScaleHigh;
+  double launchPower = LauncherConstants.kLauncherSpeed;
   
 
   SequentialCommandGroup climblvl1= new RunCommand(
         () -> m_climber.climb(ClimbConstants.kClimbSpeed), m_climber)
         .withTimeout(ClimbConstants.kLevelOneTime)
         .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
-
-  SequentialCommandGroup autoShoot = new RunCommand(()-> m_launcher.launchBoth(.8),m_launcher)
-    .withTimeout(1).andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
-
+    
+  SequentialCommandGroup autoShoot = m_launcher.launchCommand(launchPower).withTimeout(10)
+            .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
+            .beforeStarting(m_launcher.launchCommand(launchPower).withTimeout(0.5)
+            .beforeStarting(m_launcher.launchTopCommand(launchPower).withTimeout(1.0)))
+    .andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
+  ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0.03,true).withTimeout(2);
+  SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
+  
   public RobotContainer() {
     NamedCommands.registerCommand("LevelOneClimb", climblvl1);
-    NamedCommands.registerCommand("ShootOneSec", autoShoot);
+    NamedCommands.registerCommand("ShootAllBalls", autoShoot);
+    NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
+    NamedCommands.registerCommand("TurnToTagCommand", turnToTagCommand());
     // Configure the button bindings
     configureButtonBindings();
     
     autoChooser = AutoBuilder.buildAutoChooser();
-    
+    SmartDashboard.putData("Auto Chooser", autoChooser);
     // Configure default commands
     m_robotDrive.setDefaultCommand(
       // The left stick controls translation of the robot.
@@ -118,18 +125,6 @@ public class RobotContainer {
 
     // Another option that allows you to specify the default auto by its name
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
-    
-    SmartDashboard.putData("Auto Chooser", autoChooser);
-    // Add a SmartDashboard tunable for launcher speed but don't overwrite any existing value
-    if (!SmartDashboard.containsKey("Launcher/Speed")) {
-      SmartDashboard.putNumber("Launcher/Speed", launcherSpeed);
-    }
-    // Add a Shuffleboard slider bound to the same NetworkTable key so users can edit it visually
-    var launcherTab = Shuffleboard.getTab("Launcher");
-    launcherTab.add("Launcher/Speed", SmartDashboard.getNumber("Launcher/Speed", launcherSpeed))
-        .withWidget(BuiltInWidgets.kNumberSlider)
-        .withProperties(Map.of("min", 0, "max", 1));
-    launcherTab.addNumber("Speed Current", () -> launcherSpeed);
   }
 
   public Command getAutonomousCommand() {
@@ -225,11 +220,14 @@ public class RobotContainer {
             m_climber));
     */
     ///*
-      new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(m_launcher.launchCommand(launcherSpeed)
+    new JoystickButton(m_driverController, Button.kBack.value)
+      .onTrue(autoShoot);
+    
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
+        .whileTrue(m_launcher.launchCommand(launchPower)
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-            .beforeStarting(m_launcher.launchTopCommand(launcherSpeed)
-            .withTimeout(1)))
+            .beforeStarting(m_launcher.launchCommand(launchPower).withTimeout(0.5)
+            .beforeStarting(m_launcher.launchTopCommand(launchPower).withTimeout(0.5))))
         .onFalse(m_launcher.launchStopCommand()
             .alongWith(m_agitator.agitateStopCommand(0))); 
     /* 
@@ -284,11 +282,90 @@ public class RobotContainer {
   public void slowdown_stop(){
     slowdownMultiplier = 1;
   }
+  
+  public Command turnToTagCommand(){
+    return new RunCommand(()->{
+        double yawToTag = m_vision.getYaw();
+        double rawLeftY = m_driverController.getLeftY() * speedScale * slowdownMultiplier;
+        double rawLeftX = m_driverController.getLeftX() * speedScale * slowdownMultiplier;
+        double rawRightX;
+        if(Math.abs(yawToTag)>7){
+          rawRightX = 0.7*yawToTag/Math.abs(yawToTag);
+        }
+        else if(Math.abs(yawToTag)>5){
+          rawRightX = 0.3*yawToTag/Math.abs(yawToTag);
+        }
+        else{
+          rawRightX = 0;
+        }
+        double dbLeftY = MathUtil.applyDeadband(rawLeftY, OIConstants.kDriveDeadband);
+        double dbLeftX = MathUtil.applyDeadband(rawLeftX, OIConstants.kDriveDeadband);
+        double dbRightX = MathUtil.applyDeadband(rawRightX, OIConstants.kDriveDeadband);
+
+        double sqLeftY = Math.copySign(dbLeftY * dbLeftY, dbLeftY);
+        double sqLeftX = Math.copySign(dbLeftX * dbLeftX, dbLeftX);
+        double sqRightX = Math.copySign(dbRightX * dbRightX, dbRightX);
+
+        m_robotDrive.drive(-sqLeftY, -sqLeftX, -sqRightX, fieldRelative);
+    });
+  }
 
   public void periodic() {
     // Read the launcher speed from the dashboard so it can be tuned at runtime
-    launcherSpeed = SmartDashboard.getNumber("Launcher/Speed", launcherSpeed);
-    SmartDashboard.putNumber("Launcher/Speed_Current", launcherSpeed);
+    //launcherSpeed = SmartDashboard.getNumber("Launcher/Speed", launcherSpeed);
+    
     SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
+    SmartDashboard.putNumber("CamCalcDistance",m_vision.getDistance());
+    double distance = m_vision.getDistance();
+    distance = distance*Math.cos(Math.toRadians(m_vision.getPitch()));
+    launchPower = LauncherConstants.kLauncherSpeed;
+
+    if(distance>0){
+      try{
+        launchPower = scaleDistanceToPower(distance);
+      }
+      catch(Exception e){
+        //if range outside excpeted, just use default launcher speed
+        launchPower = LauncherConstants.kLauncherSpeed;
+      }
+    }
+    SmartDashboard.putNumber("CamCalcHorizDistance",distance);
+    SmartDashboard.putNumber("calcLaunchPower",launchPower);
   }
+  private double scaleDistanceToPower(double distance) {
+    double maxPower = 0.8;
+    double minPower = 0.5;
+    double scaledPower = 0.65;
+    SmartDashboard.putNumber("Scaled Power", scaledPower);
+    return MathUtil.clamp(scaledPower, minPower, maxPower);
+  }
+          
+        
+          public static double calculateLaunchSpeed(double horizontalDistance, double verticalDistance, double launchAngleDegrees, double gravity) {
+        // Convert angle from degrees to radians for Java Math functions
+        double launchAngleRadians = Math.toRadians(launchAngleDegrees);
+        double tanAngle = Math.tan(launchAngleRadians);
+        double cosAngle = Math.cos(launchAngleRadians);
+
+        // The trajectory equation (ignoring air resistance) is y = x*tan(theta) - (g*x^2) / (2*v0^2*cos^2(theta))
+        // Rearranging to solve for initial velocity (v0):
+        // (g*x^2) / (2*v0^2*cos^2(theta)) = x*tan(theta) - y
+        // v0^2 = (g*x^2) / (2*cos^2(theta) * (x*tan(theta) - y))
+        // v0 = sqrt((g*x^2) / (2*cos^2(theta) * (x*tan(theta) - y)))
+
+        // Calculate the denominator part first to avoid division by zero errors
+        double denominator = 2 * Math.pow(cosAngle, 2) * (horizontalDistance * tanAngle - verticalDistance);
+
+        if (denominator <= 0) {
+            throw new IllegalArgumentException("Cannot reach the target with the specified angle. The trajectory does not intersect the target point.");
+        }
+
+        double speedSquared = (gravity * Math.pow(horizontalDistance, 2)) / denominator;
+
+        if (speedSquared < 0) {
+             throw new IllegalArgumentException("Cannot reach the target with the specified angle. Invalid physical parameters result in negative speed squared.");
+        }
+        
+        return Math.sqrt(speedSquared);
+    }
 }

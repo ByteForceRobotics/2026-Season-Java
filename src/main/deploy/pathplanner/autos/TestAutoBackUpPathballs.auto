@@ -7,19 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Test Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "OtherPath"
+            "pathName": "BackUpPath"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootOneSec"
+            "name": "ShootAllBalls"
           }
         }
       ]

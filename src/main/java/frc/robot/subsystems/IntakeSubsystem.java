@@ -36,7 +36,7 @@ public class IntakeSubsystem extends SubsystemBase {
     SoftLimitConfig softLimitConfig = new SoftLimitConfig();
   
     softLimitConfig
-      .forwardSoftLimit(IntakeConstants.kLifterMaxHeight)//positive
+      .forwardSoftLimit(0.3)//positive
       .reverseSoftLimit(0)
       .forwardSoftLimitEnabled(false)
       .reverseSoftLimitEnabled(false);

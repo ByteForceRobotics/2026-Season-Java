@@ -90,13 +90,13 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int kIntakeLifterCanId = 11;
     public static final int kIntakeCanId = 12;
-    public static final int kIntakeCurrentLimit = 30;//set this
+    public static final int kIntakeCurrentLimit = 40;//set this
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
-    public static final IdleMode kLifterIdleMode = IdleMode.kBrake;
+    public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
     public static final double kLifterMaxHeight = 4; //set this
-    public static final double kIntakeDefaultSpeed = 0.6;
-    public static final double kLiftDefaultSpeed = 1;
+    public static final double kIntakeDefaultSpeed = 0.55;
+    public static final double kLiftDefaultSpeed = 0.3;
   }
   
   public static final class LauncherConstants {

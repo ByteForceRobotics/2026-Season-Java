@@ -32,6 +32,8 @@ import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 
@@ -122,9 +124,9 @@ public class DriveSubsystem extends SubsystemBase{
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    Pose2d robPose = m_driveEstimator.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
-        getModulePositions());
+    // Pose2d robPose = m_driveEstimator.update(
+    //     Rotation2d.fromDegrees(m_gyro.getAngle()),
+    //     getModulePositions());
     
     // Do this in either robot periodic or subsystem periodic
     m_field.setRobotPose(m_driveEstimator.getEstimatedPosition());
@@ -160,6 +162,12 @@ public class DriveSubsystem extends SubsystemBase{
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         getModulePositions(),
         pose);
+  }
+  public void resetOdometry() {
+    m_driveEstimator.resetPosition(
+        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        getModulePositions(),
+        new Pose2d());
   }
   public ChassisSpeeds getRobotRelativeSpeeds(){
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
@@ -197,6 +205,9 @@ public class DriveSubsystem extends SubsystemBase{
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+  }
+  public Command driveCommand(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
+    return this.run(() -> drive(xSpeed,ySpeed,rot,true)).finallyDo(() -> drive(0,0,0,true));
   }
 
   /**

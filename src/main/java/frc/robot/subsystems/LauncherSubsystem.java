@@ -72,6 +72,9 @@ public class LauncherSubsystem extends SubsystemBase {
   public Command launchTopCommand(double xSpeed) {
     return this.run(() -> launchTop(xSpeed)).finallyDo(() -> launch_stop());
  }
+  public Command launchBottomCommand(double xSpeed){
+    return this.run(() -> launchBottom(xSpeed)).finallyDo(() -> launch_stop());
+  }
 
   public Command launchStopCommand() {
     return this.runOnce(() -> launch_stop());
