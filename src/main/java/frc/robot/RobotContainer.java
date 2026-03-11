@@ -45,7 +45,7 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final VisionSubsystem m_vision = new VisionSubsystem();
-  private final ClimbSubsystem m_climber = new ClimbSubsystem();
+  //private final ClimbSubsystem m_climber = new ClimbSubsystem();
   //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
@@ -77,10 +77,10 @@ public class RobotContainer {
   double launchPower = LauncherConstants.kLauncherSpeed;
   
 
-  SequentialCommandGroup climblvl1= new RunCommand(
-        () -> m_climber.climb(ClimbConstants.kClimbSpeed), m_climber)
-        .withTimeout(ClimbConstants.kLevelOneTime)
-        .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
+  // SequentialCommandGroup climblvl1= new RunCommand(
+  //       () -> m_climber.climb(ClimbConstants.kClimbSpeed), m_climber)
+  //       .withTimeout(ClimbConstants.kLevelOneTime)
+  //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
     
   SequentialCommandGroup autoShoot = m_launcher.launchCommand(launchPower).withTimeout(10)
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
@@ -91,7 +91,7 @@ public class RobotContainer {
   SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
   
   public RobotContainer() {
-    NamedCommands.registerCommand("LevelOneClimb", climblvl1);
+    //NamedCommands.registerCommand("LevelOneClimb", climblvl1);
     NamedCommands.registerCommand("ShootAllBalls", autoShoot);
     NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
     NamedCommands.registerCommand("TurnToTagCommand", turnToTagCommand());
@@ -175,19 +175,19 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kLeftStick.value)
         .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
 
-    new POVButton(m_driverController, 0)
-        .whileTrue(new InstantCommand(
-            () -> m_climber.climb(ClimbConstants.kClimbSpeed),
-            m_climber)).onFalse(new InstantCommand(
-                () -> m_climber.pull_stop(),
-                m_climber));
+    // new POVButton(m_driverController, 0)
+    //     .whileTrue(new InstantCommand(
+    //         () -> m_climber.climb(ClimbConstants.kClimbSpeed),
+    //         m_climber)).onFalse(new InstantCommand(
+    //             () -> m_climber.pull_stop(),
+    //             m_climber));
     
-    new POVButton(m_driverController, 180)
-        .whileTrue(new InstantCommand(
-            () -> m_climber.climb(-ClimbConstants.kClimbSpeed),
-            m_climber)).onFalse(new InstantCommand(
-                () -> m_climber.pull_stop(),
-                m_climber));
+    // new POVButton(m_driverController, 180)
+    //     .whileTrue(new InstantCommand(
+    //         () -> m_climber.climb(-ClimbConstants.kClimbSpeed),
+    //         m_climber)).onFalse(new InstantCommand(
+    //             () -> m_climber.pull_stop(),
+    //             m_climber));
     
     new POVButton(m_driverController, 90)
         .whileTrue(m_intake.liftCommand(IntakeConstants.kLiftDefaultSpeed))
