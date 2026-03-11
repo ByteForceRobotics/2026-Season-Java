@@ -81,13 +81,14 @@ public class RobotContainer {
   //       () -> m_climber.climb(ClimbConstants.kClimbSpeed), m_climber)
   //       .withTimeout(ClimbConstants.kLevelOneTime)
   //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
-    
-  SequentialCommandGroup autoShoot = m_launcher.launchCommand(launchPower).withTimeout(10)
+  
+  double autoShootLaunchSpeed = 0.65;
+  SequentialCommandGroup autoShoot = m_launcher.launchCommand(autoShootLaunchSpeed).withTimeout(10)
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-            .beforeStarting(m_launcher.launchCommand(launchPower).withTimeout(0.5)
-            .beforeStarting(m_launcher.launchTopCommand(launchPower).withTimeout(1.0)))
+            .beforeStarting(m_launcher.launchCommand(autoShootLaunchSpeed).withTimeout(0.5)
+            .beforeStarting(m_launcher.launchTopCommand(autoShootLaunchSpeed).withTimeout(1.0)))
     .andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
-  ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0.03,true).withTimeout(2);
+  ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0,true).withTimeout(2);
   SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
   
   public RobotContainer() {
@@ -250,6 +251,9 @@ public class RobotContainer {
 
     new JoystickButton(m_driverController, Button.kB.value)
         .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+        
+    new JoystickButton(m_driverController, Button.kA.value)
+        .whileTrue(m_robotDrive.turnToRotation(45));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
         .onTrue(m_intake.intakeToggleCommand());
