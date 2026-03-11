@@ -13,12 +13,6 @@
         {
           "type": "named",
           "data": {
-            "name": "TurnToTagCommand"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "ShootAllBalls"
           }
         }
