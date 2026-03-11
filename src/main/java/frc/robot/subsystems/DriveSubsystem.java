@@ -20,6 +20,7 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -63,6 +64,11 @@ public class DriveSubsystem extends SubsystemBase{
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
+  PIDController turnController;
+  static final double kP = 0.03;
+  static final double kI = 0.00;
+  static final double kD = 0.00;
+  static final double kF = 0.00;
 
   //simulation
   private final Field2d m_field = new Field2d();
@@ -95,6 +101,10 @@ public class DriveSubsystem extends SubsystemBase{
       e.printStackTrace();
     }
 
+    turnController = new PIDController(kP, kI, kD);
+    turnController.setTolerance(5.0); // tolerance in degrees
+    turnController.enableContinuousInput(-180, 180); // for continuous rotation
+    
     // Configure AutoBuilder last
     AutoBuilder.configure(
             this::getPose, // Robot pose supplier
@@ -103,7 +113,7 @@ public class DriveSubsystem extends SubsystemBase{
             (speeds, feedforwards) -> drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                     new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(3.0, 0.0, 0.0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -163,11 +173,12 @@ public class DriveSubsystem extends SubsystemBase{
         getModulePositions(),
         pose);
   }
+
   public void resetOdometry() {
     m_driveEstimator.resetPosition(
         Rotation2d.fromDegrees(m_gyro.getAngle()),
         getModulePositions(),
-        new Pose2d());
+        getPose());
   }
   public ChassisSpeeds getRobotRelativeSpeeds(){
     return DriveConstants.kDriveKinematics.toChassisSpeeds(
@@ -184,7 +195,7 @@ public class DriveSubsystem extends SubsystemBase{
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
-   * @param rot           Angular rate of the robot.
+   * @param rot           Angular rate of the robot.In Radians per second.
    * @param fieldRelative Whether the provided x and y speeds are relative to the
    *                      field.
    */
@@ -206,8 +217,22 @@ public class DriveSubsystem extends SubsystemBase{
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
+
   public Command driveCommand(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    return this.run(() -> drive(xSpeed,ySpeed,rot,true)).finallyDo(() -> drive(0,0,0,true));
+    return this.run(() -> drive(xSpeed,ySpeed,rot,true))
+      .finallyDo(() -> drive(0,0,0,true));
+  }
+
+  public void turnToRotationFnc(double targetDegrees){
+    double output = turnController.calculate(m_gyro.getAngle(), targetDegrees);
+    System.out.println("output: " + output + "gyro ang: " + m_gyro.getAngle() + "target deg: " + targetDegrees);
+    drive(0, 0, output, false);
+  }
+
+  public Command turnToRotation(double targetDegrees) {
+    return this.run(() -> {turnToRotationFnc(targetDegrees);})
+    .until(() -> turnController.atSetpoint())
+    .finallyDo(() -> drive(0, 0, 0, false));
   }
 
   /**
