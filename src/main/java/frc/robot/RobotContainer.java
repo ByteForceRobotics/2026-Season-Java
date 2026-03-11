@@ -252,8 +252,7 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
-        .whileTrue(m_intake.intakeCommand(Constants.IntakeConstants.kIntakeDefaultSpeed))
-        .onFalse(m_intake.intakeStopCommand());
+        .onTrue(m_intake.intakeToggleCommand());
       
     new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(m_agitator.agitateToggleCommand());
@@ -261,10 +260,6 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kStart.value)
         .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
         .onFalse(m_agitator.agitateStopCommand(0));
-    
-
-
-   
   }
 
   public void changeScale(){

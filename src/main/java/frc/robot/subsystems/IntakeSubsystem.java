@@ -97,11 +97,15 @@ public class IntakeSubsystem extends SubsystemBase {
   public Command intakeStopCommand() {
     return this.runOnce(() -> intake_stop());
   }
+  public Command intakeToggleCommand(){
+    return this.runOnce(()->intake_toggle());
+  }
 
   
   @Override
   public void periodic(){
     double lifterPos = m_intakeLifter.getEncoder().getPosition();
     SmartDashboard.putNumber("lifterPos", lifterPos);
+    SmartDashboard.putBoolean("Intake On", intakeOn);
   }
 }
