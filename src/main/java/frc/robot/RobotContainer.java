@@ -228,7 +228,7 @@ public class RobotContainer {
         .whileTrue(m_launcher.launchCommand(launchPower)
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
             .beforeStarting(m_launcher.launchCommand(launchPower).withTimeout(0.5)
-            .beforeStarting(m_launcher.launchTopCommand(launchPower).withTimeout(0.5))))
+            .beforeStarting(m_launcher.launchTopCommand(launchPower).withTimeout(0.7))))
         .onFalse(m_launcher.launchStopCommand()
             .alongWith(m_agitator.agitateStopCommand(0))); 
     /* 
@@ -334,7 +334,7 @@ public class RobotContainer {
   private double scaleDistanceToPower(double distance) {
     double maxPower = 0.8;
     double minPower = 0.5;
-    double scaledPower = 0.65;
+    double scaledPower = launchPower;
     SmartDashboard.putNumber("Scaled Power", scaledPower);
     return MathUtil.clamp(scaledPower, minPower, maxPower);
   }

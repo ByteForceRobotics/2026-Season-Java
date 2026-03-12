@@ -62,7 +62,7 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public void launchBoth(double xSpeed) {
     launchTop(xSpeed);
-    launchBottom(0.6);
+    launchBottom(0.25);
   }
 
   public Command launchCommand(double xSpeed) {

@@ -105,7 +105,7 @@ public final class Constants {
     public static final int kLauncher1CurrentLimit = 40;//set this
     public static final int kLauncher2CurrentLimit = 40;//set this
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
-    public static final double kLauncherSpeed = 0.65;
+    public static final double kLauncherSpeed = 0.75;
   }
   
   public static final class AgitatorConstants{
@@ -116,7 +116,7 @@ public final class Constants {
   }
 
   public static final class CameraConstants {
-    public static final double kFrontCamHeight = 0;//set this
+    public static final double kFrontCamHeight = 0.508;//set this
     public static final double kRearCamHeight = 0;//set this
     public static final double kFrontXOffset = 0;
     public static final double kFrontYOffset = 0;
