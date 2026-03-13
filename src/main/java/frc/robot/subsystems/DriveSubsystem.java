@@ -64,7 +64,7 @@ public class DriveSubsystem extends SubsystemBase{
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   //private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
   private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
-  PIDController turnController;
+  PIDController PIDTurnGyro;
   static final double kP = 0.03;
   static final double kI = 0.00;
   static final double kD = 0.00;
@@ -101,9 +101,9 @@ public class DriveSubsystem extends SubsystemBase{
       e.printStackTrace();
     }
 
-    turnController = new PIDController(kP, kI, kD);
-    turnController.setTolerance(5.0); // tolerance in degrees
-    turnController.enableContinuousInput(-180, 180); // for continuous rotation
+    PIDTurnGyro = new PIDController(kP, kI, kD);
+    PIDTurnGyro.setTolerance(5.0); // tolerance in degrees
+    PIDTurnGyro.enableContinuousInput(-180, 180); // for continuous rotation
     
     // Configure AutoBuilder last
     AutoBuilder.configure(
@@ -224,14 +224,14 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   public void turnToRotationFnc(double targetDegrees){
-    double output = turnController.calculate(m_gyro.getAngle(), targetDegrees);
+    double output = PIDTurnGyro.calculate(m_gyro.getAngle(), targetDegrees);
     System.out.println("output: " + output + "gyro ang: " + m_gyro.getAngle() + "target deg: " + targetDegrees);
     drive(0, 0, output, false);
   }
 
   public Command turnToRotation(double targetDegrees) {
     return this.run(() -> {turnToRotationFnc(targetDegrees);})
-    .until(() -> turnController.atSetpoint())
+    .until(() -> PIDTurnGyro.atSetpoint())
     .finallyDo(() -> drive(0, 0, 0, false));
   }
 
