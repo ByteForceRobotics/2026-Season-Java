@@ -68,25 +68,13 @@ public class Camera
                     //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
                     PhotonTrackedTarget target = CamResult.getTargets().get(i);
                     this.targetId = target.getFiducialId();
-                    if(this.targetId == 11){
-                        seenRedRight11 = true;
-                    }
-                    if(this.targetId == 8){
-                        seenRedLeft8 = true;
-                    }
-                    if(this.targetId == 27){
-                        seenBlueRight27 = true;
-                    }
-                    if(this.targetId == 24){
-                        seenBlueLeft24 = true;
-                    }
-                    if(this.targetId != 14&&this.targetId != 26){continue;}
+                    if(this.targetId != 16&&this.targetId != 26){continue;}
 
                     //all measurements are in degrees
                     this.yaw = target.getYaw();// horizontal  rotation
                     this.pitch = target.getPitch();
                     this.area = target.getArea();
-                    System.out.println(this.yaw+"    "+this.pitch);
+                    //System.out.println(this.yaw+"    "+this.pitch);
                     
                     noTargetCounter = 0;
                     Translation2d  camToTargetTranslation = PhotonUtils.estimateCameraToTargetTranslation(this.distance,Rotation2d.fromDegrees(-this.yaw));
