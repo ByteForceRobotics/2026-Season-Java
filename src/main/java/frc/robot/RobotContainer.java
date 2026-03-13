@@ -27,6 +27,7 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.TurnToTagCommand;
 import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
@@ -253,7 +254,7 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
         
     new JoystickButton(m_driverController, Button.kA.value)
-        .whileTrue(m_robotDrive.turnToRotation(45));
+        .whileTrue(new TurnToTagCommand(m_robotDrive, m_vision));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
         .onTrue(m_intake.intakeToggleCommand());
@@ -283,30 +284,7 @@ public class RobotContainer {
   }
   
   public Command turnToTagCommand(){
-    return new RunCommand(()->{
-        double yawToTag = m_vision.getYaw();
-        double rawLeftY = m_driverController.getLeftY() * speedScale * slowdownMultiplier;
-        double rawLeftX = m_driverController.getLeftX() * speedScale * slowdownMultiplier;
-        double rawRightX;
-        if(Math.abs(yawToTag)>7){
-          rawRightX = 0.7*yawToTag/Math.abs(yawToTag);
-        }
-        else if(Math.abs(yawToTag)>5){
-          rawRightX = 0.3*yawToTag/Math.abs(yawToTag);
-        }
-        else{
-          rawRightX = 0;
-        }
-        double dbLeftY = MathUtil.applyDeadband(rawLeftY, OIConstants.kDriveDeadband);
-        double dbLeftX = MathUtil.applyDeadband(rawLeftX, OIConstants.kDriveDeadband);
-        double dbRightX = MathUtil.applyDeadband(rawRightX, OIConstants.kDriveDeadband);
-
-        double sqLeftY = Math.copySign(dbLeftY * dbLeftY, dbLeftY);
-        double sqLeftX = Math.copySign(dbLeftX * dbLeftX, dbLeftX);
-        double sqRightX = Math.copySign(dbRightX * dbRightX, dbRightX);
-
-        m_robotDrive.drive(-sqLeftY, -sqLeftX, -sqRightX, fieldRelative);
-    });
+    return new TurnToTagCommand(m_robotDrive, m_vision);
   }
 
   public void periodic() {
