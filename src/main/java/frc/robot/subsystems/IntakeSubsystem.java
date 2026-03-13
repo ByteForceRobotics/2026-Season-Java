@@ -85,6 +85,10 @@ public class IntakeSubsystem extends SubsystemBase {
     
 
   }
+  public double getLifterPosition() {
+    return m_intakeLifter.getEncoder().getPosition();
+  }
+
   public Command liftCommand(double xSpeed) {
     return this.run(() -> lift(xSpeed)).finallyDo(() -> lift_stop());
   }
