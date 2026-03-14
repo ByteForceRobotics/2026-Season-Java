@@ -6,8 +6,7 @@ TODO:
 
 * Autonomous
   * figure out detecting mutlipe april tags
-    * work with copilot to make the robot go to field rather than april tag 
-  * make functions like drive to april tags n stuff
+
 
 
 * Climber
@@ -16,12 +15,9 @@ TODO:
   * add managing the hooks(i kinda forgot the mechanism we were planning on using so i didnt add it)
 
 * launcher
-  * finish working with copilot to add a slider/changeable value
-  * make a way  to have  it spin to a certain speed rather than have the motor provide x% of power
 
 
 * agitator
-  * make it spin backwards when not feeding shooter
   * 
 
 * photon vision
@@ -33,8 +29,6 @@ TODO:
   * quality of life: fix the bug that has the wheels snap to position when going to deadband
     * look into advantage scope
     * play with PID controls
-  * look into exponential drive
-  * look into adding a trigger for driving slowdown
 
 * Controller Button Bindings
   * button mappings as of 10/25 11:13 AM are located at:
