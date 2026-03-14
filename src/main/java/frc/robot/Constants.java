@@ -102,10 +102,11 @@ public final class Constants {
   public static final class LauncherConstants {
     public static final int kLauncher1CanId = 13;//top
     public static final int kLauncher2CanId = 14;//bottom
-    public static final int kLauncher1CurrentLimit = 40;//set this
-    public static final int kLauncher2CurrentLimit = 40;//set this
+    public static final int kLauncher1CurrentLimit = 40;
+    public static final int kLauncher2CurrentLimit = 40;
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
-    public static final double kLauncherSpeed = 0.75;
+    public static final double kLauncherSpeed = 0.65;
+    public static final double kLauncherAngle = 13;//degreess
   }
   
   public static final class AgitatorConstants{

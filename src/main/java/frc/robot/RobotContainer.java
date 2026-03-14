@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
@@ -97,11 +99,16 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootAllBalls", autoShoot);
     NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
     NamedCommands.registerCommand("TurnToTagCommand", turnToTagCommand());
+    SmartDashboard.putNumber("Launcher/LaunchPower", launchPower);
     // Configure the button bindings
     configureButtonBindings();
     
     autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    
+    // Setup Shuffleboard launcher control tab
+    ShuffleboardTab launcherTab = Shuffleboard.getTab("Launcher");
+    
     // Configure default commands
     m_robotDrive.setDefaultCommand(
       // The left stick controls translation of the robot.
@@ -226,10 +233,10 @@ public class RobotContainer {
       .onTrue(autoShoot);
     
     new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(m_launcher.launchCommand(launchPower)
+        .whileTrue(m_launcher.launchCommand()
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-            .beforeStarting(m_launcher.launchCommand(launchPower).withTimeout(0.5)
-            .beforeStarting(m_launcher.launchTopCommand(launchPower).withTimeout(0.7))))
+            .beforeStarting(m_launcher.launchCommand().withTimeout(0.5)
+            .beforeStarting(m_launcher.launchTopCommand().withTimeout(0.7))))
         .onFalse(m_launcher.launchStopCommand()
             .alongWith(m_agitator.agitateStopCommand(0))); 
     /* 
@@ -288,26 +295,33 @@ public class RobotContainer {
   }
 
   public void periodic() {
-    // Read the launcher speed from the dashboard so it can be tuned at runtime
-    //launcherSpeed = SmartDashboard.getNumber("Launcher/Speed", launcherSpeed);
+    // Initialize launch power on dashboard if not already present
     
+    
+    // Read launch power from dashboard so it can be tuned at runtime
+    //System.out.println("launchPower1 " + launchPower);
+    launchPower = SmartDashboard.getNumber("Launcher/LaunchPower", 0.2);
+    m_launcher.updateLaunchPower(launchPower);
+    //System.out.println("launchPower2 " + launchPower);
+    SmartDashboard.putNumber("Launcher/LaunchPowerValue", launchPower);
     SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
-    SmartDashboard.putNumber("CamCalcDistance",m_vision.getDistance());
-    double distance = m_vision.getDistance();
-    distance = distance*Math.cos(Math.toRadians(m_vision.getPitch()));
-    launchPower = LauncherConstants.kLauncherSpeed;
+    SmartDashboard.putNumber("CamDistance",m_vision.getDistance());
 
-    if(distance>0){
-      try{
-        launchPower = scaleDistanceToPower(distance);
-      }
-      catch(Exception e){
-        //if range outside excpeted, just use default launcher speed
-        launchPower = LauncherConstants.kLauncherSpeed;
-      }
-    }
-    SmartDashboard.putNumber("CamCalcHorizDistance",distance);
-    SmartDashboard.putNumber("calcLaunchPower",launchPower);
+
+    double distance = m_vision.getDistance();
+    double horizontalDistance = distance*Math.cos(Math.toRadians(m_vision.getPitch()));
+    double verticalDistance = distance*Math.sin(Math.toRadians(m_vision.getPitch()));
+
+    // if(distance>0){
+    //   try{
+    //     launchPower = scaleDistanceToPower(horizontalDistance);
+    //   }
+    //   catch(Exception e){
+    //     //if range outside excpeted, just use default launcher speed
+    //     launchPower = LauncherConstants.kLauncherSpeed;
+    //   }
+    // }
+    SmartDashboard.putNumber("CamCalcHorizDistance", horizontalDistance);
   }
   private double scaleDistanceToPower(double distance) {
     double maxPower = 0.8;
@@ -317,32 +331,4 @@ public class RobotContainer {
     return MathUtil.clamp(scaledPower, minPower, maxPower);
   }
           
-        
-          public static double calculateLaunchSpeed(double horizontalDistance, double verticalDistance, double launchAngleDegrees, double gravity) {
-        // Convert angle from degrees to radians for Java Math functions
-        double launchAngleRadians = Math.toRadians(launchAngleDegrees);
-        double tanAngle = Math.tan(launchAngleRadians);
-        double cosAngle = Math.cos(launchAngleRadians);
-
-        // The trajectory equation (ignoring air resistance) is y = x*tan(theta) - (g*x^2) / (2*v0^2*cos^2(theta))
-        // Rearranging to solve for initial velocity (v0):
-        // (g*x^2) / (2*v0^2*cos^2(theta)) = x*tan(theta) - y
-        // v0^2 = (g*x^2) / (2*cos^2(theta) * (x*tan(theta) - y))
-        // v0 = sqrt((g*x^2) / (2*cos^2(theta) * (x*tan(theta) - y)))
-
-        // Calculate the denominator part first to avoid division by zero errors
-        double denominator = 2 * Math.pow(cosAngle, 2) * (horizontalDistance * tanAngle - verticalDistance);
-
-        if (denominator <= 0) {
-            throw new IllegalArgumentException("Cannot reach the target with the specified angle. The trajectory does not intersect the target point.");
-        }
-
-        double speedSquared = (gravity * Math.pow(horizontalDistance, 2)) / denominator;
-
-        if (speedSquared < 0) {
-             throw new IllegalArgumentException("Cannot reach the target with the specified angle. Invalid physical parameters result in negative speed squared.");
-        }
-        
-        return Math.sqrt(speedSquared);
-    }
 }

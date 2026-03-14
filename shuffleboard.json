@@ -537,8 +537,8 @@
         "tiles": {
           "0,0": {
             "size": [
-              3,
-              2
+              10,
+              4
             ],
             "content": {
               "_type": "Camera Stream",
@@ -550,10 +550,10 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
+              "compression": 46.0,
               "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
+              "imageWidth": 320,
+              "imageHeight": 180
             }
           }
         }
@@ -642,31 +642,10 @@
               "Crosshair/Crosshair color": "#FFFFFFFF",
               "Controls/Show controls": true,
               "Controls/Rotation": "NONE",
-              "compression": -1.0,
+              "compression": 46.0,
               "fps": -1,
-              "imageWidth": 0,
-              "imageHeight": 0
-            }
-          },
-          "0,2": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://photonvision_Port_1184_Output_MJPEG_Server",
-              "_title": "photonvision_Port_1184_Output_MJPEG_Server",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "NONE",
-              "compression": -1.0,
-              "fps": -1,
-              "imageWidth": -1,
-              "imageHeight": -1
+              "imageWidth": 320,
+              "imageHeight": 180
             }
           },
           "5,2": {

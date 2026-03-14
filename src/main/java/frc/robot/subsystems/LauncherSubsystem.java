@@ -15,16 +15,19 @@ import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.LauncherConstants;
 
 public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   SparkMax m_launcher1; //top flywheel
   SparkMax m_launcher2; //bottom 
+  double launchPower;
 
   public LauncherSubsystem(){
     m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);//top
     m_launcher2 = new SparkMax(LauncherConstants.kLauncher2CanId, MotorType.kBrushless);//bottom
+    launchPower = 0;
     SparkMaxConfig launcher1Config = new SparkMaxConfig();
     SparkMaxConfig launcher2Config = new SparkMaxConfig();
     
@@ -74,7 +77,11 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public void launchBoth(double xSpeed) {
     launchTop(xSpeed);
-    launchBottom(0.25);
+    System.out.println(xSpeed);
+    launchBottom(xSpeed/4);
+  }
+  public void updateLaunchPower(double power){
+    launchPower = power;
   }
 
   // ===== RPM-based velocity control methods =====
@@ -132,6 +139,18 @@ public class LauncherSubsystem extends SubsystemBase {
     return this.run(() -> launchBottom(xSpeed)).finallyDo(() -> launch_stop());
   }
 
+
+
+  //method  overloading to have adjustable power, and adjustablle auto power
+  public Command launchCommand() {
+    return this.run(() -> launchBoth(launchPower)).finallyDo(() -> launch_stop());
+  }
+  public Command launchTopCommand() {
+    return this.run(() -> launchTop(launchPower)).finallyDo(() -> launch_stop());
+   }
+  public Command launchBottomCommand(){
+    return this.run(() -> launchBottom(launchPower)).finallyDo(() -> launch_stop());
+  }
   // ===== RPM-based command methods =====
 
   /**
@@ -176,7 +195,7 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public void periodic(){
     // Publish current RPM to SmartDashboard for monitoring
-    edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putNumber("Launcher/TopRPM", getTopRPM());
-    edu.wpi.first.wpilibj.smartdashboard.SmartDashboard.putNumber("Launcher/BottomRPM", getBottomRPM());
+    SmartDashboard.putNumber("Launcher/TopRPM", getTopRPM());
+    SmartDashboard.putNumber("Launcher/BottomRPM", getBottomRPM());
   }
 }
