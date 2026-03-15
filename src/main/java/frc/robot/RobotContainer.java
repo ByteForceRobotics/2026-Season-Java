@@ -29,6 +29,7 @@ import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.GoToPositionLifterCommand;
 import frc.robot.commands.TurnToTagCommand;
 import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -86,10 +87,10 @@ public class RobotContainer {
   //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
   
   double autoShootLaunchSpeed = 0.65;
-  SequentialCommandGroup autoShoot = m_launcher.launchCommand(autoShootLaunchSpeed).withTimeout(10)
+  SequentialCommandGroup autoShoot = m_launcher.launchCommand(autoShootLaunchSpeed).withTimeout(5)
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-            .beforeStarting(m_launcher.launchCommand(autoShootLaunchSpeed).withTimeout(0.5)
-            .beforeStarting(m_launcher.launchTopCommand(autoShootLaunchSpeed).withTimeout(1.0)))
+            .beforeStarting(m_launcher.launchCommand(autoShootLaunchSpeed).withTimeout(0.5)//this section might be redundant since no agitator(i think)
+            .beforeStarting(m_launcher.launchTopCommand(autoShootLaunchSpeed).withTimeout(0.5))) 
     .andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
   ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0,true).withTimeout(2);
   SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
@@ -99,6 +100,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootAllBalls", autoShoot);
     NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
     NamedCommands.registerCommand("TurnToTagCommand", turnToTagCommand());
+    NamedCommands.registerCommand("IntakeToggleCommand", m_intake.intakeToggleCommand());
+    NamedCommands.registerCommand("LifterLower", new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLower));
+    NamedCommands.registerCommand("LifterLift", new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
+    
     SmartDashboard.putNumber("Launcher/LaunchPower", launchPower);
     // Configure the button bindings
     configureButtonBindings();
@@ -235,24 +240,11 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .whileTrue(m_launcher.launchCommand()
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-            .beforeStarting(m_launcher.launchCommand().withTimeout(0.5)
+            .beforeStarting(m_launcher.launchCommand().withTimeout(0.5)//this section might be redundant since no agitator(i think)
             .beforeStarting(m_launcher.launchTopCommand().withTimeout(0.7))))
         .onFalse(m_launcher.launchStopCommand()
             .alongWith(m_agitator.agitateStopCommand(0))); 
-    /* 
-    SequentialCommandGroup launchSuperCool = new RunCommand(
-        () -> m_launcher.launch(LauncherConstants.kLauncherSpeed),
-        m_launcher).alongWith(new RunCommand(
-        () -> m_agitator.agitate(AgitatorConstants.kAgitatorDefaultSpeed),
-        m_agitator)).beforeStarting(new RunCommand(
-        () -> m_launcher.launchTop(LauncherConstants.kLauncherSpeed),
-        m_launcher).withTimeout(0.5)).andThen(new InstantCommand(
-        () -> m_launcher.launch_stop(),
-        m_launcher).alongWith(new RunCommand(
-        () -> m_agitator.agitate_stop(),
-        m_agitator)));
-      */
-    ///*
+            
     new JoystickButton(m_driverController, Button.kRightStick.value)
         .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))
         .onFalse(m_launcher.launchStopCommand());
