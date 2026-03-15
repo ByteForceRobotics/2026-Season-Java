@@ -1,0 +1,61 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BackUpPathRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootAllBalls"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LifterLower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ToFuelPathRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeToggleCommand"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PickUpFuelPathAndReturnRight"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeToggleCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootAllBalls"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
