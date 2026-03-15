@@ -20,16 +20,19 @@ import frc.robot.Constants.LauncherConstants;
 
 public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
-  SparkMax m_launcher1; //top flywheel
-  SparkMax m_launcher2; //bottom 
+  SparkMax m_launcherTopLeft; //top flywheel
+  SparkMax m_launcherTopRight; //bottom 
+  SparkMax m_launcherBottomTop; //top flywheel
+  SparkMax m_launcherBottomBottom; //bottom 
   double launchPower;
 
   public LauncherSubsystem(){
-    m_launcher1 = new SparkMax(LauncherConstants.kLauncher1CanId, MotorType.kBrushless);//top
-    m_launcher2 = new SparkMax(LauncherConstants.kLauncher2CanId, MotorType.kBrushless);//bottom
+    m_launcherTopLeft = new SparkMax(LauncherConstants.kLauncherTopLeftCanId, MotorType.kBrushless);//top
+    m_launcherTopRight = new SparkMax(LauncherConstants.kLauncherTopRightCanId, MotorType.kBrushless);//bottom
+    m_launcherBottomTop = new SparkMax(LauncherConstants.kLauncherBottomTopCanId, MotorType.kBrushless);//top
+    m_launcherBottomBottom = new SparkMax(LauncherConstants.kLauncherBottomBottomCanId, MotorType.kBrushless);//bottom
     launchPower = 0;
-    SparkMaxConfig launcher1Config = new SparkMaxConfig();
-    SparkMaxConfig launcher2Config = new SparkMaxConfig();
+    SparkMaxConfig launcherConfig = new SparkMaxConfig();
     
     // Velocity control PID constants for RPM control
     // NEO motors max out around 5700 RPM
@@ -39,20 +42,17 @@ public class LauncherSubsystem extends SubsystemBase {
         .d(0.0001)
         .outputRange(-1, 1);
       
-    launcher1Config
+    launcherConfig
       .inverted(true)
       .idleMode(LauncherConstants.kLauncherIdleMode)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
       .apply(velocityConfig);
-      
-    launcher2Config
-      .inverted(true)
-      .idleMode(LauncherConstants.kLauncherIdleMode)
-      .smartCurrentLimit(LauncherConstants.kLauncher2CurrentLimit)
-      .apply(velocityConfig);
 
-    m_launcher1.configure(launcher1Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_launcher2.configure(launcher2Config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    
+    m_launcherTopLeft.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcherTopRight.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcherBottomTop.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcherBottomBottom.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
   }
   
@@ -62,11 +62,13 @@ public class LauncherSubsystem extends SubsystemBase {
    */
   
   public void launchTop(double xSpeed) {
-    m_launcher1.set(xSpeed);
+    m_launcherTopLeft.set(xSpeed);
+    m_launcherTopRight.set(xSpeed);
   }
 
   public void launchBottom(double xSpeed) {
-    m_launcher2.set(xSpeed);
+    m_launcherBottomTop.set(xSpeed);
+    m_launcherBottomBottom.set(xSpeed);
   }
 
   public void launch_stop() {
@@ -83,23 +85,29 @@ public class LauncherSubsystem extends SubsystemBase {
   public void updateLaunchPower(double power){
     launchPower = power;
   }
-
-  // ===== RPM-based velocity control methods =====
-  
-  /**
-   * Control launcher 1 (top) by target RPM using closed-loop velocity control.
-   * @param targetRPM Target rotations per minute
-   */
-  public void launchTopRPM(double targetRPM) {
-    m_launcher1.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+  public void updateLaunchTopRPM(double topRPM){
+    launchTopRPM(topRPM);
+  }
+  public void updateLaunchBottomRPM(double bottomRPM){
+    launchBottomRPM(bottomRPM);
   }
 
   /**
-   * Control launcher 2 (bottom) by target RPM using closed-loop velocity control.
+   * Control launcher top by target RPM using closed-loop velocity control.
+   * @param targetRPM Target rotations per minute
+   */
+  public void launchTopRPM(double targetRPM) {
+    m_launcherTopLeft.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherTopRight.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+  }
+
+  /**
+   * Control launcher bottom by target RPM using closed-loop velocity control.
    * @param targetRPM Target rotations per minute
    */
   public void launchBottomRPM(double targetRPM) {
-    m_launcher2.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherBottomTop.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherBottomBottom.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
   }
 
   /**
@@ -113,19 +121,19 @@ public class LauncherSubsystem extends SubsystemBase {
   }
 
   /**
-   * Get current RPM of top launcher.
+   * Get current average RPM of top launcher.
    * @return RPM of top launcher
    */
   public double getTopRPM() {
-    return m_launcher1.getEncoder().getVelocity();
+    return (m_launcherTopLeft.getEncoder().getVelocity() + m_launcherTopRight.getEncoder().getVelocity()) / 2.0;
   }
 
   /**
-   * Get current RPM of bottom launcher.
+   * Get current average RPM of bottom launcher.
    * @return RPM of bottom launcher
    */
   public double getBottomRPM() {
-    return m_launcher2.getEncoder().getVelocity();
+    return (m_launcherBottomTop.getEncoder().getVelocity() + m_launcherBottomBottom.getEncoder().getVelocity()) / 2.0;
   }
 
   public Command launchCommand(double xSpeed) {
@@ -191,6 +199,70 @@ public class LauncherSubsystem extends SubsystemBase {
   public void eject() {
     launchTop(-1);
     launchBottom(-1);
+  }
+
+  /**
+   * Get current RPM of top left motor.
+   * @return RPM of top left motor
+   */
+  public double getTopLeftRPM() {
+    return m_launcherTopLeft.getEncoder().getVelocity();
+  }
+
+  /**
+   * Get current RPM of top right motor.
+   * @return RPM of top right motor
+   */
+  public double getTopRightRPM() {
+    return m_launcherTopRight.getEncoder().getVelocity();
+  }
+
+  /**
+   * Get current RPM of bottom top motor.
+   * @return RPM of bottom top motor
+   */
+  public double getBottomTopRPM() {
+    return m_launcherBottomTop.getEncoder().getVelocity();
+  }
+
+  /**
+   * Get current RPM of bottom bottom motor.
+   * @return RPM of bottom bottom motor
+   */
+  public double getBottomBottomRPM() {
+    return m_launcherBottomBottom.getEncoder().getVelocity();
+  }
+
+  /**
+   * Control top left motor by target RPM.
+   * @param targetRPM Target RPM for top left motor
+   */
+  public void launchTopLeftRPM(double targetRPM) {
+    m_launcherTopLeft.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+  }
+
+  /**
+   * Control top right motor by target RPM.
+   * @param targetRPM Target RPM for top right motor
+   */
+  public void launchTopRightRPM(double targetRPM) {
+    m_launcherTopRight.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+  }
+
+  /**
+   * Control bottom top motor by target RPM.
+   * @param targetRPM Target RPM for bottom top motor
+   */
+  public void launchBottomTopRPM(double targetRPM) {
+    m_launcherBottomTop.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+  }
+
+  /**
+   * Control bottom bottom motor by target RPM.
+   * @param targetRPM Target RPM for bottom bottom motor
+   */
+  public void launchBottomBottomRPM(double targetRPM) {
+    m_launcherBottomBottom.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
   }
 
   public void periodic(){

@@ -72,8 +72,8 @@ public final class Constants {
   }
 
   public static final class ClimbConstants {
-    public static final int kClimbCanId = 9;
-    public static final int kClimbFollowerCanId = 10;//might not need
+    public static final int kClimbCanId = -1;
+    public static final int kClimbFollowerCanId = -1;//might not need
     public static final int kClimbCurrentLimit = 30;
     public static final IdleMode kClimbIdleMode = IdleMode.kBrake;
     public static final double kP = 1;
@@ -88,8 +88,8 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int kIntakeLifterCanId = 11;
-    public static final int kIntakeCanId = 12;
+    public static final int kIntakeLifterCanId = 9;
+    public static final int kIntakeCanId = 10;
     public static final int kIntakeCurrentLimit = 40;//set this
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
@@ -101,13 +101,16 @@ public final class Constants {
   }
   
   public static final class LauncherConstants {
-    public static final int kLauncher1CanId = 13;//top
-    public static final int kLauncher2CanId = 14;//bottom
+    public static final int kLauncherTopLeftCanId = 11;
+    public static final int kLauncherTopRightCanId = 12;
+    public static final int kLauncherBottomTopCanId = 13;//bottom
+    public static final int kLauncherBottomBottomCanId = 14;//bottom
     public static final int kLauncher1CurrentLimit = 40;
     public static final int kLauncher2CurrentLimit = 40;
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
     public static final double kLauncherSpeed = 0.65;
-    public static final double kLauncherAngle = 13;//degreess
+    public static final double kLauncherTopRPM = 5000;//set this
+    public static final double kLauncherBottomRPM = 4500;//set this
   }
   
   public static final class AgitatorConstants{

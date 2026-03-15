@@ -105,6 +105,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("LifterLift", new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
     
     SmartDashboard.putNumber("Launcher/LaunchPower", launchPower);
+    
+    // Add RPM sliders for manual control (range 0-5700 RPM for NEO motors)
+    SmartDashboard.putNumber("Launcher/TopRPMSlider", 0);
+    SmartDashboard.putNumber("Launcher/BottomRPMSlider", 0);
+    
     // Configure the button bindings
     configureButtonBindings();
     
@@ -112,7 +117,6 @@ public class RobotContainer {
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
     // Setup Shuffleboard launcher control tab
-    ShuffleboardTab launcherTab = Shuffleboard.getTab("Launcher");
     
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -244,7 +248,7 @@ public class RobotContainer {
             .beforeStarting(m_launcher.launchTopCommand().withTimeout(0.7))))
         .onFalse(m_launcher.launchStopCommand()
             .alongWith(m_agitator.agitateStopCommand(0))); 
-            
+
     new JoystickButton(m_driverController, Button.kRightStick.value)
         .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))
         .onFalse(m_launcher.launchStopCommand());
@@ -292,35 +296,25 @@ public class RobotContainer {
     
     // Read launch power from dashboard so it can be tuned at runtime
     //System.out.println("launchPower1 " + launchPower);
-    launchPower = SmartDashboard.getNumber("Launcher/LaunchPower", 0.2);
+    launchPower = SmartDashboard.getNumber("Launcher/LaunchPower", -1);
     m_launcher.updateLaunchPower(launchPower);
+
+    // Read RPM values from sliders for manual control
+    double topRPMSlider = SmartDashboard.getNumber("Launcher/TopRPMSlider", 0);
+    double bottomRPMSlider = SmartDashboard.getNumber("Launcher/BottomRPMSlider", 0);
+    
+    // If either slider is non-zero, apply those RPM values
+    if (topRPMSlider > 0 || bottomRPMSlider > 0) {
+      m_launcher.launchBothRPM(topRPMSlider, bottomRPMSlider);
+    }
+
     //System.out.println("launchPower2 " + launchPower);
     SmartDashboard.putNumber("Launcher/LaunchPowerValue", launchPower);
     SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
-    SmartDashboard.putNumber("CamDistance",m_vision.getDistance());
-
-
     double distance = m_vision.getDistance();
+    SmartDashboard.putNumber("CamDistance",distance);
     double horizontalDistance = distance*Math.cos(Math.toRadians(m_vision.getPitch()));
-    double verticalDistance = distance*Math.sin(Math.toRadians(m_vision.getPitch()));
-
-    // if(distance>0){
-    //   try{
-    //     launchPower = scaleDistanceToPower(horizontalDistance);
-    //   }
-    //   catch(Exception e){
-    //     //if range outside excpeted, just use default launcher speed
-    //     launchPower = LauncherConstants.kLauncherSpeed;
-    //   }
-    // }
     SmartDashboard.putNumber("CamCalcHorizDistance", horizontalDistance);
-  }
-  private double scaleDistanceToPower(double distance) {
-    double maxPower = 0.8;
-    double minPower = 0.5;
-    double scaledPower = launchPower;
-    SmartDashboard.putNumber("Scaled Power", scaledPower);
-    return MathUtil.clamp(scaledPower, minPower, maxPower);
   }
           
 }
