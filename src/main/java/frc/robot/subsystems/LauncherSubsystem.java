@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -20,15 +21,15 @@ import frc.robot.Constants.LauncherConstants;
 
 public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
-  SparkMax m_launcherTopLeft; //top flywheel
-  SparkMax m_launcherTopRight; //bottom 
+  SparkFlex m_launcherTopLeft; //top flywheel
+  SparkFlex m_launcherTopRight; //bottom 
   SparkMax m_launcherBottomTop; //top flywheel
   SparkMax m_launcherBottomBottom; //bottom 
   double launchPower;
 
   public LauncherSubsystem(){
-    m_launcherTopLeft = new SparkMax(LauncherConstants.kLauncherTopLeftCanId, MotorType.kBrushless);//top
-    m_launcherTopRight = new SparkMax(LauncherConstants.kLauncherTopRightCanId, MotorType.kBrushless);//bottom
+    m_launcherTopLeft = new SparkFlex(LauncherConstants.kLauncherTopLeftCanId, MotorType.kBrushless);//top
+    m_launcherTopRight = new SparkFlex(LauncherConstants.kLauncherTopRightCanId, MotorType.kBrushless);//bottom
     m_launcherBottomTop = new SparkMax(LauncherConstants.kLauncherBottomTopCanId, MotorType.kBrushless);//top
     m_launcherBottomBottom = new SparkMax(LauncherConstants.kLauncherBottomBottomCanId, MotorType.kBrushless);//bottom
     launchPower = 0;
@@ -97,8 +98,8 @@ public class LauncherSubsystem extends SubsystemBase {
    * @param targetRPM Target rotations per minute
    */
   public void launchTopRPM(double targetRPM) {
-    m_launcherTopLeft.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
-    m_launcherTopRight.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherTopLeft.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
+    m_launcherTopRight.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
   }
 
   /**
@@ -106,8 +107,8 @@ public class LauncherSubsystem extends SubsystemBase {
    * @param targetRPM Target rotations per minute
    */
   public void launchBottomRPM(double targetRPM) {
-    m_launcherBottomTop.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
-    m_launcherBottomBottom.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherBottomTop.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
+    m_launcherBottomBottom.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
   }
 
   /**
@@ -238,7 +239,7 @@ public class LauncherSubsystem extends SubsystemBase {
    * @param targetRPM Target RPM for top left motor
    */
   public void launchTopLeftRPM(double targetRPM) {
-    m_launcherTopLeft.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherTopLeft.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
   }
 
   /**
@@ -246,7 +247,7 @@ public class LauncherSubsystem extends SubsystemBase {
    * @param targetRPM Target RPM for top right motor
    */
   public void launchTopRightRPM(double targetRPM) {
-    m_launcherTopRight.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherTopRight.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
   }
 
   /**
@@ -254,7 +255,7 @@ public class LauncherSubsystem extends SubsystemBase {
    * @param targetRPM Target RPM for bottom top motor
    */
   public void launchBottomTopRPM(double targetRPM) {
-    m_launcherBottomTop.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherBottomTop.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
   }
 
   /**
@@ -262,7 +263,7 @@ public class LauncherSubsystem extends SubsystemBase {
    * @param targetRPM Target RPM for bottom bottom motor
    */
   public void launchBottomBottomRPM(double targetRPM) {
-    m_launcherBottomBottom.getClosedLoopController().setReference(targetRPM, ControlType.kVelocity);
+    m_launcherBottomBottom.getClosedLoopController().setSetpoint(targetRPM, ControlType.kVelocity);
   }
 
   public void periodic(){

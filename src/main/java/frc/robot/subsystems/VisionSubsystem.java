@@ -4,12 +4,9 @@
 
 package frc.robot.subsystems;
 
-import java.io.IOException;
-import java.util.List;
+
 
 import org.photonvision.PhotonCamera;
-import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
 import frc.robot.subsystems.Camera;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
