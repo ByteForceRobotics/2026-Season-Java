@@ -53,4 +53,7 @@ public class VisionSubsystem extends SubsystemBase {
   public double getYaw(){
     return frontCamera.getYaw();
   }
+  public double getHorizDistance(){
+    return frontCamera.getHorizDistance();
+  }
 }

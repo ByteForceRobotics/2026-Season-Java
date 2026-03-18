@@ -1,6 +1,8 @@
 package frc.robot.commands;
 
+import frc.robot.Constants.LauncherConstants;
 import frc.robot.subsystems.LauncherSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -10,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class LauncherPIDCommand extends Command {
     private final LauncherSubsystem launcher;
+    private final VisionSubsystem vision;
     private final double targetTopRPM;
     private final double targetBottomRPM;
     private final PIDController topLeftPIDController;
@@ -30,9 +33,10 @@ public class LauncherPIDCommand extends Command {
      * @param targetTopRPM Target RPM for top launcher
      * @param targetBottomRPM Target RPM for bottom launcher
      */
-    public LauncherPIDCommand(LauncherSubsystem launcher, double targetTopRPM, double targetBottomRPM) {
+    public LauncherPIDCommand(LauncherSubsystem launcher, VisionSubsystem vision, double targetTopRPM, double targetBottomRPM) {
         this.launcher = launcher;
-        this.targetTopRPM = targetTopRPM;
+        this.vision = vision;
+        this.targetTopRPM = getTargetTopRPM(targetTopRPM);
         this.targetBottomRPM = targetBottomRPM;
         
         // Create individual PID controllers for each motor
@@ -57,8 +61,8 @@ public class LauncherPIDCommand extends Command {
      * @param launcher The LauncherSubsystem instance
      * @param targetRPM Target RPM for both launchers
      */
-    public LauncherPIDCommand(LauncherSubsystem launcher, double targetRPM) {
-        this(launcher, targetRPM, targetRPM);
+    public LauncherPIDCommand(LauncherSubsystem launcher,VisionSubsystem vision, double targetRPM) {
+        this(launcher, vision, targetRPM, targetRPM);
     }
     
     @Override
@@ -125,5 +129,15 @@ public class LauncherPIDCommand extends Command {
                topRightPIDController.atSetpoint() && 
                bottomTopPIDController.atSetpoint() && 
                bottomBottomPIDController.atSetpoint();
+    }
+    public double getTargetTopRPM(double targetTopRPM){
+        if(vision.getHorizDistance()==-1){
+            return targetTopRPM;
+        }
+        else{
+            double horizDistance = vision.getHorizDistance();
+            double targetRPM = LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
+            return targetRPM;
+        }
     }
 }

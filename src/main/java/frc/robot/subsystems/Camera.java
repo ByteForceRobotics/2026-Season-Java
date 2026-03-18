@@ -147,6 +147,9 @@ public class Camera
     public double getPitch(){
         return this.pitch;
     }
+    public double getHorizDistance(){
+        return this.distance*Math.cos(Math.toRadians(this.pitch));
+    }
     public String rightOrLeft(){
         return "no";
     }

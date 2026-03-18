@@ -6,8 +6,10 @@ package frc.robot;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -80,8 +82,8 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int kIntakeLifterCanId = 9;
-    public static final int kIntakeCanId = 10;
+    public static final int kIntakeLifterCanId = 11;
+    public static final int kIntakeCanId = 12;
     public static final int kIntakeCurrentLimit = 40;//set this
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
@@ -93,20 +95,42 @@ public final class Constants {
   }
   
   public static final class LauncherConstants {
-    public static final int kLauncherTopLeftCanId = 11;
-    public static final int kLauncherTopRightCanId = 12;
-    public static final int kLauncherBottomTopCanId = 13;//bottom
-    public static final int kLauncherBottomBottomCanId = 14;//bottom
+    public static final int kLauncherTopLeftCanId = 13;
+    public static final int kLauncherTopRightCanId = 14;
+    public static final int kLauncherBottomTopCanId = 15;//bottom
+    public static final int kLauncherBottomBottomCanId = 16;//bottom
     public static final int kLauncher1CurrentLimit = 40;
     public static final int kLauncher2CurrentLimit = 40;
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
     public static final double kLauncherSpeed = 0.65;
     public static final double kLauncherTopRPM = 5000;//set this
     public static final double kLauncherBottomRPM = 4500;//set this
+    public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(
+		  InverseInterpolator.forDouble(),
+
+		  // Value interpolator: blends RPMs and flight times based on distance ratio, t
+		  (start, end, t) -> new ShooterParams(
+			MathUtil.interpolate(start.rpm(), end.rpm(), t),
+			MathUtil.interpolate(start.timeOfFlight(), end.timeOfFlight(), t)
+		  )
+		);
+    static {
+			// X/Y DISTANCE FROM CENTER OF SHOOTER TO CENTER OF HUB, IN METERS
+			SHOOTER_MAP.put(2.6, new ShooterParams(2750, 0.68));
+			SHOOTER_MAP.put(3.0, new ShooterParams(2900, 0.8));
+			SHOOTER_MAP.put(3.5, new ShooterParams(2950, 0.9));
+			SHOOTER_MAP.put(4.0, new ShooterParams(3150, 1.0));
+			SHOOTER_MAP.put(4.865, new ShooterParams(3550, 1.3));
+			SHOOTER_MAP.put(5.269, new ShooterParams(3800, 1.34));
+		}
+
+
+
+    public record ShooterParams(double rpm, double timeOfFlight) {}
   }
   
   public static final class AgitatorConstants{
-    public static final int kAgitatorCanId = 15;
+    public static final int kAgitatorCanId = 17;
     public static final int kAgitatorCurrentLimit = 40;//set this
     public static final IdleMode kAgitatorIdleMode = IdleMode.kBrake;
     public static final double kAgitatorDefaultSpeed = 1;
