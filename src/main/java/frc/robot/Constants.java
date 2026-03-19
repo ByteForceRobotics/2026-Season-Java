@@ -105,6 +105,7 @@ public final class Constants {
     public static final double kLauncherSpeed = 0.65;
     public static final double kLauncherTopRPM = 5000;//set this
     public static final double kLauncherBottomRPM = 4500;//set this
+    //interpolation is credited to team 2059 hitchhikers
     public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(
 		  InverseInterpolator.forDouble(),
 
@@ -115,13 +116,15 @@ public final class Constants {
 		  )
 		);
     static {
-			// X/Y DISTANCE FROM CENTER OF SHOOTER TO CENTER OF HUB, IN METERS
-			SHOOTER_MAP.put(2.6, new ShooterParams(2750, 0.68));
-			SHOOTER_MAP.put(3.0, new ShooterParams(2900, 0.8));
-			SHOOTER_MAP.put(3.5, new ShooterParams(2950, 0.9));
-			SHOOTER_MAP.put(4.0, new ShooterParams(3150, 1.0));
-			SHOOTER_MAP.put(4.865, new ShooterParams(3550, 1.3));
-			SHOOTER_MAP.put(5.269, new ShooterParams(3800, 1.34));
+			//DISTANCE FROM CENTER OF SHOOTER TO CENTER OF HUB, IN METERS
+      //distance meters, rpm, time of flight seconds
+      //time of flight is only needed for shooting while moving
+			 SHOOTER_MAP.put(2.6, new ShooterParams(2750, 0.68));
+			 SHOOTER_MAP.put(3.0, new ShooterParams(2900, 0.8));
+			// SHOOTER_MAP.put(3.5, new ShooterParams(2950, 0.9));
+			// SHOOTER_MAP.put(4.0, new ShooterParams(3150, 1.0));
+			// SHOOTER_MAP.put(4.865, new ShooterParams(3550, 1.3));
+			// SHOOTER_MAP.put(5.269, new ShooterParams(3800, 1.34));
 		}
 
 
@@ -133,7 +136,7 @@ public final class Constants {
     public static final int kAgitatorCanId = 17;
     public static final int kAgitatorCurrentLimit = 40;//set this
     public static final IdleMode kAgitatorIdleMode = IdleMode.kBrake;
-    public static final double kAgitatorDefaultSpeed = 1;
+    public static final double kAgitatorDefaultSpeed = 0.5;
   }
 
   public static final class CameraConstants {

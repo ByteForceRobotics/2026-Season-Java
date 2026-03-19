@@ -241,10 +241,10 @@ public class RobotContainer {
       .onTrue(autoShoot);
     
     new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,500,500)
+        .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,10,10)
             .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-            .beforeStarting(new LauncherPIDCommand(m_launcher,m_vision,500,500).withTimeout(0.5)//this section might be redundant since no agitator(i think)
-            .beforeStarting(new LauncherPIDCommand(m_launcher,m_vision,500,0)).withTimeout(0.7)))
+            .beforeStarting(new LauncherPIDCommand(m_launcher,m_vision,10,10).withTimeout(0.5)//this section might be redundant since no agitator(i think)
+            .beforeStarting(new LauncherPIDCommand(m_launcher,m_vision,10,0)).withTimeout(0.7)))
         .onFalse(m_launcher.launchStopCommand()
             .alongWith(m_agitator.agitateStopCommand(0))); 
 
