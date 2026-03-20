@@ -31,7 +31,7 @@ public final class Constants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 3.5;// Earlier max was 4.8
-    public static final double kMaxAngularSpeed = 1.2 * Math.PI; // radians per second
+    public static final double kMaxAngularSpeed = 0.1* Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(23.5);
@@ -90,7 +90,7 @@ public final class Constants {
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
     public static final double kLifterMaxLower = 4; //set this
     public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
-    public static final double kIntakeDefaultSpeed = 0.55;
+    public static final double kIntakeDefaultSpeed = 0.45;
     public static final double kLiftDefaultSpeed = 0.3;
   }
   
@@ -103,8 +103,16 @@ public final class Constants {
     public static final int kLauncher2CurrentLimit = 40;
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
     public static final double kLauncherSpeed = 0.65;
-    public static final double kLauncherTopRPM = 5000;//set this
-    public static final double kLauncherBottomRPM = 4500;//set this
+    public static final double kTopP = 0.0004;
+    public static final double kTopI = 0.0001;
+    public static final double kTopD = 0.00000;
+    public static final double kTopTolerance = 50.0;  // RPM tolerance
+    public static final double kBottomP = 0.0006;//test these
+    public static final double kBottomI = 0.0003;
+    public static final double kBottomD = 0.00000;
+    public static final double kBottomTolerance = 20.0;  // RPM tolerance
+    public static final double kLauncherDefaultBottomRPM = 4500;//set this
+    public static final double kLauncherDefaultTopRPM = 4500;//set this
     //interpolation is credited to team 2059 hitchhikers
     public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(
 		  InverseInterpolator.forDouble(),
@@ -136,7 +144,7 @@ public final class Constants {
     public static final int kAgitatorCanId = 17;
     public static final int kAgitatorCurrentLimit = 40;//set this
     public static final IdleMode kAgitatorIdleMode = IdleMode.kBrake;
-    public static final double kAgitatorDefaultSpeed = 0.5;
+    public static final double kAgitatorDefaultSpeed = 0.1;
   }
 
   public static final class CameraConstants {

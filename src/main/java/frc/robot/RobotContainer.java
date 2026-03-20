@@ -103,11 +103,22 @@ public class RobotContainer {
     NamedCommands.registerCommand("LifterLower", new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLower));
     NamedCommands.registerCommand("LifterLift", new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
     
-    SmartDashboard.putNumber("Launcher/LaunchPower", launchPower);
     
     // Add RPM sliders for manual control (range 0-5700 RPM for NEO motors)
-    SmartDashboard.putNumber("Launcher/TopRPMSlider", 0);
-    SmartDashboard.putNumber("Launcher/BottomRPMSlider", 0);
+    SmartDashboard.putNumber("Launcher/GoalTopRPM",100);
+    SmartDashboard.putNumber("Launcher/GoalBottomRPM",100);
+    
+    // Top Launcher PID constants
+    SmartDashboard.putNumber("Launcher/PID/Top/kP", LauncherConstants.kTopP);
+    SmartDashboard.putNumber("Launcher/PID/Top/kI", LauncherConstants.kTopI);
+    SmartDashboard.putNumber("Launcher/PID/Top/kD", LauncherConstants.kTopD);
+    SmartDashboard.putNumber("Launcher/PID/Top/Tolerance", LauncherConstants.kTopTolerance);
+    
+    // Bottom Launcher PID constants
+    SmartDashboard.putNumber("Launcher/PID/Bottom/kP", LauncherConstants.kBottomP);
+    SmartDashboard.putNumber("Launcher/PID/Bottom/kI", LauncherConstants.kBottomI);
+    SmartDashboard.putNumber("Launcher/PID/Bottom/kD", LauncherConstants.kBottomD);
+    SmartDashboard.putNumber("Launcher/PID/Bottom/Tolerance", LauncherConstants.kBottomTolerance);
     
     // Configure the button bindings
     configureButtonBindings();
@@ -295,20 +306,12 @@ public class RobotContainer {
     
     // Read launch power from dashboard so it can be tuned at runtime
     //System.out.println("launchPower1 " + launchPower);
-    launchPower = SmartDashboard.getNumber("Launcher/LaunchPower", -1);
-    m_launcher.updateLaunchPower(launchPower);
 
     // Read RPM values from sliders for manual control
-    double topRPMSlider = SmartDashboard.getNumber("Launcher/TopRPMSlider", 0);
-    double bottomRPMSlider = SmartDashboard.getNumber("Launcher/BottomRPMSlider", 0);
     
     // If either slider is non-zero, apply those RPM values
-    if (topRPMSlider > 0 || bottomRPMSlider > 0) {
-      m_launcher.launchBothRPM(topRPMSlider, bottomRPMSlider);
-    }
 
     //System.out.println("launchPower2 " + launchPower);
-    SmartDashboard.putNumber("Launcher/LaunchPowerValue", launchPower);
     SmartDashboard.putNumber("slowdown multiplier", slowdownMultiplier);
     double distance = m_vision.getDistance();
     SmartDashboard.putNumber("CamDistance",distance);

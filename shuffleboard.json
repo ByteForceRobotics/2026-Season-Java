@@ -570,22 +570,6 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "7,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Field",
-              "_source0": "network_table:///SmartDashboard/Field",
-              "_title": "SmartDashboard/Field",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Game/Game": "k2026Rebuilt",
-              "Visuals/Robot Icon Size": 50.0,
-              "Visuals/Show Outside Circles": false
-            }
-          },
           "9,2": {
             "size": [
               1,
@@ -601,7 +585,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "6,2": {
+          "8,1": {
             "size": [
               1,
               1
@@ -614,7 +598,7 @@
               "_showGlyph": false
             }
           },
-          "8,2": {
+          "9,1": {
             "size": [
               1,
               1
@@ -627,28 +611,7 @@
               "_showGlyph": false
             }
           },
-          "4,0": {
-            "size": [
-              3,
-              2
-            ],
-            "content": {
-              "_type": "Camera Stream",
-              "_source0": "camera_server://photonvision_Port_1182_Output_MJPEG_Server",
-              "_title": "photonvision_Port_1182_Output_MJPEG_Server",
-              "_glyph": 148,
-              "_showGlyph": false,
-              "Crosshair/Show crosshair": true,
-              "Crosshair/Crosshair color": "#FFFFFFFF",
-              "Controls/Show controls": true,
-              "Controls/Rotation": "NONE",
-              "compression": 46.0,
-              "fps": -1,
-              "imageWidth": 320,
-              "imageHeight": 180
-            }
-          },
-          "5,2": {
+          "8,2": {
             "size": [
               1,
               1
@@ -661,7 +624,7 @@
               "_showGlyph": false
             }
           },
-          "3,2": {
+          "8,0": {
             "size": [
               1,
               1
@@ -674,7 +637,7 @@
               "_showGlyph": false
             }
           },
-          "3,1": {
+          "7,0": {
             "size": [
               1,
               1
@@ -687,20 +650,7 @@
               "_showGlyph": false
             }
           },
-          "4,2": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/calcLaunchPower",
-              "_title": "SmartDashboard/calcLaunchPower",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "7,2": {
+          "9,0": {
             "size": [
               1,
               1
@@ -713,6 +663,133 @@
               "_showGlyph": false
             }
           },
+          "0,0": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/Launcher/GoalBottomRPM",
+              "_title": "SmartDashboard/Launcher/GoalBottomRPM",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1000.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true,
+              "Visuals/Orientation": "HORIZONTAL"
+            }
+          },
+          "0,1": {
+            "size": [
+              3,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/Launcher/GoalTopRPM",
+              "_title": "SmartDashboard/Launcher/GoalTopRPM",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": -1.0,
+              "Slider Settings/Max": 1000.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true,
+              "Visuals/Orientation": "HORIZONTAL"
+            }
+          },
+          "6,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/Tolerance",
+              "_title": "/SmartDashboard/Launcher/PID/Bottom/Tolerance",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/kD",
+              "_title": "/SmartDashboard/Launcher/PID/Bottom/kD",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/kP",
+              "_title": "/SmartDashboard/Launcher/PID/Bottom/kP",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/kI",
+              "_title": "/SmartDashboard/Launcher/PID/Bottom/kI",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/Tolerance",
+              "_title": "/SmartDashboard/Launcher/PID/Top/Tolerance",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/kD",
+              "_title": "/SmartDashboard/Launcher/PID/Top/kD",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/kI",
+              "_title": "/SmartDashboard/Launcher/PID/Top/kI",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
           "3,0": {
             "size": [
               1,
@@ -720,10 +797,25 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Scaled Power",
-              "_title": "/SmartDashboard/Scaled Power",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/kP",
+              "_title": "/SmartDashboard/Launcher/PID/Top/kP",
               "_glyph": 148,
               "_showGlyph": false
+            }
+          },
+          "7,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Intake On",
+              "_title": "SmartDashboard/Intake On",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
             }
           }
         }

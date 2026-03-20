@@ -23,7 +23,7 @@ public class AgitatorSubsystem extends SubsystemBase {
   public boolean agitateVar = false;
 
   public AgitatorSubsystem(){
-    m_agitator = new SparkMax(AgitatorConstants.kAgitatorCanId, MotorType.kBrushed);
+    m_agitator = new SparkMax(AgitatorConstants.kAgitatorCanId, MotorType.kBrushless);
 
     SparkMaxConfig agitatorConfig = new SparkMaxConfig();
 
@@ -68,4 +68,5 @@ public class AgitatorSubsystem extends SubsystemBase {
   public void periodic(){
     SmartDashboard.putBoolean("agitator enabled", agitateVar);
   }
+  
 }

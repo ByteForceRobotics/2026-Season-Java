@@ -34,6 +34,7 @@ public class LauncherSubsystem extends SubsystemBase {
     m_launcherBottomBottom = new SparkMax(LauncherConstants.kLauncherBottomBottomCanId, MotorType.kBrushless);//bottom
     launchPower = 0;
     SparkMaxConfig launcherConfig = new SparkMaxConfig();
+    SparkMaxConfig invertedLaunchConfig = new SparkMaxConfig();
     
     // Velocity control PID constants for RPM control
     // NEO motors max out around 5700 RPM
@@ -44,14 +45,21 @@ public class LauncherSubsystem extends SubsystemBase {
         .outputRange(-1, 1);
       
     launcherConfig
-      .inverted(true)
+      .inverted(false)
       .idleMode(LauncherConstants.kLauncherIdleMode)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
       .apply(velocityConfig);
 
+    invertedLaunchConfig
+      .apply(velocityConfig)
+      .apply(launcherConfig)
+      .inverted(true);
+
+    
+
     
     m_launcherTopLeft.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_launcherTopRight.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcherTopRight.configure(invertedLaunchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherBottomTop.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherBottomBottom.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     
@@ -268,7 +276,5 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public void periodic(){
     // Publish current RPM to SmartDashboard for monitoring
-    SmartDashboard.putNumber("Launcher/TopRPM", getTopRPM());
-    SmartDashboard.putNumber("Launcher/BottomRPM", getBottomRPM());
   }
 }
