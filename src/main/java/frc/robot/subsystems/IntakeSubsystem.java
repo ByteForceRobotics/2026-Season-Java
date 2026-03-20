@@ -21,13 +21,12 @@ public class IntakeSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   SparkMax m_intake;
   SparkMax m_intakeLifter;
-  boolean intakeOn;
+  boolean intakeOn = false;
 
 
   public IntakeSubsystem(){
     m_intake = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
     m_intakeLifter = new SparkMax(IntakeConstants.kIntakeLifterCanId, MotorType.kBrushless);
-    intakeOn = false;
 
     SparkMaxConfig intakeConfig = new SparkMaxConfig();
     SparkMaxConfig intakeLifterConfig = new SparkMaxConfig();
@@ -53,12 +52,15 @@ public class IntakeSubsystem extends SubsystemBase {
      m_intakeLifter.configure(intakeLifterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   public void intake(double xSpeed) {
+    System.out.println("1Intake speed: " + xSpeed+" Intake On: " + intakeOn);
     if(xSpeed == 0){
       intakeOn = false;
     }
     else{
+      System.out.println("2Intake speed: " + xSpeed+" Intake On: " + intakeOn);
       intakeOn = true;
     }
+    System.out.println("3Intake speed: " + xSpeed+" Intake On: " + intakeOn);
     m_intake.set(xSpeed);
   }
 
@@ -67,11 +69,14 @@ public class IntakeSubsystem extends SubsystemBase {
 
   }
   public void intake_toggle(){
+    System.out.println(" Intake On: " + intakeOn);
     if(intakeOn){
       intake(0);
+      intakeOn = false;
     }
     else{
       m_intake.set(IntakeConstants.kIntakeDefaultSpeed);
+      intakeOn = true;
     }
   }
   public void lift(double xSpeed) {
