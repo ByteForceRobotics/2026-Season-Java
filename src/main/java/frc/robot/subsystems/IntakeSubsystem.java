@@ -52,15 +52,12 @@ public class IntakeSubsystem extends SubsystemBase {
      m_intakeLifter.configure(intakeLifterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   public void intake(double xSpeed) {
-    System.out.println("1Intake speed: " + xSpeed+" Intake On: " + intakeOn);
     if(xSpeed == 0){
       intakeOn = false;
     }
     else{
-      System.out.println("2Intake speed: " + xSpeed+" Intake On: " + intakeOn);
       intakeOn = true;
     }
-    System.out.println("3Intake speed: " + xSpeed+" Intake On: " + intakeOn);
     m_intake.set(xSpeed);
   }
 
@@ -89,7 +86,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   }
   public double getLifterPosition() {
-    return m_intakeLifter.getEncoder().getPosition();
+    return m_intakeLifter.getAbsoluteEncoder().getPosition();
   }
 
   public Command liftCommand(double xSpeed) {

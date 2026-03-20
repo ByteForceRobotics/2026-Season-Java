@@ -1,8 +1,11 @@
 package frc.robot.commands;
 
-import frc.robot.subsystems.IntakeSubsystem;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.LauncherConstants;
+import frc.robot.subsystems.IntakeSubsystem;
 
 /**
  * Command to move the intake lifter to a target position using a PID controller.
@@ -13,10 +16,10 @@ public class GoToPositionLifterCommand extends Command {
     private final PIDController pidController;
     
     // PID constants for lifter position control
-    private static final double kP = 0.5;   // Proportional gain
-    private static final double kI = 0.0;   // Integral gain
-    private static final double kD = 0.1;   // Derivative gain
-    private static final double kTolerance = 0.05;  // Position tolerance in rotations
+    private static final double kP = IntakeConstants.kP;   // Proportional gain
+    private static final double kI = IntakeConstants.kI;   // Integral gain
+    private static final double kD = IntakeConstants.kD;   // Derivative gain
+    private static final double kTolerance = IntakeConstants.kTolerance;  // Position tolerance in rotations
     
     /**
      * Creates a new GoToPositionCommand for the intake lifter.
@@ -42,6 +45,13 @@ public class GoToPositionLifterCommand extends Command {
     
     @Override
     public void execute() {
+        double newP = SmartDashboard.getNumber("Lifter/PID/kP", kP);
+        double newI = SmartDashboard.getNumber("Lifter/PID/kI", kI);
+        double newD = SmartDashboard.getNumber("Lifter/PID/kD", kD);
+        double newTolerance = SmartDashboard.getNumber("Launcher/kTolerance", kTolerance);
+        System.out.println("GoToPosition: Updated PID constants from SmartDashboard - P: " + newP + " I: " + newI + " D: " + newD + " Tolerance: " + newTolerance);
+        this.updatePIDConstants(newP, newI, newD, newTolerance);
+
         double currentPosition = intake.getLifterPosition();
         
         // Calculate PID output (error is target - current)
@@ -71,5 +81,9 @@ public class GoToPositionLifterCommand extends Command {
     public boolean isFinished() {
         // Command finishes when PID controller reaches setpoint
         return pidController.atSetpoint();
+    }
+    public void updatePIDConstants(double kP, double kI, double kD, double tolerance) {
+        pidController.setPID(kP, kI, kD);
+        pidController.setTolerance(tolerance);
     }
 }

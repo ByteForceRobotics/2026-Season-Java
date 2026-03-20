@@ -127,10 +127,10 @@ public class RobotContainer {
     SmartDashboard.putNumber("Launcher/PID/BottomBottom/Tolerance", LauncherConstants.kBottomTolerance);
     
 
-    SmartDashboard.putNumber("Lifter/PID/kP", LauncherConstants.kBottomTopP);
-    SmartDashboard.putNumber("Lifter/PID/kI", LauncherConstants.kBottomTopI);
-    SmartDashboard.putNumber("Lifter/PID/kD", LauncherConstants.kBottomTopD);
-    SmartDashboard.putNumber("Lifter/PID/kTolerance", LauncherConstants.kBottomTolerance);
+    SmartDashboard.putNumber("Lifter/PID/kP", IntakeConstants.kP);
+    SmartDashboard.putNumber("Lifter/PID/kI", IntakeConstants.kI);
+    SmartDashboard.putNumber("Lifter/PID/kD", IntakeConstants.kD);
+    SmartDashboard.putNumber("Lifter/PID/kTolerance", IntakeConstants.kTolerance);
     // Bottom launcher delay to avoid stutter (in seconds)
     SmartDashboard.putNumber("Launcher/BottomDelay", LauncherConstants.kBottomLauncherDelay);
     
@@ -265,9 +265,8 @@ public class RobotContainer {
     
     new JoystickButton(m_driverController, Button.kRightBumper.value)
         .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,10,10)
-            .alongWith(delayCommand(0.7).andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))))
-        .onFalse(m_launcher.launchStopCommand()
-            .alongWith(m_agitator.agitateStopCommand(0))); 
+            .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay).andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))))
+        .onFalse(m_agitator.agitateStopCommand(0)); 
 
     new JoystickButton(m_driverController, Button.kRightStick.value)
         .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))

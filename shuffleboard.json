@@ -890,6 +890,72 @@
           }
         }
       }
+    },
+    {
+      "title": "Tab 4",
+      "autoPopulate": false,
+      "autoPopulatePrefix": "",
+      "widgetPane": {
+        "gridSize": 128.0,
+        "showGrid": true,
+        "hgap": 16.0,
+        "vgap": 16.0,
+        "titleType": 0,
+        "tiles": {
+          "4,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Lifter/PID/kD",
+              "_title": "/SmartDashboard/Lifter/PID/kD",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Lifter/PID/kI",
+              "_title": "/SmartDashboard/Lifter/PID/kI",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "2,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Lifter/PID/kP",
+              "_title": "/SmartDashboard/Lifter/PID/kP",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Lifter/PID/kTolerance",
+              "_title": "/SmartDashboard/Lifter/PID/kTolerance",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          }
+        }
+      }
     }
   ],
   "windowGeometry": {

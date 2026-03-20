@@ -92,10 +92,10 @@ public final class Constants {
     public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
     public static final double kIntakeDefaultSpeed = 0.45;
     public static final double kLiftDefaultSpeed = 0.3;
-    public static final double kP = 0.5;   // Proportional gain
-    public static final double kI = 0.0;   // Integral gain
+    public static final double kP = 1;   // Proportional gain
+    public static final double kI = 0.01;   // Integral gain
     public static final double kD = 0.1;   // Derivative gain
-    public static final double kTolerance = 0.05; 
+    public static final double kTolerance = 0.01; 
   }
   
   public static final class LauncherConstants {
@@ -107,8 +107,8 @@ public final class Constants {
     public static final int kLauncher2CurrentLimit = 40;
     public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
     public static final double kLauncherSpeed = 0.65;
-    public static final double kTopP = 0.00032;
-    public static final double kTopI = 0.0001;
+    public static final double kTopP = 0.0001;
+    public static final double kTopI = 0.000001;
     public static final double kTopD = 0.00001;
     public static final double kTopTolerance = 50.0;  // RPM tolerance
     public static final double kBottomTopP = 0.00005;//test these
@@ -118,9 +118,9 @@ public final class Constants {
     public static final double kBottomBottomI = 0.000001;
     public static final double kBottomBottomD = 0.0000;//,maybe figure out a small value
     public static final double kBottomTolerance = 20.0;  // RPM tolerance
-    public static final double kLauncherDefaultBottomRPM = 1000;
-    public static final double kLauncherDefaultTopRPM = 4600;
-    public static final boolean kManualControl = true;//true uses smartdashboard values, false uses interpolation/defualt values
+    public static final double kLauncherDefaultBottomRPM = 800;
+    public static final double kLauncherDefaultTopRPM = 3800;
+    public static final boolean kManualControl = false;//true uses smartdashboard values, false uses interpolation/defualt values
     public static final double kBottomLauncherDelay = 1.3;//max distance we can shoot from, in meters
     //interpolation is credited to team 2059 hitchhikers
     public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(
