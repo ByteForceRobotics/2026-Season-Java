@@ -663,7 +663,7 @@
               "_showGlyph": false
             }
           },
-          "0,0": {
+          "0,1": {
             "size": [
               3,
               1
@@ -681,7 +681,7 @@
               "Visuals/Orientation": "HORIZONTAL"
             }
           },
-          "0,1": {
+          "0,0": {
             "size": [
               3,
               1
@@ -693,62 +693,10 @@
               "_glyph": 148,
               "_showGlyph": false,
               "Slider Settings/Min": -1.0,
-              "Slider Settings/Max": 1000.0,
+              "Slider Settings/Max": 5000.0,
               "Slider Settings/Block increment": 0.0625,
               "Visuals/Display value": true,
               "Visuals/Orientation": "HORIZONTAL"
-            }
-          },
-          "6,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/Tolerance",
-              "_title": "/SmartDashboard/Launcher/PID/Bottom/Tolerance",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "5,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/kD",
-              "_title": "/SmartDashboard/Launcher/PID/Bottom/kD",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "3,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/kP",
-              "_title": "/SmartDashboard/Launcher/PID/Bottom/kP",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "4,1": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Launcher/PID/Bottom/kI",
-              "_title": "/SmartDashboard/Launcher/PID/Bottom/kI",
-              "_glyph": 148,
-              "_showGlyph": false
             }
           },
           "6,0": {
@@ -816,6 +764,128 @@
               "_showGlyph": false,
               "Colors/Color when true": "#7CFC00FF",
               "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "6,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/Tolerance",
+              "_title": "SmartDashboard/Launcher/PID/BottomBottom/Tolerance",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/kD",
+              "_title": "/SmartDashboard/Launcher/PID/BottomBottom/kD",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/kI",
+              "_title": "/SmartDashboard/Launcher/PID/BottomBottom/kI",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/Tolerance",
+              "_title": "SmartDashboard/Launcher/PID/BottomTop/Tolerance",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/kP",
+              "_title": "SmartDashboard/Launcher/PID/BottomTop/kP",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/kI",
+              "_title": "SmartDashboard/Launcher/PID/BottomTop/kI",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "5,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/kD",
+              "_title": "SmartDashboard/Launcher/PID/BottomTop/kD",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/kP",
+              "_title": "SmartDashboard/Launcher/PID/BottomBottom/kP",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "1,2": {
+            "size": [
+              2,
+              1
+            ],
+            "content": {
+              "_type": "Number Slider",
+              "_source0": "network_table:///SmartDashboard/Launcher/BottomDelay",
+              "_title": "SmartDashboard/Launcher/BottomDelay",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Slider Settings/Min": 0.0,
+              "Slider Settings/Max": 10.0,
+              "Slider Settings/Block increment": 0.0625,
+              "Visuals/Display value": true,
+              "Visuals/Orientation": "HORIZONTAL"
             }
           }
         }
