@@ -56,4 +56,7 @@ public class VisionSubsystem extends SubsystemBase {
   public double getHorizDistance(){
     return frontCamera.getHorizDistance();
   }
+  public boolean hasTarget(){
+    return frontCamera.hasTarget();
+  }
 }

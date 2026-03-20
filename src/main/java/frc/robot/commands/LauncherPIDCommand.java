@@ -23,7 +23,7 @@ public class LauncherPIDCommand extends Command {
     
     // Timer for delaying bottom launcher spinup to avoid stutter
     private double commandStartTime = 0;
-    private double bottomLauncherDelay = LauncherConstants.kBottomLauncherDelay;  // Default 300ms delay (adjustable via SmartDashboard)
+    private double bottomLauncherDelay = LauncherConstants.kBottomLauncherDelay; // Default 300ms delay (adjustable via SmartDashboard)
     
     // PID constants for launcher RPM control - separate for all motors
     private static final double kPTop = LauncherConstants.kTopP;
@@ -126,12 +126,16 @@ public class LauncherPIDCommand extends Command {
         double newToleranceBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/Tolerance", kToleranceBottomBottom);
         
         // Update PID constants for all motors independently
-        this.updateTopPIDConstants(newPTop, newITop, newDTop, newToleranceTop);
-        this.updateBottomTopPIDConstants(newPBottomTop, newIBottomTop, newDBottomTop, newToleranceBottomTop);
-        this.updateBottomBottomPIDConstants(newPBottomBottom, newIBottomBottom, newDBottomBottom, newToleranceBottomBottom);
-        
-        this.targetTopRPM = SmartDashboard.getNumber("Launcher/GoalTopRPM",-1);
+        if(LauncherConstants.kManualControl){
+            this.updateTopPIDConstants(newPTop, newITop, newDTop, newToleranceTop);
+            this.updateBottomTopPIDConstants(newPBottomTop, newIBottomTop, newDBottomTop, newToleranceBottomTop);
+            this.updateBottomBottomPIDConstants(newPBottomBottom, newIBottomBottom, newDBottomBottom, newToleranceBottomBottom);
+        }
+        if(LauncherConstants.kManualControl){
+            this.targetTopRPM = SmartDashboard.getNumber("Launcher/GoalTopRPM",-1);
         this.targetBottomRPM = SmartDashboard.getNumber("Launcher/GoalBottomRPM",-1);
+        }
+        
         double currentTopLeftRPM = launcher.getTopLeftRPM();
         double currentTopRightRPM = launcher.getTopRightRPM();
         double currentBottomTopRPM = launcher.getBottomTopRPM();
@@ -157,14 +161,13 @@ public class LauncherPIDCommand extends Command {
         // Top motors always spin (no delay)
         launcher.launchTopLeftRPM(currentTopLeftRPM + topLeftOutput * 1000);
         launcher.launchTopRightRPM(currentTopRightRPM + topRightOutput * 1000);
+        launcher.launchBottomTopRPM(currentBottomTopRPM + bottomTopOutput * 1000);
         
         // Bottom motors only spin after delay to avoid stutter
         if (bottomLaunched) {
-            launcher.launchBottomTopRPM(currentBottomTopRPM + bottomTopOutput * 1000);
             launcher.launchBottomBottomRPM(currentBottomBottomRPM + bottomBottomOutput * 1000);
         } else {
             // Keep bottom motors at 0 RPM until delay passes
-            launcher.launchBottomTopRPM(0);
             launcher.launchBottomBottomRPM(0);
         }
         
@@ -250,12 +253,12 @@ public class LauncherPIDCommand extends Command {
             double targetRPM = SmartDashboard.getNumber("GoalTopRPM", -1);
             return targetRPM;
         }
-        else if(vision.getHorizDistance()<0){
+        else if(!vision.hasTarget()){
             return LauncherConstants.kLauncherDefaultTopRPM;
         }
         else{
             double horizDistance = vision.getHorizDistance();
-            double targetRPM = LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
+            double targetRPM = 1820;//LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
             return targetRPM;
         }
     }

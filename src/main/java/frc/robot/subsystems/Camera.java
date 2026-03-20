@@ -32,10 +32,6 @@ public class Camera
     int noTargetCounter = 0;
     Pose2d robotPose;
     AprilTagFieldLayout tagFieldLayout;
-    boolean seesRedRight11 = false;
-    boolean seesRedLeft8 = false;
-    boolean seesBlueRight27 = false;
-    boolean seesBlueLeft24 = false;
 
     public Camera(PhotonCamera cam, double camHeight,double x,double y, double rot){
         this.camera = cam;
@@ -68,7 +64,7 @@ public class Camera
                     //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
                     PhotonTrackedTarget target = CamResult.getTargets().get(i);
                     this.targetId = target.getFiducialId();
-                    if(this.targetId != 16&&this.targetId != 26){continue;}
+                    if(this.targetId != 9&&this.targetId != 26){continue;}//check which ones this is
 
                     //all measurements are in degrees
                     this.yaw = target.getYaw();// horizontal  rotation
@@ -108,10 +104,6 @@ public class Camera
                     }
                     this.distance = -PhotonUtils.calculateDistanceToTargetMeters(this.cameraHeight, this.targetHeight, 0, Math.toRadians(-this.pitch));
                 }
-                seesRedRight11 = seenRedRight11;
-                seesBlueLeft24 = seenBlueLeft24;
-                seesBlueRight27 = seenBlueRight27;
-                seesRedLeft8 = seenRedLeft8;
             }
         }
         else{
@@ -152,5 +144,8 @@ public class Camera
     }
     public String rightOrLeft(){
         return "no";
+    }
+    public boolean hasTarget(){
+        return camera.getLatestResult().hasTargets();
     }
 }
