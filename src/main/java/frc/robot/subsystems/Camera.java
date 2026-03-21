@@ -56,15 +56,11 @@ public class Camera
         if(!CamResults.isEmpty()){
             PhotonPipelineResult CamResult = CamResults.get(0);
             if(CamResult.hasTargets()){
-                boolean seenRedRight11 = false;
-                boolean seenRedLeft8 = false;
-                boolean seenBlueRight27 = false;
-                boolean seenBlueLeft24 = false;
                 for(int i = 0;i<CamResult.getTargets().size();i++){
                     //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
                     PhotonTrackedTarget target = CamResult.getTargets().get(i);
                     this.targetId = target.getFiducialId();
-                    if(this.targetId != 9&&this.targetId != 26){continue;}//check which ones this is
+                    if(this.targetId != 10&&this.targetId != 26){continue;}//check which ones this is
 
                     //all measurements are in degrees
                     this.yaw = target.getYaw();// horizontal  rotation

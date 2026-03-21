@@ -108,6 +108,8 @@ public class LauncherPIDCommand extends Command {
     
     @Override
     public void execute() {
+        this.targetTopRPM = getTargetTopRPM(targetTopRPM);
+        this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
         // Get current RPM values for each motor
         // Read separate PID constants from SmartDashboard for top, bottom-top, and bottom-bottom
         double newPTop = SmartDashboard.getNumber("Launcher/PID/Top/kP", kPTop);
@@ -145,7 +147,7 @@ public class LauncherPIDCommand extends Command {
         double topLeftOutput = topLeftPIDController.calculate(currentTopLeftRPM, targetTopRPM);
         double topRightOutput = topRightPIDController.calculate(currentTopRightRPM, targetTopRPM);
         double bottomTopOutput = bottomTopPIDController.calculate(currentBottomTopRPM, targetBottomRPM);
-        double bottomBottomOutput = bottomBottomPIDController.calculate(currentBottomBottomRPM, targetBottomRPM);
+        double bottomBottomOutput = bottomBottomPIDController.calculate(currentBottomBottomRPM, targetBottomRPM/2);
         
         // Clamp outputs to [-1, 1] for motor speed
         topLeftOutput = Math.max(-1.0, Math.min(1.0, topLeftOutput));
@@ -163,7 +165,7 @@ public class LauncherPIDCommand extends Command {
         launcher.launchTopRightRPM(currentTopRightRPM + topRightOutput * 1000);
         launcher.launchBottomTopRPM(currentBottomTopRPM + bottomTopOutput * 1000);
         
-        // Bottom motors only spin after delay to avoid stutter
+        // Bottom motors only spin after delay
         if (bottomLaunched) {
             launcher.launchBottomBottomRPM(currentBottomBottomRPM + bottomBottomOutput * 1000);
         } else {
@@ -254,11 +256,13 @@ public class LauncherPIDCommand extends Command {
             return targetRPM;
         }
         else if(!vision.hasTarget()){
+            System.out.println("No Target");
             return LauncherConstants.kLauncherDefaultTopRPM;
         }
         else{
             double horizDistance = vision.getHorizDistance();
-            double targetRPM = 1820;//LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
+            double targetRPM = LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
+            System.out.println("Target Distance: "+horizDistance+"  target RPM: "+targetRPM);
             return targetRPM;
         }
     }

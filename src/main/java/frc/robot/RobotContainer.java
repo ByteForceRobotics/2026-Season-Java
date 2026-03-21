@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -86,18 +87,15 @@ public class RobotContainer {
   //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
   
   double autoShootLaunchSpeed = 0.65;
-  SequentialCommandGroup autoShoot = new LauncherPIDCommand(m_launcher,m_vision,500,500).withTimeout(5)
-            .alongWith(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-            .beforeStarting(new LauncherPIDCommand(m_launcher,m_vision,500,500).withTimeout(0.5)//this section might be redundant since no agitator(i think)
-            .beforeStarting(new LauncherPIDCommand(m_launcher,m_vision,500,0).withTimeout(0.5))) 
-    .andThen(new InstantCommand(() -> m_launcher.launch_stop(),m_launcher));
-  ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0,true).withTimeout(2);
-  SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
+  SequentialCommandGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,10,10).withTimeout(5)
+            .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay).andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))).andThen(m_agitator.agitateStopCommand(0));
+  //ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0,true).withTimeout(2);
+  //SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
   
   public RobotContainer() {
     //NamedCommands.registerCommand("LevelOneClimb", climblvl1);
     NamedCommands.registerCommand("ShootAllBalls", autoShoot);
-    NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
+    //NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
     NamedCommands.registerCommand("TurnToTagCommand", turnToTagCommand());
     NamedCommands.registerCommand("IntakeToggleCommand", m_intake.intakeToggleCommand());
     NamedCommands.registerCommand("LifterLower", new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLower));
@@ -232,10 +230,10 @@ public class RobotContainer {
     //             m_climber));
     
     new POVButton(m_driverController, 90)
-        .whileTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLower));
+        .onTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLower));
 
     new POVButton(m_driverController, 270)
-        .whileTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
+        .onTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
 
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))

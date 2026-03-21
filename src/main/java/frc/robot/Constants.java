@@ -88,12 +88,12 @@ public final class Constants {
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
-    public static final double kLifterMaxLower = 0.267;//0.332;
+    public static final double kLifterMaxLower = 0.343;//0.267;
     public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
-    public static final double kIntakeDefaultSpeed = 0.45;
+    public static final double kIntakeDefaultSpeed = 0.55;
     public static final double kLiftDefaultSpeed = 0.3;
     public static final double kP = 1;   // Proportional gain
-    public static final double kI = 0.01;   // Integral gain
+    public static final double kI = 0.01;   // Integral gain  
     public static final double kD = 0.1;   // Derivative gain
     public static final double kTolerance = 0.01; 
   }
@@ -119,9 +119,9 @@ public final class Constants {
     public static final double kBottomBottomD = 0.0000;//,maybe figure out a small value
     public static final double kBottomTolerance = 20.0;  // RPM tolerance
     public static final double kLauncherDefaultBottomRPM = 800;
-    public static final double kLauncherDefaultTopRPM = 3800;
+    public static final double kLauncherDefaultTopRPM = 3600;
     public static final boolean kManualControl = false;//true uses smartdashboard values, false uses interpolation/defualt values
-    public static final double kBottomLauncherDelay = 1.3;//max distance we can shoot from, in meters
+    public static final double kBottomLauncherDelay = 2;//max distance we can shoot from, in meters
     //interpolation is credited to team 2059 hitchhikers
     public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(
 		  InverseInterpolator.forDouble(),
@@ -136,8 +136,11 @@ public final class Constants {
 			//DISTANCE FROM CENTER OF SHOOTER TO CENTER OF HUB, IN METERS
       //distance meters, rpm, time of flight seconds
       //time of flight is only needed for shooting while moving
-			 SHOOTER_MAP.put(2.6, new ShooterParams(2750, 0.68));
-			 SHOOTER_MAP.put(3.0, new ShooterParams(2900, 0.8));
+      SHOOTER_MAP.put(1.89, new ShooterParams(3130, 0.68));
+      SHOOTER_MAP.put(2.28, new ShooterParams(3240, 0.68));
+			 SHOOTER_MAP.put(3.37, new ShooterParams(3550, 0.68));
+			 SHOOTER_MAP.put(4.0, new ShooterParams(3600, 0.8));
+       SHOOTER_MAP.put(4.8, new ShooterParams(3780, 0.8));
 			// SHOOTER_MAP.put(3.5, new ShooterParams(2950, 0.9));
 			// SHOOTER_MAP.put(4.0, new ShooterParams(3150, 1.0));
 			// SHOOTER_MAP.put(4.865, new ShooterParams(3550, 1.3));

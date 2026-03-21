@@ -61,7 +61,12 @@ public class GoToPositionLifterCommand extends Command {
         output = Math.max(-1.0, Math.min(1.0, output));
         
         intake.lift(output);
-        
+        if(targetPosition==0){
+            intake.intake_stop();
+        }
+        else{
+            intake.intake(IntakeConstants.kIntakeDefaultSpeed);
+        }
         // Debug logging
         System.out.println("GoToPosition: current=" + currentPosition + " target=" + targetPosition + " output=" + output);
     }
