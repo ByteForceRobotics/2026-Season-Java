@@ -31,7 +31,7 @@ public final class Constants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 3.5;// Earlier max was 4.8
-    public static final double kMaxAngularSpeed = 0.1* Math.PI; // radians per second
+    public static final double kMaxAngularSpeed = 1.2* Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(23.5);
@@ -88,7 +88,7 @@ public final class Constants {
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
-    public static final double kLifterMaxLower = 0.332;
+    public static final double kLifterMaxLower = 0.267;//0.332;
     public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
     public static final double kIntakeDefaultSpeed = 0.45;
     public static final double kLiftDefaultSpeed = 0.3;

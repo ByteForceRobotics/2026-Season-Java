@@ -80,7 +80,7 @@ public class GoToPositionLifterCommand extends Command {
     @Override
     public boolean isFinished() {
         // Command finishes when PID controller reaches setpoint
-        return pidController.atSetpoint();
+        return false;
     }
     public void updatePIDConstants(double kP, double kI, double kD, double tolerance) {
         pidController.setPID(kP, kI, kD);
