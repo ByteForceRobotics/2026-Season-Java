@@ -37,6 +37,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.commands.AimAssist;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -285,6 +286,10 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kStart.value)
         .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
         .onFalse(m_agitator.agitateStopCommand(0));
+
+     new JoystickButton(m_driverController, Button.kY.value)
+        .toggleOnTrue(new AimAssist(m_robotDrive, m_vision, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX()));
+    
   }
 
   public void changeScale(){
