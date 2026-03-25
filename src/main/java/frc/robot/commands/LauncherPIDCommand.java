@@ -255,6 +255,9 @@ public class LauncherPIDCommand extends Command {
             double targetRPM = SmartDashboard.getNumber("GoalTopRPM", -1);
             return targetRPM;
         }
+        else if (targetTopRPM ==123){
+            return 1510;
+        }
         else if(!vision.hasTarget()){
             System.out.println("No Target");
             return LauncherConstants.kLauncherDefaultTopRPM;

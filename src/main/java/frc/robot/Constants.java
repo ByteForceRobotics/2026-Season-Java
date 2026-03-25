@@ -105,7 +105,7 @@ public final class Constants {
     public static final int kLauncherBottomBottomCanId = 16;//bottom
     public static final int kLauncher1CurrentLimit = 40;
     public static final int kLauncher2CurrentLimit = 40;
-    public static final IdleMode kLauncherIdleMode = IdleMode.kCoast;
+    public static final IdleMode kLauncherIdleMode = IdleMode.kBrake;
     public static final double kLauncherSpeed = 0.65;
     public static final double kTopP = 0.0001;
     public static final double kTopI = 0.000001;

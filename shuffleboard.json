@@ -535,9 +535,9 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "0,0": {
+          "2,0": {
             "size": [
-              10,
+              6,
               4
             ],
             "content": {
@@ -554,6 +554,62 @@
               "fps": -1,
               "imageWidth": 320,
               "imageHeight": 180
+            }
+          },
+          "9,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "ComboBox Chooser",
+              "_source0": "network_table:///SmartDashboard/Auto Chooser",
+              "_title": "/SmartDashboard/Auto Chooser",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/Intake On",
+              "_title": "/SmartDashboard/Intake On",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "9,1": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Boolean Box",
+              "_source0": "network_table:///SmartDashboard/agitator enabled",
+              "_title": "/SmartDashboard/agitator enabled",
+              "_glyph": 148,
+              "_showGlyph": false,
+              "Colors/Color when true": "#7CFC00FF",
+              "Colors/Color when false": "#8B0000FF"
+            }
+          },
+          "8,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/slowdown multiplier",
+              "_title": "/SmartDashboard/slowdown multiplier",
+              "_glyph": 148,
+              "_showGlyph": false
             }
           }
         }
@@ -687,16 +743,11 @@
               1
             ],
             "content": {
-              "_type": "Number Slider",
+              "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/Launcher/GoalTopRPM",
               "_title": "SmartDashboard/Launcher/GoalTopRPM",
               "_glyph": 148,
-              "_showGlyph": false,
-              "Slider Settings/Min": -1.0,
-              "Slider Settings/Max": 5000.0,
-              "Slider Settings/Block increment": 0.0625,
-              "Visuals/Display value": true,
-              "Visuals/Orientation": "HORIZONTAL"
+              "_showGlyph": false
             }
           },
           "6,0": {
