@@ -211,6 +211,9 @@ public class DriveSubsystem extends SubsystemBase{
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
   }
+  public void driveRobotRelative(double xSpeed, double ySpeed, double rot){
+    drive(xSpeed,ySpeed,rot,false);
+  }
 
   public Command driveCommand(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     return this.run(() -> drive(xSpeed,ySpeed,rot,true))
@@ -312,5 +315,13 @@ public class DriveSubsystem extends SubsystemBase{
         m_rearRight.getPosition()
       };
     }
+  public SwerveModuleState[] getModuleStates() {
+    return new SwerveModuleState[] {
+      m_frontLeft.getState(),
+      m_frontRight.getState(),
+      m_rearLeft.getState(),
+      m_rearRight.getState()  
+    };
+  }
   
 }
