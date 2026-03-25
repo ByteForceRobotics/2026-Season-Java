@@ -6,7 +6,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import java.util.function.DoubleSupplier;
 
-public class AimAssist extends Command {
+public class AimAssistCommand extends Command {
     private final DriveSubsystem drive;
     private final VisionSubsystem vision;
     private final PIDController pidController;
@@ -24,7 +24,7 @@ public class AimAssist extends Command {
     
     
 
-    public AimAssist(DriveSubsystem drive, VisionSubsystem vision, DoubleSupplier x, DoubleSupplier y) {
+    public AimAssistCommand(DriveSubsystem drive, VisionSubsystem vision, DoubleSupplier x, DoubleSupplier y) {
         this.drive = drive;
         this.vision = vision;
         this.translationX = x;
@@ -64,7 +64,7 @@ public class AimAssist extends Command {
     
     @Override
     public boolean isFinished() {
-        // Check if PID controller is at setpoint (yaw error is within tolerance)
+        // Command runs on toggle
         return false;
     }
 }

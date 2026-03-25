@@ -21,7 +21,7 @@ TODO:
   * 
 
 * photon vision
-  * April Tag detection
+  * April Tag detection (multiple tags)
   * pose estimation
 
 
