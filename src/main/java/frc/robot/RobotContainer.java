@@ -284,12 +284,12 @@ public class RobotContainer {
         .onTrue(m_agitator.agitateToggleCommand());
     
     new JoystickButton(m_driverController, Button.kStart.value)
-        .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
-        .onFalse(m_agitator.agitateStopCommand(0));
+      .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
+      .onFalse(m_agitator.agitateStopCommand(0));
 
 
-        new JoystickButton(m_driverController, Button.kY.value)
-        .toggleOnTrue(new AimAssistCommand(m_robotDrive, m_vision, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX()));
+    new JoystickButton(m_driverController, Button.kY.value)
+      .toggleOnTrue(new AimAssistCommand(m_robotDrive, m_vision, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX()));
 
   }
     

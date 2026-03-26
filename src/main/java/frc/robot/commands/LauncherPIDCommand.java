@@ -16,10 +16,10 @@ public class LauncherPIDCommand extends Command {
     private final VisionSubsystem vision;
     private double targetTopRPM;
     private double targetBottomRPM;
-    private final PIDController topLeftPIDController;
-    private final PIDController topRightPIDController;
-    private final PIDController bottomTopPIDController;
-    private final PIDController bottomBottomPIDController;
+    // private final PIDController topLeftPIDController;
+    // private final PIDController topRightPIDController;
+    // private final PIDController bottomTopPIDController;
+    // private final PIDController bottomBottomPIDController;
     
     // Timer for delaying bottom launcher spinup to avoid stutter
     private double commandStartTime = 0;
@@ -55,19 +55,19 @@ public class LauncherPIDCommand extends Command {
         this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
         
         // Create individual PID controllers for each motor
-        // Top launcher motors use top PID constants
-        this.topLeftPIDController = new PIDController(kPTop, kITop, kDTop);
-        this.topLeftPIDController.setTolerance(kToleranceTop);
+        // // Top launcher motors use top PID constants
+        // this.topLeftPIDController = new PIDController(kPTop, kITop, kDTop);
+        // this.topLeftPIDController.setTolerance(kToleranceTop);
         
-        this.topRightPIDController = new PIDController(kPTop, kITop, kDTop);
-        this.topRightPIDController.setTolerance(kToleranceTop);
+        // this.topRightPIDController = new PIDController(kPTop, kITop, kDTop);
+        // this.topRightPIDController.setTolerance(kToleranceTop);
         
-        // Bottom launcher motors use separate PID constants
-        this.bottomTopPIDController = new PIDController(kPBottomTop, kIBottomTop, kDBottomTop);
-        this.bottomTopPIDController.setTolerance(kToleranceBottomTop);
+        // // Bottom launcher motors use separate PID constants
+        // this.bottomTopPIDController = new PIDController(kPBottomTop, kIBottomTop, kDBottomTop);
+        // this.bottomTopPIDController.setTolerance(kToleranceBottomTop);
         
-        this.bottomBottomPIDController = new PIDController(kPBottomBottom, kIBottomBottom, kDBottomBottom);
-        this.bottomBottomPIDController.setTolerance(kToleranceBottomBottom);
+        // this.bottomBottomPIDController = new PIDController(kPBottomBottom, kIBottomBottom, kDBottomBottom);
+        // this.bottomBottomPIDController.setTolerance(kToleranceBottomBottom);
         
         
         addRequirements(launcher);  // This command requires the LauncherSubsystem
@@ -85,11 +85,11 @@ public class LauncherPIDCommand extends Command {
     
     @Override
     public void initialize() {
-        // Reset all PID controllers when command starts
-        topLeftPIDController.reset();
-        topRightPIDController.reset();
-        bottomTopPIDController.reset();
-        bottomBottomPIDController.reset();
+        // // Reset all PID controllers when command starts
+        // topLeftPIDController.reset();
+        // topRightPIDController.reset();
+        // bottomTopPIDController.reset();
+        // bottomBottomPIDController.reset();
         
         // Start timer for bottom launcher delay
         this.commandStartTime = System.currentTimeMillis() / 1000.0;
@@ -112,48 +112,48 @@ public class LauncherPIDCommand extends Command {
         this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
         // Get current RPM values for each motor
         // Read separate PID constants from SmartDashboard for top, bottom-top, and bottom-bottom
-        double newPTop = SmartDashboard.getNumber("Launcher/PID/Top/kP", kPTop);
-        double newITop = SmartDashboard.getNumber("Launcher/PID/Top/kI", kITop);
-        double newDTop = SmartDashboard.getNumber("Launcher/PID/Top/kD", kDTop);
-        double newToleranceTop = SmartDashboard.getNumber("Launcher/PID/Top/Tolerance", kToleranceTop);
+        // double newPTop = SmartDashboard.getNumber("Launcher/PID/Top/kP", kPTop);
+        // double newITop = SmartDashboard.getNumber("Launcher/PID/Top/kI", kITop);
+        // double newDTop = SmartDashboard.getNumber("Launcher/PID/Top/kD", kDTop);
+        // double newToleranceTop = SmartDashboard.getNumber("Launcher/PID/Top/Tolerance", kToleranceTop);
         
-        double newPBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/kP", kPBottomTop);
-        double newIBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/kI", kIBottomTop);
-        double newDBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/kD", kDBottomTop);
-        double newToleranceBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/Tolerance", kToleranceBottomTop);
+        // double newPBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/kP", kPBottomTop);
+        // double newIBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/kI", kIBottomTop);
+        // double newDBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/kD", kDBottomTop);
+        // double newToleranceBottomTop = SmartDashboard.getNumber("Launcher/PID/BottomTop/Tolerance", kToleranceBottomTop);
         
-        double newPBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/kP", kPBottomBottom);
-        double newIBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/kI", kIBottomBottom);
-        double newDBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/kD", kDBottomBottom);
-        double newToleranceBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/Tolerance", kToleranceBottomBottom);
+        // double newPBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/kP", kPBottomBottom);
+        // double newIBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/kI", kIBottomBottom);
+        // double newDBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/kD", kDBottomBottom);
+        // double newToleranceBottomBottom = SmartDashboard.getNumber("Launcher/PID/BottomBottom/Tolerance", kToleranceBottomBottom);
         
-        // Update PID constants for all motors independently
-        if(LauncherConstants.kManualControl){
-            this.updateTopPIDConstants(newPTop, newITop, newDTop, newToleranceTop);
-            this.updateBottomTopPIDConstants(newPBottomTop, newIBottomTop, newDBottomTop, newToleranceBottomTop);
-            this.updateBottomBottomPIDConstants(newPBottomBottom, newIBottomBottom, newDBottomBottom, newToleranceBottomBottom);
-        }
-        if(LauncherConstants.kManualControl){
-            this.targetTopRPM = SmartDashboard.getNumber("Launcher/GoalTopRPM",-1);
-        this.targetBottomRPM = SmartDashboard.getNumber("Launcher/GoalBottomRPM",-1);
-        }
+        // // Update PID constants for all motors independently
+        // if(LauncherConstants.kManualControl){
+        //     this.updateTopPIDConstants(newPTop, newITop, newDTop, newToleranceTop);
+        //     this.updateBottomTopPIDConstants(newPBottomTop, newIBottomTop, newDBottomTop, newToleranceBottomTop);
+        //     this.updateBottomBottomPIDConstants(newPBottomBottom, newIBottomBottom, newDBottomBottom, newToleranceBottomBottom);
+        // }
+        // if(LauncherConstants.kManualControl){
+        //     this.targetTopRPM = SmartDashboard.getNumber("Launcher/GoalTopRPM",-1);
+        // this.targetBottomRPM = SmartDashboard.getNumber("Launcher/GoalBottomRPM",-1);
+        // }
         
         double currentTopLeftRPM = launcher.getTopLeftRPM();
         double currentTopRightRPM = launcher.getTopRightRPM();
         double currentBottomTopRPM = launcher.getBottomTopRPM();
         double currentBottomBottomRPM = launcher.getBottomBottomRPM();
         
-        // Calculate PID outputs for each motor (error is target - current)
-        double topLeftOutput = topLeftPIDController.calculate(currentTopLeftRPM, targetTopRPM);
-        double topRightOutput = topRightPIDController.calculate(currentTopRightRPM, targetTopRPM);
-        double bottomTopOutput = bottomTopPIDController.calculate(currentBottomTopRPM, targetBottomRPM);
-        double bottomBottomOutput = bottomBottomPIDController.calculate(currentBottomBottomRPM, targetBottomRPM/2);
+        // // Calculate PID outputs for each motor (error is target - current)
+        // double topLeftOutput = topLeftPIDController.calculate(currentTopLeftRPM, targetTopRPM);
+        // double topRightOutput = topRightPIDController.calculate(currentTopRightRPM, targetTopRPM);
+        // double bottomTopOutput = bottomTopPIDController.calculate(currentBottomTopRPM, targetBottomRPM);
+        // double bottomBottomOutput = bottomBottomPIDController.calculate(currentBottomBottomRPM, targetBottomRPM/2);
         
-        // Clamp outputs to [-1, 1] for motor speed
-        topLeftOutput = Math.max(-1.0, Math.min(1.0, topLeftOutput));
-        topRightOutput = Math.max(-1.0, Math.min(1.0, topRightOutput));
-        bottomTopOutput = Math.max(-1.0, Math.min(1.0, bottomTopOutput));
-        bottomBottomOutput = Math.max(-1.0, Math.min(1.0, bottomBottomOutput));
+        // // Clamp outputs to [-1, 1] for motor speed
+        // topLeftOutput = Math.max(-1.0, Math.min(1.0, topLeftOutput));
+        // topRightOutput = Math.max(-1.0, Math.min(1.0, topRightOutput));
+        // bottomTopOutput = Math.max(-1.0, Math.min(1.0, bottomTopOutput));
+        // bottomBottomOutput = Math.max(-1.0, Math.min(1.0, bottomBottomOutput));
         
         // Check if we should spin up bottom launchers (delay to avoid stutter)
         double elapsedTime = System.currentTimeMillis() / 1000.0 - commandStartTime;
@@ -161,13 +161,13 @@ public class LauncherPIDCommand extends Command {
         
         // Control each motor individually
         // Top motors always spin (no delay)
-        launcher.launchTopLeftRPM(currentTopLeftRPM + topLeftOutput * 1000);
-        launcher.launchTopRightRPM(currentTopRightRPM + topRightOutput * 1000);
-        launcher.launchBottomTopRPM(currentBottomTopRPM + bottomTopOutput * 1000);
+        launcher.launchTopLeftRPM(targetTopRPM);
+        launcher.launchTopRightRPM(targetTopRPM);
+        launcher.launchBottomTopRPM(targetBottomRPM);
         
         // Bottom motors only spin after delay
         if (bottomLaunched) {
-            launcher.launchBottomBottomRPM(currentBottomBottomRPM + bottomBottomOutput * 1000);
+            launcher.launchBottomBottomRPM(targetBottomRPM);
         } else {
             // Keep bottom motors at 0 RPM until delay passes
             launcher.launchBottomBottomRPM(0);
@@ -195,55 +195,56 @@ public class LauncherPIDCommand extends Command {
         }
     }
     
-    /**
-     * Update PID constants for top launcher motors independently.
-     */
-    public void updateTopPIDConstants(double kP, double kI, double kD, double kTolerance) {
-        topLeftPIDController.setPID(kP, kI, kD);
-        topRightPIDController.setPID(kP, kI, kD);
-        topLeftPIDController.setTolerance(kTolerance);
-        topRightPIDController.setTolerance(kTolerance);
-    }
+    // /**
+    //  * Update PID constants for top launcher motors independently.
+    //  */
+    // public void updateTopPIDConstants(double kP, double kI, double kD, double kTolerance) {
+    //     topLeftPIDController.setPID(kP, kI, kD);
+    //     topRightPIDController.setPID(kP, kI, kD);
+    //     topLeftPIDController.setTolerance(kTolerance);
+    //     topRightPIDController.setTolerance(kTolerance);
+    // }
     
-    /**
-     * Update PID constants for bottom-top launcher motor independently.
-     */
-    public void updateBottomTopPIDConstants(double kP, double kI, double kD, double kTolerance) {
-        bottomTopPIDController.setPID(kP, kI, kD);
-        bottomTopPIDController.setTolerance(kTolerance);
-    }
+    // /**
+    //  * Update PID constants for bottom-top launcher motor independently.
+    //  */
+    // public void updateBottomTopPIDConstants(double kP, double kI, double kD, double kTolerance) {
+    //     bottomTopPIDController.setPID(kP, kI, kD);
+    //     bottomTopPIDController.setTolerance(kTolerance);
+    // }
     
-    /**
-     * Update PID constants for bottom-bottom launcher motor independently.
-     */
-    public void updateBottomBottomPIDConstants(double kP, double kI, double kD, double kTolerance) {
-        bottomBottomPIDController.setPID(kP, kI, kD);
-        bottomBottomPIDController.setTolerance(kTolerance);
-    }
+    // /**
+    //  * Update PID constants for bottom-bottom launcher motor independently.
+    //  */
+    // public void updateBottomBottomPIDConstants(double kP, double kI, double kD, double kTolerance) {
+    //     bottomBottomPIDController.setPID(kP, kI, kD);
+    //     bottomBottomPIDController.setTolerance(kTolerance);
+    // }
     
-    /**
-     * Update PID constants for all bottom launcher motors together (deprecated - use separate methods).
-     */
-    public void updateBottomPIDConstants(double kP, double kI, double kD, double kTolerance) {
-        bottomTopPIDController.setPID(kP, kI, kD);
-        bottomBottomPIDController.setPID(kP, kI, kD);
-        bottomTopPIDController.setTolerance(kTolerance);
-        bottomBottomPIDController.setTolerance(kTolerance);
-    }
+    // /**
+    //  * Update PID constants for all bottom launcher motors together (deprecated - use separate methods).
+    //  */
+    // public void updateBottomPIDConstants(double kP, double kI, double kD, double kTolerance) {
+    //     bottomTopPIDController.setPID(kP, kI, kD);
+    //     bottomBottomPIDController.setPID(kP, kI, kD);
+    //     bottomTopPIDController.setTolerance(kTolerance);
+    //     bottomBottomPIDController.setTolerance(kTolerance);
+    // }
     
-    /**
-     * Update PID constants for all launcher motors.
-     */
-    public void updatePIDConstants(double kP, double kI, double kD, double kTolerance) {
-        topLeftPIDController.setPID(kP, kI, kD);
-        topRightPIDController.setPID(kP, kI, kD);
-        bottomTopPIDController.setPID(kP, kI, kD);
-        bottomBottomPIDController.setPID(kP, kI, kD);
-        topLeftPIDController.setTolerance(kTolerance);
-        topRightPIDController.setTolerance(kTolerance);
-        bottomTopPIDController.setTolerance(kTolerance);
-        bottomBottomPIDController.setTolerance(kTolerance);
-    }
+    // /**
+    //  * Update PID constants for all launcher motors.
+    //  */
+    // public void updatePIDConstants(double kP, double kI, double kD, double kTolerance) {
+    //     topLeftPIDController.setPID(kP, kI, kD);
+    //     topRightPIDController.setPID(kP, kI, kD);
+    //     bottomTopPIDController.setPID(kP, kI, kD);
+    //     bottomBottomPIDController.setPID(kP, kI, kD);
+    //     topLeftPIDController.setTolerance(kTolerance);
+    //     topRightPIDController.setTolerance(kTolerance);
+    //     bottomTopPIDController.setTolerance(kTolerance);
+    //     bottomBottomPIDController.setTolerance(kTolerance);
+    // }
+    
     
     @Override
     public boolean isFinished() {

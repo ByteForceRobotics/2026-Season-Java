@@ -10,8 +10,11 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
+import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,36 +36,61 @@ public class LauncherSubsystem extends SubsystemBase {
     m_launcherBottomTop = new SparkMax(LauncherConstants.kLauncherBottomTopCanId, MotorType.kBrushless);//top
     m_launcherBottomBottom = new SparkMax(LauncherConstants.kLauncherBottomBottomCanId, MotorType.kBrushless);//bottom
     launchPower = 0;
-    SparkMaxConfig launcherConfig = new SparkMaxConfig();
-    SparkMaxConfig invertedLaunchConfig = new SparkMaxConfig();
+    SparkMaxConfig topRightLauncherConfig = new SparkMaxConfig();
+    SparkMaxConfig topLeftLauncherConfig = new SparkMaxConfig();
+    SparkMaxConfig middleLauncherConfig = new SparkMaxConfig();
+    SparkMaxConfig bottomLauncherConfig = new SparkMaxConfig();
     
     // Velocity control PID constants for RPM control
     // NEO motors max out around 5700 RPM
-    ClosedLoopConfig velocityConfig = new ClosedLoopConfig()
-        .p(0.0001)
-        .i(0.00001)
-        .d(0.0001)
-        .outputRange(-1, 1);
+    
+
+    SparkFlexConfig TopConfig = new SparkFlexConfig();
+    TopConfig
+        .closedLoop.pid(0.001, 0.0, 0.0).outputRange(-1, 1)
+        .allowedClosedLoopError(50, ClosedLoopSlot.kSlot0)
+        .feedForward.sva(0.01, 1/565 , 0.0001);
+
+    SparkMaxConfig MiddleConfig = new SparkMaxConfig();
+    MiddleConfig
+        .closedLoop.pid(0.0002, 0.0, 0.0).outputRange(-1, 1)
+        .feedForward.sva(0.1, 1/565 , 0.00003);
+
+    SparkMaxConfig BottomConfig = new SparkMaxConfig();
+    BottomConfig
+        .closedLoop.pid(0.0002, 0.0, 0.0).outputRange(-1, 1)
+        .feedForward.sva(0.1, 1/565 , 0.00003);
       
-    launcherConfig
+    topRightLauncherConfig
+      .inverted(true)
+      .idleMode(LauncherConstants.kLauncherIdleMode)
+      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
+      .apply(TopConfig);
+
+    topLeftLauncherConfig
       .inverted(false)
       .idleMode(LauncherConstants.kLauncherIdleMode)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
-      .apply(velocityConfig);
+      .apply(TopConfig);
 
-    invertedLaunchConfig
-      .apply(velocityConfig)
-      .apply(launcherConfig)
-      .inverted(true);
+    middleLauncherConfig
+      .inverted(false)
+      .idleMode(LauncherConstants.kLauncherIdleMode)
+      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
+      .apply(MiddleConfig);
 
+    bottomLauncherConfig
+      .inverted(false)
+      .idleMode(LauncherConstants.kLauncherIdleMode)
+      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
+      .apply(BottomConfig);
     
 
     
-    m_launcherTopLeft.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_launcherTopRight.configure(invertedLaunchConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_launcherBottomTop.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    m_launcherBottomBottom.configure(launcherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    
+    m_launcherTopLeft.configure(topLeftLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcherTopRight.configure(topRightLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcherBottomTop.configure(middleLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_launcherBottomBottom.configure(bottomLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   
   /**
