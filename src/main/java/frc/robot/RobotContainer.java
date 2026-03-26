@@ -29,6 +29,7 @@ import frc.robot.Constants.AgitatorConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.AimAssistCommand;
 import frc.robot.commands.GoToPositionLifterCommand;
 import frc.robot.commands.LauncherPIDCommand;
 import frc.robot.commands.TurnToTagCommand;
@@ -285,8 +286,13 @@ public class RobotContainer {
     new JoystickButton(m_driverController, Button.kStart.value)
         .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
         .onFalse(m_agitator.agitateStopCommand(0));
-  }
 
+
+        new JoystickButton(m_driverController, Button.kY.value)
+        .toggleOnTrue(new AimAssistCommand(m_robotDrive, m_vision, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX()));
+
+  }
+    
   public void changeScale(){
     if(speedScale == speedScaleHigh){
       speedScale = speedScaleLow;
