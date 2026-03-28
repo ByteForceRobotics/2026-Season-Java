@@ -145,6 +145,8 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("leftFront", m_frontLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("rightrear", m_rearRight.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("leftrear", m_rearLeft.getPosition().angle.getDegrees());
+    SmartDashboard.putNumber("Robot Gyro velocity", Math.hypot(m_gyro.getVelocityX(), m_gyro.getVelocityY()));
+    SmartDashboard.putNumber("Robot Wheel velocity", Math.hypot(getRobotRelativeSpeeds().vxMetersPerSecond, getRobotRelativeSpeeds().vyMetersPerSecond));
   }
 
   /**

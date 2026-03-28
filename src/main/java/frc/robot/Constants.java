@@ -103,9 +103,10 @@ public final class Constants {
     public static final int kLauncherTopRightCanId = 14;
     public static final int kLauncherBottomTopCanId = 15;//bottom
     public static final int kLauncherBottomBottomCanId = 16;//bottom
-    public static final int kLauncher1CurrentLimit = 40;
-    public static final int kLauncher2CurrentLimit = 40;
-    public static final IdleMode kLauncherIdleMode = IdleMode.kBrake;
+    public static final int kLauncher1CurrentLimit = 80;
+    public static final int kLauncher2CurrentLimit = 80;
+    public static final IdleMode kLauncherTopIdleMode = IdleMode.kCoast;
+    public static final IdleMode kLauncherBottomIdleMode = IdleMode.kBrake;
     public static final double kLauncherSpeed = 0.65;
     public static final double kTopP = 0.0001;
     public static final double kTopI = 0.000001;
@@ -118,8 +119,8 @@ public final class Constants {
     public static final double kBottomBottomI = 0.000001;
     public static final double kBottomBottomD = 0.0000;//,maybe figure out a small value
     public static final double kBottomTolerance = 20.0;  // RPM tolerance
-    public static final double kLauncherDefaultBottomRPM = 800;
-    public static final double kLauncherDefaultTopRPM = 3600;
+    public static final double kLauncherDefaultBottomRPM = 1200;
+    public static final double kLauncherDefaultTopRPM = 3800;
     public static final boolean kManualControl = false;//true uses smartdashboard values, false uses interpolation/defualt values
     public static final double kBottomLauncherDelay = 2;//max distance we can shoot from, in meters
     //interpolation is credited to team 2059 hitchhikers

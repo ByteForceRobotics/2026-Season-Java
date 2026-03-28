@@ -17,10 +17,17 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.units.BaseUnits;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.LauncherConstants;
+import edu.wpi.first.units.Units;
 
 public class LauncherSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -30,7 +37,47 @@ public class LauncherSubsystem extends SubsystemBase {
   SparkMax m_launcherBottomBottom; //bottom 
   double launchPower;
 
+  // private final SysIdRoutine leftFlywheelRoutine;
+  // private final SysIdRoutine rightFlywheelRoutine;
+
+    // Variables below are used exclusively for SysID routine logging.
+  private final MutVoltage appliedVoltsRoutine = Units.Volts.mutable(0);
+  private final MutAngle angleRoutine = Units.Rotations.mutable(0);
+  private final MutAngularVelocity angularVelocityRoutine = Units.RPM.mutable(0);
+
   public LauncherSubsystem(){
+    
+    // leftFlywheelRoutine = new SysIdRoutine(
+		//   new SysIdRoutine.Config(),
+		//   new SysIdRoutine.Mechanism(
+		// 	voltage -> {
+		// 		m_launcherTopLeft.setFlywheelVoltage(voltage.in(Units.Volts));
+		// 	},
+		// 	log -> {
+		// 		log.motor("left-shooter-motor")
+		// 		  .voltage(appliedVoltsRoutine.mut_replace(leftShooterInputs.flywheelAppliedVolts))
+		// 		  .angularPosition(angleRoutine.mut_replace(leftShooterInputs.flywheelPosition))
+		// 		  .angularVelocity(angularVelocityRoutine.mut_replace(leftShooterInputs.flywheelVelocity));
+		// 	},
+		// 	this
+		//   )
+		// );
+		// rightFlywheelRoutine = new SysIdRoutine(
+		//   new SysIdRoutine.Config(),
+		//   new SysIdRoutine.Mechanism(
+		// 	voltage -> {
+		// 		m_launcherTopRight.setFlywheelVoltage(voltage.in(Units.Volts));
+		// 	},
+		// 	log -> {
+		// 		log.motor("right-shooter-motor")
+		// 		  .voltage(appliedVoltsRoutine.mut_replace(Units.Volts.mutable(m_launcherTopRight.getAppliedOutput()*m_launcherTopLeft.getBusVoltage())))
+		// 		  .angularPosition(angleRoutine.mut_replace(Units.Rotations.mutable(MathUtil.clamp(m_launcherTopRight.getEncoder().getPosition(),-1,1))))
+		// 		  .angularVelocity(angularVelocityRoutine.mut_replace(Units.RPM.mutable(m_launcherTopRight.getEncoder().getVelocity())));
+		// 	},
+		// 	this
+		//   )
+		// );
+    
     m_launcherTopLeft = new SparkFlex(LauncherConstants.kLauncherTopLeftCanId, MotorType.kBrushless);//top
     m_launcherTopRight = new SparkFlex(LauncherConstants.kLauncherTopRightCanId, MotorType.kBrushless);//bottom
     m_launcherBottomTop = new SparkMax(LauncherConstants.kLauncherBottomTopCanId, MotorType.kBrushless);//top
@@ -47,41 +94,43 @@ public class LauncherSubsystem extends SubsystemBase {
 
     SparkFlexConfig TopConfig = new SparkFlexConfig();
     TopConfig
-        .closedLoop.pid(0.001, 0.0, 0.0).outputRange(-1, 1)
+        .closedLoop.pid(0.0009, 0.0000002, 0.05).outputRange(0, 1)
         .allowedClosedLoopError(50, ClosedLoopSlot.kSlot0)
-        .feedForward.sva(0.01, 1/565 , 0.0001);
+        .feedForward.sva(0.01,1/545 , 0.0001);
 
     SparkMaxConfig MiddleConfig = new SparkMaxConfig();
     MiddleConfig
-        .closedLoop.pid(0.0002, 0.0, 0.0).outputRange(-1, 1)
-        .feedForward.sva(0.1, 1/565 , 0.00003);
+        .closedLoop.pid(0.0002, 0.0000001, 0.0).outputRange(0, 1)
+        .allowedClosedLoopError(50, ClosedLoopSlot.kSlot0)
+        .feedForward.sva(0.1, 1/545 , 0.00003);
 
     SparkMaxConfig BottomConfig = new SparkMaxConfig();
     BottomConfig
-        .closedLoop.pid(0.0002, 0.0, 0.0).outputRange(-1, 1)
-        .feedForward.sva(0.1, 1/565 , 0.00003);
+        .closedLoop.pid(0.0002, 0.0000001, 0.0).outputRange(0, 1)
+        .allowedClosedLoopError(50, ClosedLoopSlot.kSlot0)
+        .feedForward.sva(0.1, 1/545 , 0.00003);
       
     topRightLauncherConfig
       .inverted(true)
-      .idleMode(LauncherConstants.kLauncherIdleMode)
+      .idleMode(LauncherConstants.kLauncherTopIdleMode)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
       .apply(TopConfig);
 
     topLeftLauncherConfig
       .inverted(false)
-      .idleMode(LauncherConstants.kLauncherIdleMode)
+      .idleMode(LauncherConstants.kLauncherTopIdleMode)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
       .apply(TopConfig);
 
     middleLauncherConfig
       .inverted(false)
-      .idleMode(LauncherConstants.kLauncherIdleMode)
+      .idleMode(LauncherConstants.kLauncherTopIdleMode)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
       .apply(MiddleConfig);
 
     bottomLauncherConfig
       .inverted(false)
-      .idleMode(LauncherConstants.kLauncherIdleMode)
+      .idleMode(LauncherConstants.kLauncherBottomIdleMode)
       .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
       .apply(BottomConfig);
     
@@ -91,12 +140,27 @@ public class LauncherSubsystem extends SubsystemBase {
     m_launcherTopRight.configure(topRightLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherBottomTop.configure(middleLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherBottomBottom.configure(bottomLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    SparkClosedLoopController topController =  m_launcherTopLeft.getClosedLoopController();
   }
   
-  /**
-   * Method to lift the climb using joystick info.
-   *
-   */
+  //SysId getters
+  // public Command leftShooterQuasiForward() {return leftFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
+
+	// public Command rightShooterQuasiForward() {return rightFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
+
+	// public Command leftShooterQuasiReverse() {return leftFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
+
+	// public Command rightShooterQuasiReverse() {return rightFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
+
+	// public Command leftShooterDynamicForward() {return leftFlywheelRoutine.dynamic(SysIdRoutine.Direction.kForward);}
+
+	// public Command rightShooterDynamicForward() {return rightFlywheelRoutine.dynamic(SysIdRoutine.Direction.kForward);}
+
+	// public Command leftShooterDynamicReverse() {return leftFlywheelRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
+
+	// public Command rightShooterDynamicReverse() {return rightFlywheelRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
+
+  
   
   public void launchTop(double xSpeed) {
     m_launcherTopLeft.set(xSpeed);

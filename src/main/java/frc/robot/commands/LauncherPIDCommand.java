@@ -26,20 +26,20 @@ public class LauncherPIDCommand extends Command {
     private double bottomLauncherDelay = LauncherConstants.kBottomLauncherDelay; // Default 300ms delay (adjustable via SmartDashboard)
     
     // PID constants for launcher RPM control - separate for all motors
-    private static final double kPTop = LauncherConstants.kTopP;
-    private static final double kITop = LauncherConstants.kTopI;
-    private static final double kDTop = LauncherConstants.kTopD;
-    private static final double kToleranceTop = LauncherConstants.kTopTolerance;
+    // private static final double kPTop = LauncherConstants.kTopP;
+    // private static final double kITop = LauncherConstants.kTopI;
+    // private static final double kDTop = LauncherConstants.kTopD;
+    // private static final double kToleranceTop = LauncherConstants.kTopTolerance;
     
-    private static final double kPBottomTop = LauncherConstants.kBottomTopP;
-    private static final double kIBottomTop = LauncherConstants.kBottomTopI;
-    private static final double kDBottomTop = LauncherConstants.kBottomTopD;
-    private static final double kToleranceBottomTop = LauncherConstants.kBottomTolerance;
+    // private static final double kPBottomTop = LauncherConstants.kBottomTopP;
+    // private static final double kIBottomTop = LauncherConstants.kBottomTopI;
+    // private static final double kDBottomTop = LauncherConstants.kBottomTopD;
+    // private static final double kToleranceBottomTop = LauncherConstants.kBottomTolerance;
     
-    private static final double kPBottomBottom = LauncherConstants.kBottomBottomP;
-    private static final double kIBottomBottom = LauncherConstants.kBottomBottomI;
-    private static final double kDBottomBottom = LauncherConstants.kBottomBottomD;
-    private static final double kToleranceBottomBottom = LauncherConstants.kBottomTolerance;
+    // private static final double kPBottomBottom = LauncherConstants.kBottomBottomP;
+    // private static final double kIBottomBottom = LauncherConstants.kBottomBottomI;
+    // private static final double kDBottomBottom = LauncherConstants.kBottomBottomD;
+    // private static final double kToleranceBottomBottom = LauncherConstants.kBottomTolerance;
     
     /**
      * Creates a new LauncherPIDCommand to control launcher to target RPM.
@@ -108,8 +108,8 @@ public class LauncherPIDCommand extends Command {
     
     @Override
     public void execute() {
-        this.targetTopRPM = getTargetTopRPM(targetTopRPM);
-        this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
+        //this.targetTopRPM = getTargetTopRPM(targetTopRPM);
+        //this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
         // Get current RPM values for each motor
         // Read separate PID constants from SmartDashboard for top, bottom-top, and bottom-bottom
         // double newPTop = SmartDashboard.getNumber("Launcher/PID/Top/kP", kPTop);
@@ -248,7 +248,6 @@ public class LauncherPIDCommand extends Command {
     
     @Override
     public boolean isFinished() {
-        // Command finishes when all 4 motors reach their target RPM
         return false;
     }
     public double getTargetTopRPM(double targetTopRPM){

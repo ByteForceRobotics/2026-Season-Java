@@ -88,8 +88,11 @@ public class RobotContainer {
   //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
   
   double autoShootLaunchSpeed = 0.65;
-  SequentialCommandGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,123,10).withTimeout(5)
-            .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay).andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))).andThen(m_agitator.agitateStopCommand(0));
+  SequentialCommandGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,123,10)
+    .withTimeout(5)
+    .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay)
+    .andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed)))
+    .andThen(m_agitator.agitateStopCommand(0));
   //ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0,true).withTimeout(2);
   //SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
   
