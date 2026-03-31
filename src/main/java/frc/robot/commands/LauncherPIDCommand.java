@@ -325,7 +325,10 @@ public class LauncherPIDCommand extends Command {
             return targetRPM;
         }
         else if (targetTopRPM ==123){
-            return 1510;
+            return 3400;//test this
+        }
+        else if(targetTopRPM == 6767){
+            return 6000;//test that
         }
         else if(!vision.hasTarget()){
             System.out.println("No Target");
