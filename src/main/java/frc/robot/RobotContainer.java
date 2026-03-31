@@ -60,7 +60,7 @@ public class RobotContainer {
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_climberController = new XboxController(OIConstants.kClimbControllerPort);
   //CommandXboxController m_commanddriverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  //https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=adjustable+Slowdown%2C+capped+at+0.5&rightTrigger=&rightBumper=launch+Balls&leftBumper=toggle+intake&leftStickClick=change+scale&leftStick=movement%2Fdriving&rightStick=rotation&xButton=toggle+agitator%28%29&aButton=&yButton=&startButton=&bButton=reset+heading&dpadUp=&dpadDown=&dpadRight=deploy+lifter%2Fintake&dpadLeft=retract+lifter%2Fintake
+  //https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=adjustable+Slowdown%2C+capped+at+0.5&rightTrigger=&rightBumper=launch+Balls&leftBumper=toggle+intake&leftStickClick=change+scale&leftStick=movement%2Fdriving&rightStick=rotation&xButton=toggle+agitator%28%29&aButton=deploy+lifter%2Fintake&yButton=retract+lifter%2Fintake&startButton=&bButton=reset+heading&dpadUp=&dpadDown=&dpadRight=&dpadLeft=
   // this is the link to the controller keybinds
   
   boolean fieldRelative = true;
@@ -231,12 +231,13 @@ public class RobotContainer {
     //             () -> m_climber.pull_stop(),
     //             m_climber));
     
-    new POVButton(m_driverController, 90)
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
+    
+    new JoystickButton(m_driverController, Button.kA.value)
         .onTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLower));
 
-    new POVButton(m_driverController, 270)
-        .onTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
-
+    
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value)/2)))
       .onFalse(new InstantCommand(() -> slowdown_stop()));
@@ -281,17 +282,19 @@ public class RobotContainer {
       .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
       .onFalse(m_agitator.agitateStopCommand(0));
 
-    new JoystickButton(m_driverController, Button.kA.value)
-      .whileTrue(m_launcher.RightsysIdDynamic(SysIdRoutine.Direction.kForward));
+
+    // SYS id routines
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //   .whileTrue(m_launcher.RightsysIdDynamic(SysIdRoutine.Direction.kForward));
     
-    new JoystickButton(m_driverController, Button.kB.value)
-      .whileTrue(m_launcher.RightsysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //   .whileTrue(m_launcher.RightsysIdDynamic(SysIdRoutine.Direction.kReverse));
     
-    new JoystickButton(m_driverController, Button.kY.value)
-      .whileTrue(m_launcher.RightsysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // new JoystickButton(m_driverController, Button.kY.value)
+    //   .whileTrue(m_launcher.RightsysIdQuasistatic(SysIdRoutine.Direction.kForward));
     
-    new JoystickButton(m_driverController, Button.kX.value)
-      .whileTrue(m_launcher.RightsysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //   .whileTrue(m_launcher.RightsysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
 
     // new JoystickButton(m_driverController, Button.kY.value)
