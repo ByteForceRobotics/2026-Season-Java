@@ -14,17 +14,18 @@ public final class Configs {
 
         static {
             // Use module constants to calculate conversion factors and feed forward gain.
-            double drivingFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
-                    / ModuleConstants.kDrivingMotorReduction;
+            double drivingFactor = (ModuleConstants.kWheelDiameterMeters * Math.PI
+                    /(60* ModuleConstants.kDrivingMotorReduction));
+            double drivingPosFactor = ((Math.PI*ModuleConstants.kWheelDiameterMeters)/ModuleConstants.kDrivingMotorReduction);
             double turningFactor = 2 * Math.PI;
             double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
 
             drivingConfig
                     .idleMode(IdleMode.kBrake)
-                    .smartCurrentLimit(50);
+                    .smartCurrentLimit(60,60);
             drivingConfig.encoder
-                    .positionConversionFactor(drivingFactor) // meters
-                    .velocityConversionFactor(drivingFactor / 60.0); // meters per second
+                    .positionConversionFactor(drivingPosFactor) // meters
+                    .velocityConversionFactor(drivingFactor); // meters per second
             drivingConfig.closedLoop
                     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                     // These are example gains you may need to them for your own robot!

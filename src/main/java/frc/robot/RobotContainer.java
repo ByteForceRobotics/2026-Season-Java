@@ -6,7 +6,6 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
@@ -14,17 +13,14 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.AgitatorConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
@@ -88,7 +84,7 @@ public class RobotContainer {
   //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
   
   double autoShootLaunchSpeed = 0.65;
-  SequentialCommandGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,123,10)
+  SequentialCommandGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,m_intake,123,10)
     .withTimeout(5)
     .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay)
     .andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed)))
@@ -262,11 +258,20 @@ public class RobotContainer {
             m_climber));
     */
     ///*
+    // LLLLOOOOOK HEREEE look here
+    // LLLLOOOOOK HEREEE
+    // LLLLOOOOOK HEREEE
+    // LLLLOOOOOK HEREEE
+    // add a flag that I feed into the intake/launcher command so that it dont stop when we press magic button to lower/lift intake
+    //or remove the add requirements bc thaat we think makes it exclusive access
+    //also cap the slow to 0.5 or maybe 1/3
+    //need to get sys id working
+    //that might be able to do PID easy
     new JoystickButton(m_driverController, Button.kBack.value)
       .onTrue(autoShoot);
     
     new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,10,10)
+        .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,m_intake,10,10)
             .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay).andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))))
         .onFalse(m_agitator.agitateStopCommand(0)); 
 
@@ -274,25 +279,37 @@ public class RobotContainer {
         .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))
         .onFalse(m_launcher.launchStopCommand());
 
-    new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //     .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
         
-    new JoystickButton(m_driverController, Button.kA.value)
-        .whileTrue(new TurnToTagCommand(m_robotDrive, m_vision));
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .whileTrue(new TurnToTagCommand(m_robotDrive, m_vision));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
         .onTrue(m_intake.intakeToggleCommand());
       
-    new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(m_agitator.agitateToggleCommand());
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //     .onTrue(m_agitator.agitateToggleCommand());
     
     new JoystickButton(m_driverController, Button.kStart.value)
       .whileTrue(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))
       .onFalse(m_agitator.agitateStopCommand(0));
 
-
+    new JoystickButton(m_driverController, Button.kA.value)
+      .whileTrue(m_launcher.RightsysIdDynamic(SysIdRoutine.Direction.kForward));
+    
+    new JoystickButton(m_driverController, Button.kB.value)
+      .whileTrue(m_launcher.RightsysIdDynamic(SysIdRoutine.Direction.kReverse));
+    
     new JoystickButton(m_driverController, Button.kY.value)
-      .toggleOnTrue(new AimAssistCommand(m_robotDrive, m_vision, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX()));
+      .whileTrue(m_launcher.RightsysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    
+    new JoystickButton(m_driverController, Button.kX.value)
+      .whileTrue(m_launcher.RightsysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+
+    // new JoystickButton(m_driverController, Button.kY.value)
+    //   .toggleOnTrue(new AimAssistCommand(m_robotDrive, m_vision, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX()));
 
   }
     

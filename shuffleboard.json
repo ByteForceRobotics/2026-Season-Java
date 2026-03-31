@@ -50,7 +50,7 @@
               "_showGlyph": false
             }
           },
-          "7,0": {
+          "6,0": {
             "size": [
               1,
               1
@@ -63,7 +63,7 @@
               "_showGlyph": false
             }
           },
-          "8,0": {
+          "5,0": {
             "size": [
               1,
               1
@@ -261,45 +261,6 @@
               "_showGlyph": false
             }
           },
-          "5,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/FrontCam",
-              "_title": "FrontCam",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "6,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/RearCam",
-              "_title": "RearCam",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,0": {
-            "size": [
-              1,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/path",
-              "_title": "path",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "0,2": {
             "size": [
               1,
@@ -333,8 +294,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/unga bunga",
-              "_title": "unga bunga",
+              "_source0": "network_table:///SmartDashboard/Launcher/GoalTopRPM",
+              "_title": "Launcher/GoalTopRPM",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -346,8 +307,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/null",
-              "_title": "null",
+              "_source0": "network_table:///SmartDashboard/Launcher/GoalBottomRPM",
+              "_title": "Launcher/GoalBottomRPM",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -359,8 +320,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/nulltest",
-              "_title": "nulltest",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/kP",
+              "_title": "Launcher/PID/Top/kP",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -372,8 +333,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/wehope",
-              "_title": "wehope",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/kI",
+              "_title": "Launcher/PID/Top/kI",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -385,8 +346,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/key",
-              "_title": "key",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/kD",
+              "_title": "Launcher/PID/Top/kD",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -398,8 +359,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/key3",
-              "_title": "key3",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/Top/Tolerance",
+              "_title": "Launcher/PID/Top/Tolerance",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -411,8 +372,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/tag1",
-              "_title": "tag1",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/kP",
+              "_title": "Launcher/PID/BottomTop/kP",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -424,8 +385,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/GPLauncher Des Spd (RPM)",
-              "_title": "GPLauncher Des Spd (RPM)",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/kI",
+              "_title": "Launcher/PID/BottomTop/kI",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -437,8 +398,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive/X",
-              "_title": "Drive/X",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/kD",
+              "_title": "Launcher/PID/BottomTop/kD",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -450,8 +411,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive/Y",
-              "_title": "Drive/Y",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomTop/Tolerance",
+              "_title": "Launcher/PID/BottomTop/Tolerance",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -463,8 +424,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive/Heading",
-              "_title": "Drive/Heading",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/kP",
+              "_title": "Launcher/PID/BottomBottom/kP",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -476,8 +437,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive/VX",
-              "_title": "Drive/VX",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/kI",
+              "_title": "Launcher/PID/BottomBottom/kI",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -489,8 +450,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive/VY",
-              "_title": "Drive/VY",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/kD",
+              "_title": "Launcher/PID/BottomBottom/kD",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -502,8 +463,8 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive/Omega Degrees",
-              "_title": "Drive/Omega Degrees",
+              "_source0": "network_table:///SmartDashboard/Launcher/PID/BottomBottom/Tolerance",
+              "_title": "Launcher/PID/BottomBottom/Tolerance",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -515,8 +476,47 @@
             ],
             "content": {
               "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/Drive/Target VX",
-              "_title": "Drive/Target VX",
+              "_source0": "network_table:///SmartDashboard/Lifter/PID/kP",
+              "_title": "Lifter/PID/kP",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/sqLeftX",
+              "_title": "/SmartDashboard/sqLeftX",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/sqLeftY",
+              "_title": "/SmartDashboard/sqLeftY",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/sqRightX",
+              "_title": "/SmartDashboard/sqRightX",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -537,8 +537,8 @@
         "tiles": {
           "2,0": {
             "size": [
-              6,
-              4
+              4,
+              2
             ],
             "content": {
               "_type": "Camera Stream",
@@ -556,9 +556,9 @@
               "imageHeight": 180
             }
           },
-          "9,0": {
+          "0,0": {
             "size": [
-              1,
+              2,
               1
             ],
             "content": {
@@ -599,7 +599,7 @@
               "Colors/Color when false": "#8B0000FF"
             }
           },
-          "8,2": {
+          "1,1": {
             "size": [
               1,
               1
@@ -608,6 +608,162 @@
               "_type": "Text View",
               "_source0": "network_table:///SmartDashboard/slowdown multiplier",
               "_title": "/SmartDashboard/slowdown multiplier",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Robot Gyro velocity",
+              "_title": "SmartDashboard/Robot Gyro velocity",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,0": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/Robot Wheel velocity",
+              "_title": "SmartDashboard/Robot Wheel velocity",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_frontLeft",
+              "_title": "SmartDashboard/m_frontLeft",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_frontRight",
+              "_title": "SmartDashboard/m_frontRight",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "8,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_rearLeft",
+              "_title": "SmartDashboard/m_rearLeft",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "9,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_rearRight",
+              "_title": "SmartDashboard/m_rearRight",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "4,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/modstates0post",
+              "_title": "SmartDashboard/modstates0post",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "3,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/modstates0pre",
+              "_title": "SmartDashboard/modstates0pre",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_frontLeftstate",
+              "_title": "SmartDashboard/m_frontLeftstate",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,2": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_frontRightstate",
+              "_title": "SmartDashboard/m_frontRightstate",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "6,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_rearLeftstate",
+              "_title": "SmartDashboard/m_rearLeftstate",
+              "_glyph": 148,
+              "_showGlyph": false
+            }
+          },
+          "7,3": {
+            "size": [
+              1,
+              1
+            ],
+            "content": {
+              "_type": "Text View",
+              "_source0": "network_table:///SmartDashboard/m_rearLeftstate",
+              "_title": "SmartDashboard/m_rearLeftstate",
               "_glyph": 148,
               "_showGlyph": false
             }
@@ -1063,6 +1219,6 @@
     "x": -4.800000190734863,
     "y": 0.0,
     "width": 1547.199951171875,
-    "height": 620.0
+    "height": 795.2000122070312
   }
 }

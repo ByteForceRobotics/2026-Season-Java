@@ -1,6 +1,7 @@
 package frc.robot.commands;
 
 import frc.robot.Constants.LauncherConstants;
+import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.controller.PIDController;
@@ -14,8 +15,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class LauncherPIDCommand extends Command {
     private final LauncherSubsystem launcher;
     private final VisionSubsystem vision;
+    private final IntakeSubsystem intake;
     private double targetTopRPM;
     private double targetBottomRPM;
+
     // private final PIDController topLeftPIDController;
     // private final PIDController topRightPIDController;
     // private final PIDController bottomTopPIDController;
@@ -48,9 +51,10 @@ public class LauncherPIDCommand extends Command {
      * @param targetTopRPM Target RPM for top launcher
      * @param targetBottomRPM Target RPM for bottom launcher
      */
-    public LauncherPIDCommand(LauncherSubsystem launcher, VisionSubsystem vision, double targetTopRPM, double targetBottomRPM) {
+    public LauncherPIDCommand(LauncherSubsystem launcher, VisionSubsystem vision,IntakeSubsystem intake, double targetTopRPM, double targetBottomRPM) {
         this.launcher = launcher;
         this.vision = vision;
+        this.intake = intake;
         this.targetTopRPM = getTargetTopRPM(targetTopRPM);
         this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
         
@@ -70,7 +74,7 @@ public class LauncherPIDCommand extends Command {
         // this.bottomBottomPIDController.setTolerance(kToleranceBottomBottom);
         
         
-        addRequirements(launcher);  // This command requires the LauncherSubsystem
+        addRequirements(launcher,vision,intake);  // This command requires the LauncherSubsystem
     }
     
     /**
@@ -79,9 +83,6 @@ public class LauncherPIDCommand extends Command {
      * @param launcher The LauncherSubsystem instance
      * @param targetRPM Target RPM for both launchers
      */
-    public LauncherPIDCommand(LauncherSubsystem launcher,VisionSubsystem vision, double targetRPM) {
-        this(launcher, vision, targetRPM, targetRPM);
-    }
     
     @Override
     public void initialize() {
@@ -108,8 +109,9 @@ public class LauncherPIDCommand extends Command {
     
     @Override
     public void execute() {
-        //this.targetTopRPM = getTargetTopRPM(targetTopRPM);
-        //this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
+        intake.intake_stop();
+        this.targetTopRPM = getTargetTopRPM(targetTopRPM);
+        this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
         // Get current RPM values for each motor
         // Read separate PID constants from SmartDashboard for top, bottom-top, and bottom-bottom
         // double newPTop = SmartDashboard.getNumber("Launcher/PID/Top/kP", kPTop);
@@ -133,10 +135,10 @@ public class LauncherPIDCommand extends Command {
         //     this.updateBottomTopPIDConstants(newPBottomTop, newIBottomTop, newDBottomTop, newToleranceBottomTop);
         //     this.updateBottomBottomPIDConstants(newPBottomBottom, newIBottomBottom, newDBottomBottom, newToleranceBottomBottom);
         // }
-        // if(LauncherConstants.kManualControl){
-        //     this.targetTopRPM = SmartDashboard.getNumber("Launcher/GoalTopRPM",-1);
-        // this.targetBottomRPM = SmartDashboard.getNumber("Launcher/GoalBottomRPM",-1);
-        // }
+        if(LauncherConstants.kManualControl){
+            this.targetTopRPM = SmartDashboard.getNumber("Launcher/GoalTopRPM",-1);
+            this.targetBottomRPM = SmartDashboard.getNumber("Launcher/GoalBottomRPM",-1);
+        }
         
         double currentTopLeftRPM = launcher.getTopLeftRPM();
         double currentTopRightRPM = launcher.getTopRightRPM();

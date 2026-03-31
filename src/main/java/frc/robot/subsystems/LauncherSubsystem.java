@@ -26,7 +26,7 @@ import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.Constants.LauncherConstants;
+import static frc.robot.Constants.LauncherConstants.*;
 import edu.wpi.first.units.Units;
 
 public class LauncherSubsystem extends SubsystemBase {
@@ -37,8 +37,8 @@ public class LauncherSubsystem extends SubsystemBase {
   SparkMax m_launcherBottomBottom; //bottom 
   double launchPower;
 
-  // private final SysIdRoutine leftFlywheelRoutine;
-  // private final SysIdRoutine rightFlywheelRoutine;
+  private final SysIdRoutine leftFlywheelRoutine;
+  private final SysIdRoutine rightFlywheelRoutine;
 
     // Variables below are used exclusively for SysID routine logging.
   private final MutVoltage appliedVoltsRoutine = Units.Volts.mutable(0);
@@ -47,41 +47,41 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public LauncherSubsystem(){
     
-    // leftFlywheelRoutine = new SysIdRoutine(
-		//   new SysIdRoutine.Config(),
-		//   new SysIdRoutine.Mechanism(
-		// 	voltage -> {
-		// 		m_launcherTopLeft.setFlywheelVoltage(voltage.in(Units.Volts));
-		// 	},
-		// 	log -> {
-		// 		log.motor("left-shooter-motor")
-		// 		  .voltage(appliedVoltsRoutine.mut_replace(leftShooterInputs.flywheelAppliedVolts))
-		// 		  .angularPosition(angleRoutine.mut_replace(leftShooterInputs.flywheelPosition))
-		// 		  .angularVelocity(angularVelocityRoutine.mut_replace(leftShooterInputs.flywheelVelocity));
-		// 	},
-		// 	this
-		//   )
-		// );
-		// rightFlywheelRoutine = new SysIdRoutine(
-		//   new SysIdRoutine.Config(),
-		//   new SysIdRoutine.Mechanism(
-		// 	voltage -> {
-		// 		m_launcherTopRight.setFlywheelVoltage(voltage.in(Units.Volts));
-		// 	},
-		// 	log -> {
-		// 		log.motor("right-shooter-motor")
-		// 		  .voltage(appliedVoltsRoutine.mut_replace(Units.Volts.mutable(m_launcherTopRight.getAppliedOutput()*m_launcherTopLeft.getBusVoltage())))
-		// 		  .angularPosition(angleRoutine.mut_replace(Units.Rotations.mutable(MathUtil.clamp(m_launcherTopRight.getEncoder().getPosition(),-1,1))))
-		// 		  .angularVelocity(angularVelocityRoutine.mut_replace(Units.RPM.mutable(m_launcherTopRight.getEncoder().getVelocity())));
-		// 	},
-		// 	this
-		//   )
-		// );
+    leftFlywheelRoutine = new SysIdRoutine(
+		  new SysIdRoutine.Config(),
+		  new SysIdRoutine.Mechanism(
+			voltage -> {
+				m_launcherTopLeft.setVoltage(voltage.in(Units.Volts));
+			},
+			log -> {
+				log.motor("left-shooter-motor")
+				  .voltage(appliedVoltsRoutine.mut_replace(Units.Volts.mutable(m_launcherTopLeft.getAppliedOutput()*m_launcherTopLeft.getBusVoltage())))
+				  .angularPosition(angleRoutine.mut_replace(Units.Rotations.mutable(MathUtil.clamp(m_launcherTopLeft.getEncoder().getPosition(),-1,1))))
+				  .angularVelocity(angularVelocityRoutine.mut_replace(Units.RPM.mutable(m_launcherTopLeft.getEncoder().getVelocity())));
+			},
+			this
+		  )
+		);
+		rightFlywheelRoutine = new SysIdRoutine(
+		  new SysIdRoutine.Config(),
+		  new SysIdRoutine.Mechanism(
+			voltage -> {
+				m_launcherTopRight.setVoltage(voltage.in(Units.Volts));
+			},
+			log -> {
+				log.motor("right-shooter-motor")
+				  .voltage(appliedVoltsRoutine.mut_replace(Units.Volts.mutable(m_launcherTopRight.getAppliedOutput()*m_launcherTopLeft.getBusVoltage())))
+				  .angularPosition(angleRoutine.mut_replace(Units.Rotations.mutable(MathUtil.clamp(m_launcherTopRight.getEncoder().getPosition(),-1,1))))
+				  .angularVelocity(angularVelocityRoutine.mut_replace(Units.RPM.mutable(m_launcherTopRight.getEncoder().getVelocity())));
+			},
+			this
+		  )
+		);
     
-    m_launcherTopLeft = new SparkFlex(LauncherConstants.kLauncherTopLeftCanId, MotorType.kBrushless);//top
-    m_launcherTopRight = new SparkFlex(LauncherConstants.kLauncherTopRightCanId, MotorType.kBrushless);//bottom
-    m_launcherBottomTop = new SparkMax(LauncherConstants.kLauncherBottomTopCanId, MotorType.kBrushless);//top
-    m_launcherBottomBottom = new SparkMax(LauncherConstants.kLauncherBottomBottomCanId, MotorType.kBrushless);//bottom
+    m_launcherTopLeft = new SparkFlex(kLauncherTopLeftCanId, MotorType.kBrushless);//top
+    m_launcherTopRight = new SparkFlex(kLauncherTopRightCanId, MotorType.kBrushless);//bottom
+    m_launcherBottomTop = new SparkMax(kLauncherBottomTopCanId, MotorType.kBrushless);//top
+    m_launcherBottomBottom = new SparkMax(kLauncherBottomBottomCanId, MotorType.kBrushless);//bottom
     launchPower = 0;
     SparkMaxConfig topRightLauncherConfig = new SparkMaxConfig();
     SparkMaxConfig topLeftLauncherConfig = new SparkMaxConfig();
@@ -94,44 +94,44 @@ public class LauncherSubsystem extends SubsystemBase {
 
     SparkFlexConfig TopConfig = new SparkFlexConfig();
     TopConfig
-        .closedLoop.pid(0.0009, 0.0000002, 0.05).outputRange(0, 1)
-        .allowedClosedLoopError(50, ClosedLoopSlot.kSlot0)
-        .feedForward.sva(0.01,1/545 , 0.0001);
+        .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
+        .allowedClosedLoopError(kTopTolerance, ClosedLoopSlot.kSlot0)
+        .feedForward.sva(0.01,1/525,0.001);
 
     SparkMaxConfig MiddleConfig = new SparkMaxConfig();
     MiddleConfig
-        .closedLoop.pid(0.0002, 0.0000001, 0.0).outputRange(0, 1)
-        .allowedClosedLoopError(50, ClosedLoopSlot.kSlot0)
+        .closedLoop.pid(kBottomTopP, kBottomTopI, kBottomTopD).outputRange(0, 1)
+        .allowedClosedLoopError(kBottomTolerance, ClosedLoopSlot.kSlot0)
         .feedForward.sva(0.1, 1/545 , 0.00003);
 
     SparkMaxConfig BottomConfig = new SparkMaxConfig();
     BottomConfig
-        .closedLoop.pid(0.0002, 0.0000001, 0.0).outputRange(0, 1)
-        .allowedClosedLoopError(50, ClosedLoopSlot.kSlot0)
+        .closedLoop.pid(kBottomBottomP, kBottomBottomI, kBottomBottomD).outputRange(0, 1)
+        .allowedClosedLoopError(kBottomTolerance, ClosedLoopSlot.kSlot0)
         .feedForward.sva(0.1, 1/545 , 0.00003);
       
     topRightLauncherConfig
       .inverted(true)
-      .idleMode(LauncherConstants.kLauncherTopIdleMode)
-      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
+      .idleMode(kLauncherTopIdleMode)
+      .smartCurrentLimit(kLauncher1CurrentLimit)
       .apply(TopConfig);
 
     topLeftLauncherConfig
       .inverted(false)
-      .idleMode(LauncherConstants.kLauncherTopIdleMode)
-      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
+      .idleMode(kLauncherTopIdleMode)
+      .smartCurrentLimit(kLauncher1CurrentLimit)
       .apply(TopConfig);
 
     middleLauncherConfig
       .inverted(false)
-      .idleMode(LauncherConstants.kLauncherTopIdleMode)
-      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
+      .idleMode(kLauncherTopIdleMode)
+      .smartCurrentLimit(kLauncher1CurrentLimit)
       .apply(MiddleConfig);
 
     bottomLauncherConfig
       .inverted(false)
-      .idleMode(LauncherConstants.kLauncherBottomIdleMode)
-      .smartCurrentLimit(LauncherConstants.kLauncher1CurrentLimit)
+      .idleMode(kLauncherBottomIdleMode)
+      .smartCurrentLimit(kLauncher1CurrentLimit)
       .apply(BottomConfig);
     
 
@@ -143,28 +143,50 @@ public class LauncherSubsystem extends SubsystemBase {
     SparkClosedLoopController topController =  m_launcherTopLeft.getClosedLoopController();
   }
   
-  //SysId getters
-  // public Command leftShooterQuasiForward() {return leftFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
+   // SysId getters
+  public Command leftShooterQuasiForward() {return leftFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
 
-	// public Command rightShooterQuasiForward() {return rightFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
+	public Command rightShooterQuasiForward() {return rightFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
 
-	// public Command leftShooterQuasiReverse() {return leftFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
+	public Command leftShooterQuasiReverse() {return leftFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
 
-	// public Command rightShooterQuasiReverse() {return rightFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
+	public Command rightShooterQuasiReverse() {return rightFlywheelRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
 
-	// public Command leftShooterDynamicForward() {return leftFlywheelRoutine.dynamic(SysIdRoutine.Direction.kForward);}
+	public Command leftShooterDynamicForward() {return leftFlywheelRoutine.dynamic(SysIdRoutine.Direction.kForward);}
 
-	// public Command rightShooterDynamicForward() {return rightFlywheelRoutine.dynamic(SysIdRoutine.Direction.kForward);}
+	public Command rightShooterDynamicForward() {return rightFlywheelRoutine.dynamic(SysIdRoutine.Direction.kForward);}
 
-	// public Command leftShooterDynamicReverse() {return leftFlywheelRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
+	public Command leftShooterDynamicReverse() {return leftFlywheelRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
 
-	// public Command rightShooterDynamicReverse() {return rightFlywheelRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
+	public Command rightShooterDynamicReverse() {return rightFlywheelRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
 
-  
+  public Command RightsysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return rightFlywheelRoutine.quasistatic(direction);
+  }
+
+  public Command RightsysIdDynamic(SysIdRoutine.Direction direction) {
+    return rightFlywheelRoutine.dynamic(direction);
+  }
+  public Command LeftsysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return leftFlywheelRoutine.quasistatic(direction);
+  }
+
+  public Command LeftsysIdDynamic(SysIdRoutine.Direction direction) {
+    return leftFlywheelRoutine.dynamic(direction);
+  }
+
   
   public void launchTop(double xSpeed) {
     m_launcherTopLeft.set(xSpeed);
     m_launcherTopRight.set(xSpeed);
+  }
+
+  public void launchTopRightVolts(double xSpeed) {
+    m_launcherTopRight.setVoltage(xSpeed);
+  }
+
+  public void launchTopLeftVolts(double xSpeed) {
+    m_launcherTopLeft.setVoltage(xSpeed);
   }
 
   public void launchBottom(double xSpeed) {

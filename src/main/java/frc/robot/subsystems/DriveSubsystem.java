@@ -106,8 +106,8 @@ public class DriveSubsystem extends SubsystemBase{
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
             (speeds, feedforwards) -> drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-                    new PIDConstants(3.0, 0.0, 0.0) // Rotation PID constants
+                    new PIDConstants(0.04, 0, 0), // Translation PID constants
+                    new PIDConstants(1, 0, 0) // Rotation PID constants
             ),
             config, // The robot configuration
             () -> {
@@ -128,9 +128,9 @@ public class DriveSubsystem extends SubsystemBase{
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    // Pose2d robPose = m_driveEstimator.update(
-    //     Rotation2d.fromDegrees(m_gyro.getAngle()),
-    //     getModulePositions());
+    Pose2d robPose = m_driveEstimator.update(
+        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        getModulePositions());
     
     // Do this in either robot periodic or subsystem periodic
     m_field.setRobotPose(m_driveEstimator.getEstimatedPosition());
@@ -206,12 +206,22 @@ public class DriveSubsystem extends SubsystemBase{
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
                 Rotation2d.fromDegrees(-m_gyro.getAngle()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
+    SmartDashboard.putNumber("modstates0pre", swerveModuleStates[0].speedMetersPerSecond);
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
+    SmartDashboard.putNumber("modstates0post", swerveModuleStates[0].speedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
+    SmartDashboard.putNumber("m_frontLeft", m_frontLeft.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("m_frontRight", m_frontRight.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("m_rearLeft", m_rearLeft.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("m_rearRight", m_rearRight.getState().speedMetersPerSecond);
+    SmartDashboard.putNumber("m_frontLeftstate", swerveModuleStates[0].speedMetersPerSecond);
+    SmartDashboard.putNumber("m_frontRightstate", swerveModuleStates[1].speedMetersPerSecond);
+    SmartDashboard.putNumber("m_rearLeftstate", swerveModuleStates[2].speedMetersPerSecond);
+    SmartDashboard.putNumber("m_rearRightstate", swerveModuleStates[3].speedMetersPerSecond);
   }
   public void driveRobotRelative(double xSpeed, double ySpeed, double rot){
     drive(xSpeed,ySpeed,rot,false);

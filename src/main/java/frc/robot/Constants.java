@@ -30,7 +30,7 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 3.5;// Earlier max was 4.8
+    public static final double kMaxSpeedMetersPerSecond = 3;// Earlier max was 4.8
     public static final double kMaxAngularSpeed = 1.2* Math.PI; // radians per second
 
     // Chassis configuration
@@ -90,7 +90,7 @@ public final class Constants {
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
     public static final double kLifterMaxLower = 0.343;//0.267;
     public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
-    public static final double kIntakeDefaultSpeed = 0.55;
+    public static final double kIntakeDefaultSpeed = 0.65;
     public static final double kLiftDefaultSpeed = 0.3;
     public static final double kP = 1;   // Proportional gain
     public static final double kI = 0.01;   // Integral gain  
@@ -108,20 +108,20 @@ public final class Constants {
     public static final IdleMode kLauncherTopIdleMode = IdleMode.kCoast;
     public static final IdleMode kLauncherBottomIdleMode = IdleMode.kBrake;
     public static final double kLauncherSpeed = 0.65;
-    public static final double kTopP = 0.0001;
-    public static final double kTopI = 0.000001;
-    public static final double kTopD = 0.00001;
-    public static final double kTopTolerance = 50.0;  // RPM tolerance
-    public static final double kBottomTopP = 0.00005;//test these
-    public static final double kBottomTopI = 0.00001;
-    public static final double kBottomTopD = 0.00001;
-    public static final double kBottomBottomP = 0.0001;//test these
-    public static final double kBottomBottomI = 0.000001;
+    public static final double kTopP = 0.0008;
+    public static final double kTopI = 0.0000001;
+    public static final double kTopD = 0.06;
+    public static final double kTopTolerance = 0.0;  // RPM tolerance
+    public static final double kBottomTopP = 0.0002;//test these
+    public static final double kBottomTopI =  0.0000001;
+    public static final double kBottomTopD = 0;
+    public static final double kBottomBottomP = 0.0002;//test these
+    public static final double kBottomBottomI = 0.0000001;
     public static final double kBottomBottomD = 0.0000;//,maybe figure out a small value
-    public static final double kBottomTolerance = 20.0;  // RPM tolerance
-    public static final double kLauncherDefaultBottomRPM = 1200;
+    public static final double kBottomTolerance = 0;  // RPM tolerance
+    public static final double kLauncherDefaultBottomRPM = 800;
     public static final double kLauncherDefaultTopRPM = 3800;
-    public static final boolean kManualControl = false;//true uses smartdashboard values, false uses interpolation/defualt values
+    public static final boolean kManualControl = true;//true uses smartdashboard values, false uses interpolation/defualt values
     public static final double kBottomLauncherDelay = 2;//max distance we can shoot from, in meters
     //interpolation is credited to team 2059 hitchhikers
     public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(
