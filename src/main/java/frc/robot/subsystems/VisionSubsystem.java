@@ -7,8 +7,14 @@ package frc.robot.subsystems;
 
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.EstimatedRobotPose;
 import frc.robot.subsystems.Camera;
+import java.util.Optional;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
@@ -17,6 +23,8 @@ import frc.robot.Constants.CameraConstants;
 public class VisionSubsystem extends SubsystemBase {
   Camera frontCamera;
   Camera rearCamera;
+  private final Matrix<N3, N1> kSingleTagStdDevs = VecBuilder.fill(0.9, 0.9, 1.8);
+  private final Matrix<N3, N1> kMultiTagStdDevs = VecBuilder.fill(0.35, 0.35, 0.9);
   int frontTargetId;
   int rearTargetId;
   double frontyaw;
@@ -58,5 +66,29 @@ public class VisionSubsystem extends SubsystemBase {
   }
   public boolean hasTarget(){
     return frontCamera.hasTarget();
+  }
+
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose() {
+    return frontCamera.getLatestEstimatedPose();
+  }
+
+  public Matrix<N3, N1> getEstimationStdDevs(EstimatedRobotPose estimatedPose) {
+    int tagCount = estimatedPose.targetsUsed.size();
+    if (tagCount <= 0) {
+      return kSingleTagStdDevs;
+    }
+
+    double avgDistanceMeters = estimatedPose.targetsUsed.stream()
+        .mapToDouble(target -> target.getBestCameraToTarget().getTranslation().getNorm())
+        .average()
+        .orElse(4.0);
+
+    double scale = 1.0 + (avgDistanceMeters * avgDistanceMeters / 25.0);
+    Matrix<N3, N1> base = tagCount >= 2 ? kMultiTagStdDevs : kSingleTagStdDevs;
+
+    return VecBuilder.fill(
+        base.get(0, 0) * scale,
+        base.get(1, 0) * scale,
+        base.get(2, 0) * scale);
   }
 }

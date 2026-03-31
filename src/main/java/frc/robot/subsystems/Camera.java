@@ -2,9 +2,13 @@ package frc.robot.subsystems;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonUtils;
+import org.photonvision.EstimatedRobotPose;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
@@ -12,7 +16,10 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -32,6 +39,8 @@ public class Camera
     int noTargetCounter = 0;
     Pose2d robotPose;
     AprilTagFieldLayout tagFieldLayout;
+    PhotonPoseEstimator poseEstimator;
+    Optional<EstimatedRobotPose> latestEstimatedPose = Optional.empty();
 
     public Camera(PhotonCamera cam, double camHeight,double x,double y, double rot){
         this.camera = cam;
@@ -50,11 +59,31 @@ public class Camera
             e.printStackTrace();
             this.tagFieldLayout = null;
         }
+
+        if (this.tagFieldLayout != null) {
+            Transform3d robotToCamera = new Transform3d(
+                new Translation3d(this.xOffset, this.yOffset, this.cameraHeight),
+                new Rotation3d(0, 0, Math.toRadians(this.camRotation)));
+            this.poseEstimator = new PhotonPoseEstimator(
+                this.tagFieldLayout,
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR,
+                robotToCamera);
+            this.poseEstimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
+        }
+        else {
+            this.poseEstimator = null;
+        }
     }
     public void refreshCam(){
         var CamResults = camera.getAllUnreadResults();
         if(!CamResults.isEmpty()){
-            PhotonPipelineResult CamResult = CamResults.get(0);
+            PhotonPipelineResult CamResult = CamResults.get(CamResults.size() - 1);
+
+            if (this.poseEstimator != null) {
+                this.latestEstimatedPose = this.poseEstimator.update(CamResult);
+                this.latestEstimatedPose.ifPresent(est -> this.robotPose = est.estimatedPose.toPose2d());
+            }
+
             if(CamResult.hasTargets()){
                 for(int i = 0;i<CamResult.getTargets().size();i++){
                     //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
@@ -67,6 +96,8 @@ public class Camera
                     this.pitch = target.getPitch();
                     this.area = target.getArea();
                     //System.out.println(this.yaw+"    "+this.pitch);
+
+                    this.distance = -PhotonUtils.calculateDistanceToTargetMeters(this.cameraHeight, this.targetHeight, 0, Math.toRadians(-this.pitch));
                     
                     noTargetCounter = 0;
                     Translation2d  camToTargetTranslation = PhotonUtils.estimateCameraToTargetTranslation(this.distance,Rotation2d.fromDegrees(-this.yaw));
@@ -98,7 +129,6 @@ public class Camera
                             this.robotPose = PhotonUtils.estimateFieldToRobot(cameraToTarget, tagPose, cameraToRobot);
                         }
                     }
-                    this.distance = -PhotonUtils.calculateDistanceToTargetMeters(this.cameraHeight, this.targetHeight, 0, Math.toRadians(-this.pitch));
                 }
             }
         }
@@ -143,5 +173,9 @@ public class Camera
     }
     public boolean hasTarget(){
         return camera.getLatestResult().hasTargets();
+    }
+
+    public Optional<EstimatedRobotPose> getLatestEstimatedPose(){
+        return this.latestEstimatedPose;
     }
 }

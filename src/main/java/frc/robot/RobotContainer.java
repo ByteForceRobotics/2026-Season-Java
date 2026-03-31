@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import org.photonvision.EstimatedRobotPose;
+import java.util.Optional;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.XboxController;
@@ -238,7 +240,6 @@ public class RobotContainer {
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value)/2)))
       .onFalse(new InstantCommand(() -> slowdown_stop()));
-    
     ///*
     // LLLLOOOOOK HEREEE look here
     // LLLLOOOOOK HEREEE
@@ -319,6 +320,18 @@ public class RobotContainer {
   }
 
   public void periodic() {
+    Optional<EstimatedRobotPose> visionEstimate = m_vision.getEstimatedGlobalPose();
+    visionEstimate.ifPresent((EstimatedRobotPose estimate) -> {
+      m_robotDrive.addVisionMeasurement(
+          estimate.estimatedPose.toPose2d(),
+          estimate.timestampSeconds,
+          m_vision.getEstimationStdDevs(estimate));
+      SmartDashboard.putNumber("Vision/PoseX", estimate.estimatedPose.getX());
+      SmartDashboard.putNumber("Vision/PoseY", estimate.estimatedPose.getY());
+      SmartDashboard.putNumber("Vision/PoseHeadingDeg", estimate.estimatedPose.getRotation().toRotation2d().getDegrees());
+    });
+    SmartDashboard.putBoolean("Vision/HasEstimatedPose", visionEstimate.isPresent());
+
     // Initialize launch power on dashboard if not already present
     
     
