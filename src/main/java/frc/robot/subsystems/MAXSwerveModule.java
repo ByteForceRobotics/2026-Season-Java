@@ -74,6 +74,14 @@ public class MAXSwerveModule {
     return new SwerveModuleState(m_drivingEncoder.getVelocity(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
+  /**
+   * Returns the last desired state requested for this module.
+   *
+   * @return The requested state before module-level correction/optimization.
+   */
+  public SwerveModuleState getDesiredState() {
+    return m_desiredState;
+  }
 
   /**
    * Returns the current position of the module.

@@ -33,7 +33,6 @@ public class GoToPositionLifterCommand extends Command {
         this.pidController = new PIDController(kP, kI, kD);
         this.pidController.setTolerance(kTolerance);
         
-        addRequirements(intake);  // This command requires the IntakeSubsystem
     }
     
     @Override

@@ -391,4 +391,17 @@ public class LauncherSubsystem extends SubsystemBase {
   public void periodic(){
     // Publish current RPM to SmartDashboard for monitoring
   }
+
+  public double getTopLeftOutput() {
+    return m_launcherTopLeft.getAppliedOutput();
+  }
+  public double getTopRightOutput() {
+    return m_launcherTopRight.getAppliedOutput();
+  }
+  public double getMiddleOutput() {
+    return m_launcherBottomTop.getAppliedOutput();
+  }
+  public double getBottomOutput() {
+    return m_launcherBottomBottom.getAppliedOutput();
+  }
 }

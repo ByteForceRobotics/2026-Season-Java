@@ -236,7 +236,7 @@ public class RobotContainer {
         .onTrue(new GoToPositionLifterCommand(m_intake, IntakeConstants.kLifterMaxLift));
 
     triggerButton(m_driverController,Axis.kLeftTrigger)
-      .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value))))
+      .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value)/2)))
       .onFalse(new InstantCommand(() -> slowdown_stop()));
     /* 
     triggerButton(m_driverController,Axis.kRightTrigger)
@@ -262,11 +262,7 @@ public class RobotContainer {
     // LLLLOOOOOK HEREEE
     // LLLLOOOOOK HEREEE
     // LLLLOOOOOK HEREEE
-    // add a flag that I feed into the intake/launcher command so that it dont stop when we press magic button to lower/lift intake
-    //or remove the add requirements bc thaat we think makes it exclusive access
     //also cap the slow to 0.5 or maybe 1/3
-    //need to get sys id working
-    //that might be able to do PID easy
     new JoystickButton(m_driverController, Button.kBack.value)
       .onTrue(autoShoot);
     

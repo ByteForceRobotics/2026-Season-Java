@@ -5,6 +5,9 @@ import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -23,6 +26,27 @@ public class LauncherPIDCommand extends Command {
     // private final PIDController topRightPIDController;
     // private final PIDController bottomTopPIDController;
     // private final PIDController bottomBottomPIDController;
+    private final DoubleLogEntry topLeftSetpointLog;
+    private final DoubleLogEntry topLeftMeasuredLog;
+    private final DoubleLogEntry topLeftErrorLog;
+    private final DoubleLogEntry topLeftOutputLog;
+
+    private final DoubleLogEntry topRightSetpointLog;
+    private final DoubleLogEntry topRightMeasuredLog;
+    private final DoubleLogEntry topRightErrorLog;
+    private final DoubleLogEntry topRightOutputLog;
+
+    private final DoubleLogEntry bottomTopSetpointLog;
+    private final DoubleLogEntry bottomTopMeasuredLog;
+    private final DoubleLogEntry bottomTopErrorLog;
+    private final DoubleLogEntry bottomTopOutputLog;
+
+    private final DoubleLogEntry bottomBottomSetpointLog;
+    private final DoubleLogEntry bottomBottomMeasuredLog;
+    private final DoubleLogEntry bottomBottomErrorLog;
+    private final DoubleLogEntry bottomBottomOutputLog;
+
+    private final BooleanLogEntry bottomActiveLog;
     
     // Timer for delaying bottom launcher spinup to avoid stutter
     private double commandStartTime = 0;
@@ -72,9 +96,28 @@ public class LauncherPIDCommand extends Command {
         
         // this.bottomBottomPIDController = new PIDController(kPBottomBottom, kIBottomBottom, kDBottomBottom);
         // this.bottomBottomPIDController.setTolerance(kToleranceBottomBottom);
+         topLeftSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/SetpointRPM");
+        topLeftMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/MeasuredRPM");
+        topLeftErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/ErrorRPM");
+        topLeftOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/Output");
+
+        topRightSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/SetpointRPM");
+        topRightMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/MeasuredRPM");
+        topRightErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/ErrorRPM");
+        topRightOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/Output");
+
+        bottomTopSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/SetpointRPM");
+        bottomTopMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/MeasuredRPM");
+        bottomTopErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/ErrorRPM");
+        bottomTopOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/Output");
+
+        bottomBottomSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/SetpointRPM");
+        bottomBottomMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/MeasuredRPM");
+        bottomBottomErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/ErrorRPM");
+        bottomBottomOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/Output");
+        bottomActiveLog = new BooleanLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/Active");
+     
         
-        
-        addRequirements(launcher,vision,intake);  // This command requires the LauncherSubsystem
     }
     
     /**
@@ -174,6 +217,30 @@ public class LauncherPIDCommand extends Command {
             // Keep bottom motors at 0 RPM until delay passes
             launcher.launchBottomBottomRPM(0);
         }
+        double topLeftOutput = launcher.getTopLeftOutput();
+        topLeftSetpointLog.append(targetTopRPM);
+        topLeftMeasuredLog.append(currentTopLeftRPM);
+        topLeftErrorLog.append(targetTopRPM - currentTopLeftRPM);
+        topLeftOutputLog.append(topLeftOutput);
+
+        double topRightOutput = launcher.getTopRightOutput();
+        topRightSetpointLog.append(targetTopRPM);
+        topRightMeasuredLog.append(currentTopRightRPM);
+        topRightErrorLog.append(targetTopRPM - currentTopRightRPM);
+        topRightOutputLog.append(topRightOutput);
+
+        double middleOutput = launcher.getMiddleOutput();
+        bottomTopSetpointLog.append(targetBottomRPM);
+        bottomTopMeasuredLog.append(currentBottomTopRPM);
+        bottomTopErrorLog.append(targetBottomRPM - currentBottomTopRPM);
+        bottomTopOutputLog.append(middleOutput);
+
+        double bottomBottomOutput = launcher.getBottomOutput();
+        bottomBottomSetpointLog.append(targetBottomRPM/2);
+        bottomBottomMeasuredLog.append(currentBottomBottomRPM);
+        bottomBottomErrorLog.append(targetBottomRPM/2 - currentBottomBottomRPM);
+        bottomBottomOutputLog.append(bottomBottomOutput);
+        bottomActiveLog.append(bottomLaunched);
         
         // Debug logging
         System.out.println("LauncherPID: TopLeft=" + String.format("%.2f", currentTopLeftRPM) + 

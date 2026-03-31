@@ -9,7 +9,8 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
-
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.hal.HAL;
@@ -67,6 +68,37 @@ public class DriveSubsystem extends SubsystemBase{
   //simulation
   private final Field2d m_field = new Field2d();
   
+  private double m_lastCmdVx = 0.0;
+  private double m_lastCmdVy = 0.0;
+  private double m_lastCmdOmega = 0.0;
+
+  private final DoubleLogEntry cmdVxLog;
+  private final DoubleLogEntry cmdVyLog;
+  private final DoubleLogEntry cmdOmegaLog;
+  private final DoubleLogEntry measVxLog;
+  private final DoubleLogEntry measVyLog;
+  private final DoubleLogEntry measOmegaLog;
+
+  private final DoubleLogEntry flDriveSetpointLog;
+  private final DoubleLogEntry flDriveMeasuredLog;
+  private final DoubleLogEntry flTurnSetpointLog;
+  private final DoubleLogEntry flTurnMeasuredLog;
+
+  private final DoubleLogEntry frDriveSetpointLog;
+  private final DoubleLogEntry frDriveMeasuredLog;
+  private final DoubleLogEntry frTurnSetpointLog;
+  private final DoubleLogEntry frTurnMeasuredLog;
+
+  private final DoubleLogEntry rlDriveSetpointLog;
+  private final DoubleLogEntry rlDriveMeasuredLog;
+  private final DoubleLogEntry rlTurnSetpointLog;
+  private final DoubleLogEntry rlTurnMeasuredLog;
+
+  private final DoubleLogEntry rrDriveSetpointLog;
+  private final DoubleLogEntry rrDriveMeasuredLog;
+  private final DoubleLogEntry rrTurnSetpointLog;
+  private final DoubleLogEntry rrTurnMeasuredLog;
+  
   // Odometry class for tracking robot pose
   SwerveDrivePoseEstimator m_driveEstimator;
 
@@ -98,6 +130,34 @@ public class DriveSubsystem extends SubsystemBase{
     PIDTurnGyro = new PIDController(kP, kI, kD);
     PIDTurnGyro.setTolerance(5.0); // tolerance in degrees
     PIDTurnGyro.enableContinuousInput(-180, 180); // for continuous rotation
+    
+    cmdVxLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VxCmdMps");
+    cmdVyLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VyCmdMps");
+    cmdOmegaLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/OmegaCmdRadPerSec");
+    measVxLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VxMeasMps");
+    measVyLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VyMeasMps");
+    measOmegaLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/OmegaMeasRadPerSec");
+
+    flDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/DriveSetpointMps");
+    flDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/DriveMeasuredMps");
+    flTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/TurnSetpointRad");
+    flTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/TurnMeasuredRad");
+
+    frDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/DriveSetpointMps");
+    frDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/DriveMeasuredMps");
+    frTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/TurnSetpointRad");
+    frTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/TurnMeasuredRad");
+
+    rlDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/DriveSetpointMps");
+    rlDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/DriveMeasuredMps");
+    rlTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/TurnSetpointRad");
+    rlTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/TurnMeasuredRad");
+
+    rrDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/DriveSetpointMps");
+    rrDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/DriveMeasuredMps");
+    rrTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/TurnSetpointRad");
+    rrTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/TurnMeasuredRad");
+    
     
     // Configure AutoBuilder last
     AutoBuilder.configure(
@@ -147,6 +207,42 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("leftrear", m_rearLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("Robot Gyro velocity", Math.hypot(m_gyro.getVelocityX(), m_gyro.getVelocityY()));
     SmartDashboard.putNumber("Robot Wheel velocity", Math.hypot(getRobotRelativeSpeeds().vxMetersPerSecond, getRobotRelativeSpeeds().vyMetersPerSecond));
+     ChassisSpeeds measuredSpeeds = getRobotRelativeSpeeds();
+    SwerveModuleState flState = m_frontLeft.getState();
+    SwerveModuleState frState = m_frontRight.getState();
+    SwerveModuleState rlState = m_rearLeft.getState();
+    SwerveModuleState rrState = m_rearRight.getState();
+    SwerveModuleState flDesired = m_frontLeft.getDesiredState();
+    SwerveModuleState frDesired = m_frontRight.getDesiredState();
+    SwerveModuleState rlDesired = m_rearLeft.getDesiredState();
+    SwerveModuleState rrDesired = m_rearRight.getDesiredState();
+
+    cmdVxLog.append(m_lastCmdVx);
+    cmdVyLog.append(m_lastCmdVy);
+    cmdOmegaLog.append(m_lastCmdOmega);
+    measVxLog.append(measuredSpeeds.vxMetersPerSecond);
+    measVyLog.append(measuredSpeeds.vyMetersPerSecond);
+    measOmegaLog.append(measuredSpeeds.omegaRadiansPerSecond);
+
+    flDriveSetpointLog.append(flDesired.speedMetersPerSecond);
+    flDriveMeasuredLog.append(flState.speedMetersPerSecond);
+    flTurnSetpointLog.append(flDesired.angle.getRadians());
+    flTurnMeasuredLog.append(flState.angle.getRadians());
+
+    frDriveSetpointLog.append(frDesired.speedMetersPerSecond);
+    frDriveMeasuredLog.append(frState.speedMetersPerSecond);
+    frTurnSetpointLog.append(frDesired.angle.getRadians());
+    frTurnMeasuredLog.append(frState.angle.getRadians());
+
+    rlDriveSetpointLog.append(rlDesired.speedMetersPerSecond);
+    rlDriveMeasuredLog.append(rlState.speedMetersPerSecond);
+    rlTurnSetpointLog.append(rlDesired.angle.getRadians());
+    rlTurnMeasuredLog.append(rlState.angle.getRadians());
+
+    rrDriveSetpointLog.append(rrDesired.speedMetersPerSecond);
+    rrDriveMeasuredLog.append(rrState.speedMetersPerSecond);
+    rrTurnSetpointLog.append(rrDesired.angle.getRadians());
+    rrTurnMeasuredLog.append(rrState.angle.getRadians());
   }
 
   /**
@@ -200,28 +296,30 @@ public class DriveSubsystem extends SubsystemBase{
     double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
     double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
-
+    m_lastCmdVx = xSpeedDelivered;
+    m_lastCmdVy = ySpeedDelivered;
+    m_lastCmdOmega = rotDelivered;
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
                 Rotation2d.fromDegrees(-m_gyro.getAngle()))
             : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
-    SmartDashboard.putNumber("modstates0pre", swerveModuleStates[0].speedMetersPerSecond);
+    //SmartDashboard.putNumber("modstates0pre", swerveModuleStates[0].speedMetersPerSecond);
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);
-    SmartDashboard.putNumber("modstates0post", swerveModuleStates[0].speedMetersPerSecond);
+    //SmartDashboard.putNumber("modstates0post", swerveModuleStates[0].speedMetersPerSecond);
     m_frontLeft.setDesiredState(swerveModuleStates[0]);
     m_frontRight.setDesiredState(swerveModuleStates[1]);
     m_rearLeft.setDesiredState(swerveModuleStates[2]);
     m_rearRight.setDesiredState(swerveModuleStates[3]);
-    SmartDashboard.putNumber("m_frontLeft", m_frontLeft.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("m_frontRight", m_frontRight.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("m_rearLeft", m_rearLeft.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("m_rearRight", m_rearRight.getState().speedMetersPerSecond);
-    SmartDashboard.putNumber("m_frontLeftstate", swerveModuleStates[0].speedMetersPerSecond);
-    SmartDashboard.putNumber("m_frontRightstate", swerveModuleStates[1].speedMetersPerSecond);
-    SmartDashboard.putNumber("m_rearLeftstate", swerveModuleStates[2].speedMetersPerSecond);
-    SmartDashboard.putNumber("m_rearRightstate", swerveModuleStates[3].speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_frontLeft", m_frontLeft.getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_frontRight", m_frontRight.getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_rearLeft", m_rearLeft.getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_rearRight", m_rearRight.getState().speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_frontLeftstate", swerveModuleStates[0].speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_frontRightstate", swerveModuleStates[1].speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_rearLeftstate", swerveModuleStates[2].speedMetersPerSecond);
+    // SmartDashboard.putNumber("m_rearRightstate", swerveModuleStates[3].speedMetersPerSecond);
   }
   public void driveRobotRelative(double xSpeed, double ySpeed, double rot){
     drive(xSpeed,ySpeed,rot,false);
