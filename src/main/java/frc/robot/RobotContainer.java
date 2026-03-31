@@ -58,7 +58,7 @@ public class RobotContainer {
   XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
   XboxController m_climberController = new XboxController(OIConstants.kClimbControllerPort);
   //CommandXboxController m_commanddriverController = new CommandXboxController(OIConstants.kDriverControllerPort);
-  //https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=&rightTrigger=slow+down%2C+to+be+added&rightBumper=&leftBumper=&leftStickClick=change+scale&leftStick=movement%2Fdriving&rightStick=rotation&xButton=&aButton=spin+intake+motors&yButton=launch+balls+&startButton=&bButton=reset+heading&dpadUp=climb+up&dpadDown=climb+reverse&dpadRight=deploy+lifter&dpadLeft=retract+lifter
+  //https://www.padcrafter.com/?templates=Controller+Scheme+1&leftTrigger=adjustable+Slowdown%2C+capped+at+0.5&rightTrigger=&rightBumper=launch+Balls&leftBumper=toggle+intake&leftStickClick=change+scale&leftStick=movement%2Fdriving&rightStick=rotation&xButton=toggle+agitator%28%29&aButton=&yButton=&startButton=&bButton=reset+heading&dpadUp=&dpadDown=&dpadRight=deploy+lifter%2Fintake&dpadLeft=retract+lifter%2Fintake
   // this is the link to the controller keybinds
   
   boolean fieldRelative = true;
@@ -238,25 +238,7 @@ public class RobotContainer {
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value)/2)))
       .onFalse(new InstantCommand(() -> slowdown_stop()));
-    /* 
-    triggerButton(m_driverController,Axis.kRightTrigger)
-      .whileTrue(new RunCommand(() -> m_launcher.launch(m_driverController.getRawAxis(Axis.kRightTrigger.value)), m_launcher))
-      .onFalse(new InstantCommand(() -> m_launcher.launch_stop(), m_launcher));
-    */
-    /*
-    trigger buttons, might be useful
-    triggerButton(m_climberController,Axis.kLeftTrigger).whileTrue(new RunCommand(
-        () -> m_climber.climb(m_climberController.getRawAxis(Axis.kLeftTrigger.value)),
-        m_climber)).onFalse(new InstantCommand(
-            () -> m_climber.climb_stop(),
-            m_climber));
-
-    triggerButton(m_climberController,Axis.kRightTrigger).whileTrue(new RunCommand(
-        () -> m_climber.climb(-m_climberController.getRawAxis(Axis.kRightTrigger.value)),
-        m_climber)).onFalse(new InstantCommand(
-            () -> m_climber.climb_stop(),
-            m_climber));
-    */
+    
     ///*
     // LLLLOOOOOK HEREEE look here
     // LLLLOOOOOK HEREEE
@@ -270,6 +252,13 @@ public class RobotContainer {
         .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,m_intake,10,10)
             .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay).andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))))
         .onFalse(m_agitator.agitateStopCommand(0)); 
+    
+    triggerButton(m_driverController,Axis.kRightTrigger)
+      .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,m_intake,6767,10)
+            .alongWith(delayCommand(LauncherConstants.kBottomLauncherDelay).andThen(m_agitator.agitateCommand(AgitatorConstants.kAgitatorDefaultSpeed))))
+        .onFalse(m_agitator.agitateStopCommand(0)); 
+    
+
 
     new JoystickButton(m_driverController, Button.kRightStick.value)
         .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))
