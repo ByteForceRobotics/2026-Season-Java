@@ -1,0 +1,505 @@
+{
+  "version": "26.0.1",
+  "hubs": [
+    {
+      "x": 80,
+      "y": 80,
+      "width": 1600,
+      "height": 900,
+      "state": {
+        "sidebar": {
+          "width": 340,
+          "expanded": [
+            "PID",
+            "PID/Launcher",
+            "PID/Swerve"
+          ]
+        },
+        "tabs": {
+          "selected": 0,
+          "tabs": [
+            {
+              "type": 1,
+              "title": "Launcher Top Pair",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/TopLeft/SetpointRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/TopLeft/MeasuredRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/TopRight/SetpointRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/TopRight/MeasuredRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/TopLeft/Output",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/TopRight/Output",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "64a46f1a-7f60-4a24-8f68-100000000001",
+              "renderer": null,
+              "controlsHeight": 260
+            },
+            {
+              "type": 1,
+              "title": "Launcher Bottom Pair",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/BottomTop/SetpointRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/BottomTop/MeasuredRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/BottomBottom/SetpointRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/BottomBottom/MeasuredRPM",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/BottomTop/Output",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Launcher/BottomBottom/Output",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [
+                  {
+                    "type": "stripes",
+                    "logKey": "PID/Launcher/BottomDelayActive",
+                    "logType": "Boolean",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e"
+                    }
+                  }
+                ],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "64a46f1a-7f60-4a24-8f68-100000000002",
+              "renderer": null,
+              "controlsHeight": 260
+            },
+            {
+              "type": 1,
+              "title": "Swerve Chassis",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/Chassis/VxCmdMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/Chassis/VxMeasMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/Chassis/VyCmdMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/Chassis/VyMeasMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/Chassis/OmegaCmdRadPerSec",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/Chassis/OmegaMeasRadPerSec",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "64a46f1a-7f60-4a24-8f68-100000000003",
+              "renderer": null,
+              "controlsHeight": 260
+            },
+            {
+              "type": 1,
+              "title": "Swerve Module Drive",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FL/DriveSetpointMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FL/DriveMeasuredMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FR/DriveSetpointMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FR/DriveMeasuredMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RL/DriveSetpointMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RL/DriveMeasuredMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RR/DriveSetpointMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RR/DriveMeasuredMps",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "64a46f1a-7f60-4a24-8f68-100000000004",
+              "renderer": null,
+              "controlsHeight": 260
+            },
+            {
+              "type": 1,
+              "title": "Swerve Module Turn",
+              "controller": {
+                "leftSources": [
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FL/TurnSetpointRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#2b66a2",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FL/TurnMeasuredRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e5b31b",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FR/TurnSetpointRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#af2437",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/FR/TurnMeasuredRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#3b875a",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RL/TurnSetpointRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#e48b32",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RL/TurnMeasuredRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#858584",
+                      "size": "normal"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RR/TurnSetpointRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#80588e",
+                      "size": "bold"
+                    }
+                  },
+                  {
+                    "type": "smooth",
+                    "logKey": "PID/Swerve/RR/TurnMeasuredRad",
+                    "logType": "Number",
+                    "visible": true,
+                    "options": {
+                      "color": "#c0b487",
+                      "size": "normal"
+                    }
+                  }
+                ],
+                "rightSources": [],
+                "discreteSources": [],
+                "leftLockedRange": null,
+                "rightLockedRange": null,
+                "leftUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "rightUnitConversion": {
+                  "autoTarget": null,
+                  "preset": null
+                },
+                "leftFilter": 0,
+                "rightFilter": 0
+              },
+              "controllerUUID": "64a46f1a-7f60-4a24-8f68-100000000005",
+              "renderer": null,
+              "controlsHeight": 260
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "satellites": []
+}
