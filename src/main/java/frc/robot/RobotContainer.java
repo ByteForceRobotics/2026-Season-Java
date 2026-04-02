@@ -137,7 +137,7 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
     
-    autoChooser = AutoBuilder.buildAutoChooser();
+    autoChooser = AutoBuilder.buildAutoChooser("Bum Auto");
     SmartDashboard.putData("Auto Chooser", autoChooser);
     
     // Setup Shuffleboard launcher control tab
