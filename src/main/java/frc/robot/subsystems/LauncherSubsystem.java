@@ -21,6 +21,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
 import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
@@ -77,7 +79,13 @@ public class LauncherSubsystem extends SubsystemBase {
 			this
 		  )
 		);
-    
+    new SysIdRoutine(new Config(null, // Use default ramp rate (1 V/s)
+                                                        Units.Volts.of(4), // Reduce dynamic step voltage to 4 to prevent
+                                                                     // brownout
+                                                        null),// Use default timeout (10 s)
+                                                        new Mechanism((volts) -> launchTopRightVolts(volts.in(Units.Volts)),
+                                                                        null,launcher
+                                                                        ));
     m_launcherTopLeft = new SparkFlex(kLauncherTopLeftCanId, MotorType.kBrushless);//top
     m_launcherTopRight = new SparkFlex(kLauncherTopRightCanId, MotorType.kBrushless);//bottom
     m_launcherBottomTop = new SparkMax(kLauncherBottomTopCanId, MotorType.kBrushless);//top
@@ -96,7 +104,7 @@ public class LauncherSubsystem extends SubsystemBase {
     TopConfig
         .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
         .allowedClosedLoopError(kTopTolerance, ClosedLoopSlot.kSlot0)
-        .feedForward.sva(0.01,1/525,0.001);
+        .feedForward.sva(0.12053,0,0.0073897);
 
     SparkMaxConfig MiddleConfig = new SparkMaxConfig();
     MiddleConfig

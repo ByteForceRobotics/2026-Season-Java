@@ -100,6 +100,7 @@ public class LauncherPIDCommand extends Command {
         topLeftMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/MeasuredRPM");
         topLeftErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/ErrorRPM");
         topLeftOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/Output");
+        
 
         topRightSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/SetpointRPM");
         topRightMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/MeasuredRPM");
@@ -222,18 +223,33 @@ public class LauncherPIDCommand extends Command {
         topLeftMeasuredLog.append(currentTopLeftRPM);
         topLeftErrorLog.append(targetTopRPM - currentTopLeftRPM);
         topLeftOutputLog.append(topLeftOutput);
+        
+        SmartDashboard.putNumber("Launcher/TopLeft/SetpointRPM", targetTopRPM);
+        SmartDashboard.putNumber("Launcher/TopLeft/MeasuredRPM", currentTopLeftRPM);
+        SmartDashboard.putNumber("Launcher/TopLeft/ErrorRPM", targetTopRPM - currentTopLeftRPM);
+        SmartDashboard.putNumber("Launcher/TopLeft/Output", topLeftOutput);
 
         double topRightOutput = launcher.getTopRightOutput();
         topRightSetpointLog.append(targetTopRPM);
         topRightMeasuredLog.append(currentTopRightRPM);
         topRightErrorLog.append(targetTopRPM - currentTopRightRPM);
         topRightOutputLog.append(topRightOutput);
+        
+        SmartDashboard.putNumber("Launcher/TopRight/SetpointRPM", targetTopRPM);
+        SmartDashboard.putNumber("Launcher/TopRight/MeasuredRPM", currentTopRightRPM);
+        SmartDashboard.putNumber("Launcher/TopRight/ErrorRPM", targetTopRPM - currentTopRightRPM);
+        SmartDashboard.putNumber("Launcher/TopRight/Output", topRightOutput);
 
         double middleOutput = launcher.getMiddleOutput();
         bottomTopSetpointLog.append(targetBottomRPM);
         bottomTopMeasuredLog.append(currentBottomTopRPM);
         bottomTopErrorLog.append(targetBottomRPM - currentBottomTopRPM);
         bottomTopOutputLog.append(middleOutput);
+        
+        SmartDashboard.putNumber("Launcher/BottomTop/SetpointRPM", targetBottomRPM);
+        SmartDashboard.putNumber("Launcher/BottomTop/MeasuredRPM", currentBottomTopRPM);
+        SmartDashboard.putNumber("Launcher/BottomTop/ErrorRPM", targetBottomRPM - currentBottomTopRPM);
+        SmartDashboard.putNumber("Launcher/BottomTop/Output", middleOutput);
 
         double bottomBottomOutput = launcher.getBottomOutput();
         bottomBottomSetpointLog.append(targetBottomRPM/2);
@@ -241,6 +257,12 @@ public class LauncherPIDCommand extends Command {
         bottomBottomErrorLog.append(targetBottomRPM/2 - currentBottomBottomRPM);
         bottomBottomOutputLog.append(bottomBottomOutput);
         bottomActiveLog.append(bottomLaunched);
+        
+        SmartDashboard.putNumber("Launcher/BottomBottom/SetpointRPM", targetBottomRPM/2);
+        SmartDashboard.putNumber("Launcher/BottomBottom/MeasuredRPM", currentBottomBottomRPM);
+        SmartDashboard.putNumber("Launcher/BottomBottom/ErrorRPM", targetBottomRPM/2 - currentBottomBottomRPM);
+        SmartDashboard.putNumber("Launcher/BottomBottom/Output", bottomBottomOutput);
+        SmartDashboard.putBoolean("Launcher/BottomBottom/Active", bottomLaunched);
         
         // Debug logging
         System.out.println("LauncherPID: TopLeft=" + String.format("%.2f", currentTopLeftRPM) + 
@@ -328,7 +350,7 @@ public class LauncherPIDCommand extends Command {
             return 3400;//test this
         }
         else if(targetTopRPM == 6767){
-            return 6000;//test that
+            return 4001;//test that
         }
         else if(!vision.hasTarget()){
             System.out.println("No Target");
@@ -336,7 +358,7 @@ public class LauncherPIDCommand extends Command {
         }
         else{
             double horizDistance = vision.getHorizDistance();
-            double targetRPM = LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
+            double targetRPM = 3800;//LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
             System.out.println("Target Distance: "+horizDistance+"  target RPM: "+targetRPM);
             return targetRPM;
         }

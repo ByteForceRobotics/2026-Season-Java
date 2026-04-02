@@ -9,7 +9,7 @@ TODO:
 
 
 * launcher
-
+  * add seperate target RPMs for middle and bottom wheels
 
 * agitator
   * 
