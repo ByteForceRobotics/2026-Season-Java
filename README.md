@@ -10,9 +10,11 @@ TODO:
 
 * launcher
   * add seperate target RPMs for middle and bottom wheels
+  * add hitchikers method of tolerance, check if RPM is within wanted tolerance, and then actually start shooting
+  * run Sysid on left shooter
 
 * agitator
-  * 
+  * add in the new agitator
 
 * photon vision
   * April Tag detection
