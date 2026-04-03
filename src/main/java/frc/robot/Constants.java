@@ -108,9 +108,9 @@ public final class Constants {
     public static final IdleMode kLauncherTopIdleMode = IdleMode.kCoast;
     public static final IdleMode kLauncherBottomIdleMode = IdleMode.kBrake;
     public static final double kLauncherSpeed = 0.65;
-    public static final double kTopP = 0.00115;
+    public static final double kTopP = 0.0006;
     public static final double kTopI = 0.0;
-    public static final double kTopD = 0.07;
+    public static final double kTopD = 0.03;
     public static final double kTopTolerance = 0.0;  // RPM tolerance
     public static final double kBottomTopP = 0.0002;//test these
     public static final double kBottomTopI =  0.0000001;

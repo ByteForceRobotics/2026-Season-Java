@@ -1,9 +1,13 @@
 package frc.robot.commands;
 
 import frc.robot.Constants.LauncherConstants;
+import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
+
+import static frc.robot.Constants.LauncherConstants.kTopTolerance;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.util.datalog.BooleanLogEntry;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
@@ -19,6 +23,7 @@ public class LauncherPIDCommand extends Command {
     private final LauncherSubsystem launcher;
     private final VisionSubsystem vision;
     private final IntakeSubsystem intake;
+    private final AgitatorSubsystem agitator;
     private double targetTopRPM;
     private double targetBottomRPM;
 
@@ -75,10 +80,11 @@ public class LauncherPIDCommand extends Command {
      * @param targetTopRPM Target RPM for top launcher
      * @param targetBottomRPM Target RPM for bottom launcher
      */
-    public LauncherPIDCommand(LauncherSubsystem launcher, VisionSubsystem vision,IntakeSubsystem intake, double targetTopRPM, double targetBottomRPM) {
+    public LauncherPIDCommand(LauncherSubsystem launcher, VisionSubsystem vision,IntakeSubsystem intake,AgitatorSubsystem agitator, double targetTopRPM, double targetBottomRPM) {
         this.launcher = launcher;
         this.vision = vision;
         this.intake = intake;
+        this.agitator = agitator;
         this.targetTopRPM = getTargetTopRPM(targetTopRPM);
         this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
         
@@ -202,22 +208,23 @@ public class LauncherPIDCommand extends Command {
         // bottomBottomOutput = Math.max(-1.0, Math.min(1.0, bottomBottomOutput));
         
         // Check if we should spin up bottom launchers (delay to avoid stutter)
-        double elapsedTime = System.currentTimeMillis() / 1000.0 - commandStartTime;
-        boolean bottomLaunched = elapsedTime >= bottomLauncherDelay;
         
         // Control each motor individually
         // Top motors always spin (no delay)
         launcher.launchTopLeftRPM(targetTopRPM);
         launcher.launchTopRightRPM(targetTopRPM);
         launcher.launchBottomTopRPM(targetBottomRPM);
-        
+        boolean readyToLaunch = ((targetTopRPM-currentTopRightRPM)<kTopTolerance)&&((targetTopRPM-currentTopLeftRPM)<kTopTolerance);
         // Bottom motors only spin after delay
-        if (bottomLaunched) {
+        if (readyToLaunch) {
             launcher.launchBottomBottomRPM(targetBottomRPM);
+            agitator.agitate();
         } else {
             // Keep bottom motors at 0 RPM until delay passes
             launcher.launchBottomBottomRPM(0);
+            agitator.agitate_stop();
         }
+
         double topLeftOutput = launcher.getTopLeftOutput();
         topLeftSetpointLog.append(targetTopRPM);
         topLeftMeasuredLog.append(currentTopLeftRPM);
@@ -256,20 +263,20 @@ public class LauncherPIDCommand extends Command {
         bottomBottomMeasuredLog.append(currentBottomBottomRPM);
         bottomBottomErrorLog.append(targetBottomRPM/2 - currentBottomBottomRPM);
         bottomBottomOutputLog.append(bottomBottomOutput);
-        bottomActiveLog.append(bottomLaunched);
+        bottomActiveLog.append(readyToLaunch);
         
         SmartDashboard.putNumber("Launcher/BottomBottom/SetpointRPM", targetBottomRPM/2);
         SmartDashboard.putNumber("Launcher/BottomBottom/MeasuredRPM", currentBottomBottomRPM);
         SmartDashboard.putNumber("Launcher/BottomBottom/ErrorRPM", targetBottomRPM/2 - currentBottomBottomRPM);
         SmartDashboard.putNumber("Launcher/BottomBottom/Output", bottomBottomOutput);
-        SmartDashboard.putBoolean("Launcher/BottomBottom/Active", bottomLaunched);
+        SmartDashboard.putBoolean("Launcher/BottomBottom/Active", readyToLaunch);
         
         // Debug logging
         System.out.println("LauncherPID: TopLeft=" + String.format("%.2f", currentTopLeftRPM) + 
                           " TopRight=" + String.format("%.2f", currentTopRightRPM) +
                           " BottomTop=" + String.format("%.2f", currentBottomTopRPM) + 
                           " BottomBottom=" + String.format("%.2f", currentBottomBottomRPM) +
-                          " | BottomActive=" + bottomLaunched + " (delay=" + String.format("%.2f", bottomLauncherDelay) + "s)");
+                          " | BottomActive=" + readyToLaunch + " (delay=" + String.format("%.2f", bottomLauncherDelay) + "s)");
         System.out.println("LauncherPID:TargetRPM Top=" + String.format("%.2f", targetTopRPM) + 
                           " Bottom=" + String.format("%.2f", targetBottomRPM));
     }
@@ -278,6 +285,7 @@ public class LauncherPIDCommand extends Command {
     public void end(boolean interrupted) {
         // Stop the launcher when command ends
         launcher.launch_stop();
+        agitator.agitate_stop();
         if (interrupted) {
             System.out.println("LauncherPID: Command interrupted");
         } else {

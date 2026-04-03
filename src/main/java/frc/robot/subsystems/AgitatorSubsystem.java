@@ -41,8 +41,14 @@ public class AgitatorSubsystem extends SubsystemBase {
       agitateVar = false;
     }
   }
+  public void agitate(){
+    agitate(AgitatorConstants.kAgitatorDefaultSpeed);
+  }
 
   public void agitate_stop(double xSpeed) {
+    agitate(0);
+  }
+  public void agitate_stop(){
     agitate(0);
   }
 
