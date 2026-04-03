@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.FeedForwardConfig;
+import com.revrobotics.spark.config.SignalsConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
@@ -64,28 +65,11 @@ public class LauncherSubsystem extends SubsystemBase {
 			this
 		  )
 		);
-		rightFlywheelRoutine = new SysIdRoutine(
-		  new SysIdRoutine.Config(),
-		  new SysIdRoutine.Mechanism(
-			voltage -> {
-				m_launcherTopRight.setVoltage(voltage.in(Units.Volts));
-			},
-			log -> {
-				log.motor("right-shooter-motor")
-				  .voltage(appliedVoltsRoutine.mut_replace(Units.Volts.mutable(m_launcherTopRight.getAppliedOutput()*m_launcherTopLeft.getBusVoltage())))
-				  .angularPosition(angleRoutine.mut_replace(Units.Rotations.mutable(MathUtil.clamp(m_launcherTopRight.getEncoder().getPosition(),-1,1))))
-				  .angularVelocity(angularVelocityRoutine.mut_replace(Units.RPM.mutable(m_launcherTopRight.getEncoder().getVelocity())));
-			},
-			this
-		  )
-		);
-    new SysIdRoutine(new Config(null, // Use default ramp rate (1 V/s)
-                                                        Units.Volts.of(4), // Reduce dynamic step voltage to 4 to prevent
-                                                                     // brownout
-                                                        null),// Use default timeout (10 s)
+    //"borrowed from gearcats"
+    rightFlywheelRoutine = new SysIdRoutine(new Config(),// Use default timeout (10 s)
                                                         new Mechanism((volts) -> launchTopRightVolts(volts.in(Units.Volts)),
-                                                                        null,launcher
-                                                                        ));
+                                                                        null,
+                                                                        this));
     m_launcherTopLeft = new SparkFlex(kLauncherTopLeftCanId, MotorType.kBrushless);//top
     m_launcherTopRight = new SparkFlex(kLauncherTopRightCanId, MotorType.kBrushless);//bottom
     m_launcherBottomTop = new SparkMax(kLauncherBottomTopCanId, MotorType.kBrushless);//top
@@ -99,12 +83,16 @@ public class LauncherSubsystem extends SubsystemBase {
     // Velocity control PID constants for RPM control
     // NEO motors max out around 5700 RPM
     
-
+    SignalsConfig topSignalsConfig = new SignalsConfig();
+    topSignalsConfig
+      .primaryEncoderPositionAlwaysOn(true)
+      .primaryEncoderVelocityAlwaysOn(true);
     SparkFlexConfig TopConfig = new SparkFlexConfig();
     TopConfig
+        .apply(topSignalsConfig)
         .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
         .allowedClosedLoopError(kTopTolerance, ClosedLoopSlot.kSlot0)
-        .feedForward.sva(0.12053,0,0.0073897);
+        .feedForward.sva(0.056957,0.0018109,0.00022182);
 
     SparkMaxConfig MiddleConfig = new SparkMaxConfig();
     MiddleConfig
@@ -148,7 +136,6 @@ public class LauncherSubsystem extends SubsystemBase {
     m_launcherTopRight.configure(topRightLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherBottomTop.configure(middleLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherBottomBottom.configure(bottomLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    SparkClosedLoopController topController =  m_launcherTopLeft.getClosedLoopController();
   }
   
    // SysId getters
