@@ -11,6 +11,7 @@ TODO:
 * launcher
   * add seperate target RPMs for middle and bottom wheels
   * run Sysid on left shooter
+  * run sysid on bottom and middle wheels
 
 * agitator
   * add in the new agitator
