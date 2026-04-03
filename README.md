@@ -11,7 +11,7 @@ TODO:
 * launcher
   * add seperate target RPMs for middle and bottom wheels// unsure if this is actually neededd
   * run Sysid on left shooter
-  * run sysid on bottom and middle wheels
+  * run sysid on bottom and middle wheels// ideally
   * work on fixing the brownout caused by intake and launcher running at the same time// i think this is fixed in a good way, needs testing
     * 
 
