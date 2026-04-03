@@ -214,6 +214,7 @@ public class LauncherPIDCommand extends Command {
         launcher.launchTopLeftRPM(targetTopRPM);
         launcher.launchTopRightRPM(targetTopRPM);
         launcher.launchBottomTopRPM(targetBottomRPM);
+        //credit to hitchikers foor smart way of launching down below
         boolean readyToLaunch = ((targetTopRPM-currentTopRightRPM)<kTopTolerance)&&((targetTopRPM-currentTopLeftRPM)<kTopTolerance);
         // Bottom motors only spin after delay
         if (readyToLaunch) {

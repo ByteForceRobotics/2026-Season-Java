@@ -111,7 +111,7 @@ public final class Constants {
     public static final double kTopP = 0.0006;
     public static final double kTopI = 0.0;
     public static final double kTopD = 0.03;
-    public static final double kTopTolerance = 0.0;  // RPM tolerance
+    public static final double kTopTolerance = 50;  // RPM tolerance
     public static final double kBottomTopP = 0.0002;//test these
     public static final double kBottomTopI =  0.0000001;
     public static final double kBottomTopD = 0;

@@ -88,23 +88,24 @@ public class LauncherSubsystem extends SubsystemBase {
       .primaryEncoderPositionAlwaysOn(true)
       .primaryEncoderVelocityAlwaysOn(true);
     SparkFlexConfig TopConfig = new SparkFlexConfig();
+    // all tolerances are zero so command always tries to get to speed
     TopConfig
         .apply(topSignalsConfig)
         .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
-        .allowedClosedLoopError(kTopTolerance, ClosedLoopSlot.kSlot0)
+        .allowedClosedLoopError(0, ClosedLoopSlot.kSlot0)
         .feedForward.sva(0.056957,0.0018109,0.00022182);
 
     SparkMaxConfig MiddleConfig = new SparkMaxConfig();
     MiddleConfig
         .closedLoop.pid(kBottomTopP, kBottomTopI, kBottomTopD).outputRange(0, 1)
-        .allowedClosedLoopError(kBottomTolerance, ClosedLoopSlot.kSlot0)
-        .feedForward.sva(0.1, 1/545 , 0.00003);
+        .allowedClosedLoopError(0, ClosedLoopSlot.kSlot0)
+        .feedForward.sva(0.1, 1/545 , 0.00003);//these values are bogus, would be ideal to run sysid eventually
 
     SparkMaxConfig BottomConfig = new SparkMaxConfig();
     BottomConfig
         .closedLoop.pid(kBottomBottomP, kBottomBottomI, kBottomBottomD).outputRange(0, 1)
-        .allowedClosedLoopError(kBottomTolerance, ClosedLoopSlot.kSlot0)
-        .feedForward.sva(0.1, 1/545 , 0.00003);
+        .allowedClosedLoopError(0, ClosedLoopSlot.kSlot0)
+        .feedForward.sva(0.1, 1/545 , 0.00003);//these values are bogus, would be ideal to run sysid eventually
       
     topRightLauncherConfig
       .inverted(true)
