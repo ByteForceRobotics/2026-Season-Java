@@ -154,7 +154,7 @@ public class LauncherPIDCommand extends Command {
         }
         
         
-        System.out.println("LauncherPID: Starting control to Top=" + targetTopRPM + " RPM, Bottom=" + targetBottomRPM + " RPM (bottom delay=" + bottomLauncherDelay + "s)");
+        //System.out.println("LauncherPID: Starting control to Top=" + targetTopRPM + " RPM, Bottom=" + targetBottomRPM + " RPM (bottom delay=" + bottomLauncherDelay + "s)");
     }
     
     @Override
@@ -219,11 +219,13 @@ public class LauncherPIDCommand extends Command {
         // Bottom motors only spin after delay
         if (readyToLaunch) {
             launcher.launchBottomBottomRPM(targetBottomRPM);
-            agitator.agitate();
+            agitator.agitateMain();
+            agitator.agitateIntake();
         } else {
             // Keep bottom motors at 0 RPM until delay passes
             launcher.launchBottomBottomRPM(0);
-            agitator.agitate_stop();
+            agitator.agitateMain_stop();
+            agitator.agitateIntake_stop();
         }
 
         double topLeftOutput = launcher.getTopLeftOutput();
@@ -232,10 +234,10 @@ public class LauncherPIDCommand extends Command {
         topLeftErrorLog.append(targetTopRPM - currentTopLeftRPM);
         topLeftOutputLog.append(topLeftOutput);
         
-        SmartDashboard.putNumber("Launcher/TopLeft/SetpointRPM", targetTopRPM);
-        SmartDashboard.putNumber("Launcher/TopLeft/MeasuredRPM", currentTopLeftRPM);
-        SmartDashboard.putNumber("Launcher/TopLeft/ErrorRPM", targetTopRPM - currentTopLeftRPM);
-        SmartDashboard.putNumber("Launcher/TopLeft/Output", topLeftOutput);
+        // SmartDashboard.putNumber("Launcher/TopLeft/SetpointRPM", targetTopRPM);
+        // SmartDashboard.putNumber("Launcher/TopLeft/MeasuredRPM", currentTopLeftRPM);
+        // SmartDashboard.putNumber("Launcher/TopLeft/ErrorRPM", targetTopRPM - currentTopLeftRPM);
+        //SmartDashboard.putNumber("Launcher/TopLeft/Output", topLeftOutput);
 
         double topRightOutput = launcher.getTopRightOutput();
         topRightSetpointLog.append(targetTopRPM);
@@ -243,10 +245,10 @@ public class LauncherPIDCommand extends Command {
         topRightErrorLog.append(targetTopRPM - currentTopRightRPM);
         topRightOutputLog.append(topRightOutput);
         
-        SmartDashboard.putNumber("Launcher/TopRight/SetpointRPM", targetTopRPM);
-        SmartDashboard.putNumber("Launcher/TopRight/MeasuredRPM", currentTopRightRPM);
-        SmartDashboard.putNumber("Launcher/TopRight/ErrorRPM", targetTopRPM - currentTopRightRPM);
-        SmartDashboard.putNumber("Launcher/TopRight/Output", topRightOutput);
+        // SmartDashboard.putNumber("Launcher/TopRight/SetpointRPM", targetTopRPM);
+        // SmartDashboard.putNumber("Launcher/TopRight/MeasuredRPM", currentTopRightRPM);
+        // SmartDashboard.putNumber("Launcher/TopRight/ErrorRPM", targetTopRPM - currentTopRightRPM);
+        //SmartDashboard.putNumber("Launcher/TopRight/Output", topRightOutput);
 
         double middleOutput = launcher.getMiddleOutput();
         bottomTopSetpointLog.append(targetBottomRPM);
@@ -254,10 +256,10 @@ public class LauncherPIDCommand extends Command {
         bottomTopErrorLog.append(targetBottomRPM - currentBottomTopRPM);
         bottomTopOutputLog.append(middleOutput);
         
-        SmartDashboard.putNumber("Launcher/BottomTop/SetpointRPM", targetBottomRPM);
-        SmartDashboard.putNumber("Launcher/BottomTop/MeasuredRPM", currentBottomTopRPM);
-        SmartDashboard.putNumber("Launcher/BottomTop/ErrorRPM", targetBottomRPM - currentBottomTopRPM);
-        SmartDashboard.putNumber("Launcher/BottomTop/Output", middleOutput);
+        // SmartDashboard.putNumber("Launcher/BottomTop/SetpointRPM", targetBottomRPM);
+        // SmartDashboard.putNumber("Launcher/BottomTop/MeasuredRPM", currentBottomTopRPM);
+        // SmartDashboard.putNumber("Launcher/BottomTop/ErrorRPM", targetBottomRPM - currentBottomTopRPM);
+        //SmartDashboard.putNumber("Launcher/BottomTop/Output", middleOutput);
 
         double bottomBottomOutput = launcher.getBottomOutput();
         bottomBottomSetpointLog.append(targetBottomRPM/2);
@@ -266,27 +268,27 @@ public class LauncherPIDCommand extends Command {
         bottomBottomOutputLog.append(bottomBottomOutput);
         bottomActiveLog.append(readyToLaunch);
         
-        SmartDashboard.putNumber("Launcher/BottomBottom/SetpointRPM", targetBottomRPM/2);
-        SmartDashboard.putNumber("Launcher/BottomBottom/MeasuredRPM", currentBottomBottomRPM);
-        SmartDashboard.putNumber("Launcher/BottomBottom/ErrorRPM", targetBottomRPM/2 - currentBottomBottomRPM);
-        SmartDashboard.putNumber("Launcher/BottomBottom/Output", bottomBottomOutput);
-        SmartDashboard.putBoolean("Launcher/BottomBottom/Active", readyToLaunch);
+        // SmartDashboard.putNumber("Launcher/BottomBottom/SetpointRPM", targetBottomRPM/2);
+        // SmartDashboard.putNumber("Launcher/BottomBottom/MeasuredRPM", currentBottomBottomRPM);
+        // SmartDashboard.putNumber("Launcher/BottomBottom/ErrorRPM", targetBottomRPM/2 - currentBottomBottomRPM);
+        // //SmartDashboard.putNumber("Launcher/BottomBottom/Output", bottomBottomOutput);
+        // SmartDashboard.putBoolean("Launcher/BottomBottom/Active", readyToLaunch);
         
         // Debug logging
-        System.out.println("LauncherPID: TopLeft=" + String.format("%.2f", currentTopLeftRPM) + 
-                          " TopRight=" + String.format("%.2f", currentTopRightRPM) +
-                          " BottomTop=" + String.format("%.2f", currentBottomTopRPM) + 
-                          " BottomBottom=" + String.format("%.2f", currentBottomBottomRPM) +
-                          " | BottomActive=" + readyToLaunch + " (delay=" + String.format("%.2f", bottomLauncherDelay) + "s)");
-        System.out.println("LauncherPID:TargetRPM Top=" + String.format("%.2f", targetTopRPM) + 
-                          " Bottom=" + String.format("%.2f", targetBottomRPM));
+        // System.out.println("LauncherPID: TopLeft=" + String.format("%.2f", currentTopLeftRPM) + 
+        //                   " TopRight=" + String.format("%.2f", currentTopRightRPM) +
+        //                   " BottomTop=" + String.format("%.2f", currentBottomTopRPM) + 
+        //                   " BottomBottom=" + String.format("%.2f", currentBottomBottomRPM) +
+        //                   " | BottomActive=" + readyToLaunch + " (delay=" + String.format("%.2f", bottomLauncherDelay) + "s)");
+        // System.out.println("LauncherPID:TargetRPM Top=" + String.format("%.2f", targetTopRPM) + 
+        //                   " Bottom=" + String.format("%.2f", targetBottomRPM));
     }
     
     @Override
     public void end(boolean interrupted) {
         // Stop the launcher when command ends
         launcher.launch_stop();
-        agitator.agitate_stop();
+        agitator.agitateMain_stop();
         if (interrupted) {
             System.out.println("LauncherPID: Command interrupted");
         } else {
@@ -359,7 +361,7 @@ public class LauncherPIDCommand extends Command {
             return 3400;//test this
         }
         else if(targetTopRPM == 6767){
-            return 4001;//test that
+            return 4500;//test that
         }
         else if(!vision.hasTarget()){
             System.out.println("No Target");

@@ -1,5 +1,7 @@
 TODO:
-
+* tomorrow Selma
+  * interpolation
+  * 
 * General
   * figure out balancing via the Navx
   
@@ -13,11 +15,11 @@ TODO:
   * run Sysid on left shooter
   * run sysid on bottom and middle wheels// ideally
   * work on fixing the brownout caused by intake and launcher running at the same time// i think this is fixed in a good way, needs testing
-    * 
+    * do same thing with the intake toggle, make it use the bogus system, prolly better to not do  bogus system
 
 * intake
   * maybe run Sysid for lifter arm, or just bs some values
-
+  * create seperate subsystems for the lifter and intake, and then have the lifter command require intake subsystem, and that makes it cancel all previous instances of that command, maybe make just a bogus system that the command requires
 * agitator
   * add in the new agitator
 
@@ -30,6 +32,7 @@ TODO:
   * quality of life: fix the bug that has the wheels snap to position when going to deadband
     * look into advantage scope
   * play with PID controls
+  * characterize drivetrain
 
 * Controller Button Bindings
   * possible optimizations of the keybinds via the CommandXboxController.

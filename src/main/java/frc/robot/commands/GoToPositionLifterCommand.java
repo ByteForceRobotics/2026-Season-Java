@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
+import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 /**
@@ -12,6 +13,7 @@ import frc.robot.subsystems.IntakeSubsystem;
  */
 public class GoToPositionLifterCommand extends Command {
     private final IntakeSubsystem intake;
+    private final AgitatorSubsystem agitator;
     private final double targetPosition;
     private final PIDController pidController;
     
@@ -27,19 +29,21 @@ public class GoToPositionLifterCommand extends Command {
      * @param intake The IntakeSubsystem instance
      * @param targetPosition Target position in rotations (encoder counts)
      */
-    public GoToPositionLifterCommand(IntakeSubsystem intake, double targetPosition) {
+    public GoToPositionLifterCommand(IntakeSubsystem intake,AgitatorSubsystem agitator, double targetPosition) {
         this.intake = intake;
+        this.agitator = agitator;
         this.targetPosition = targetPosition;
         this.pidController = new PIDController(kP, kI, kD);
         this.pidController.setTolerance(kTolerance);
         
+        addRequirements(intake);
     }
     
     @Override
     public void initialize() {
         // Reset PID controller when command starts
         pidController.reset();
-        System.out.println("GoToPosition: Moving lifter to position " + targetPosition);
+        //System.out.println("GoToPosition: Moving lifter to position " + targetPosition);
     }
     
     @Override
@@ -48,7 +52,7 @@ public class GoToPositionLifterCommand extends Command {
         double newI = SmartDashboard.getNumber("Lifter/PID/kI", kI);
         double newD = SmartDashboard.getNumber("Lifter/PID/kD", kD);
         double newTolerance = SmartDashboard.getNumber("Launcher/kTolerance", kTolerance);
-        System.out.println("GoToPosition: Updated PID constants from SmartDashboard - P: " + newP + " I: " + newI + " D: " + newD + " Tolerance: " + newTolerance);
+        //System.out.println("GoToPosition: Updated PID constants from SmartDashboard - P: " + newP + " I: " + newI + " D: " + newD + " Tolerance: " + newTolerance);
         this.updatePIDConstants(newP, newI, newD, newTolerance);
 
         double currentPosition = intake.getLifterPosition();
@@ -60,14 +64,17 @@ public class GoToPositionLifterCommand extends Command {
         output = Math.max(-1.0, Math.min(1.0, output));
         
         intake.lift(output);
+        
         if(targetPosition==0){
             intake.intake_stop();
+            agitator.agitateIntake_stop();
         }
         else{
             intake.intake(IntakeConstants.kIntakeDefaultSpeed);
+            agitator.agitateIntake();
         }
         // Debug logging
-        System.out.println("GoToPosition: current=" + currentPosition + " target=" + targetPosition + " output=" + output);
+        //System.out.println("GoToPosition: current=" + currentPosition + " target=" + targetPosition + " output=" + output);
     }
     
     @Override

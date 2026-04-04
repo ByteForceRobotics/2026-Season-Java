@@ -90,7 +90,7 @@ public final class Constants {
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
     public static final double kLifterMaxLower = 0.343;//0.267;
     public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
-    public static final double kIntakeDefaultSpeed = 0.65;
+    public static final double kIntakeDefaultSpeed = 0.55;
     public static final double kLiftDefaultSpeed = 0.3;
     public static final double kP = 1;   // Proportional gain
     public static final double kI = 0.01;   // Integral gain  
@@ -154,7 +154,8 @@ public final class Constants {
   }
   
   public static final class AgitatorConstants{
-    public static final int kAgitatorCanId = 17;
+    public static final int kAgitatorMainCanId = 17;
+    public static final int kAgitatorIntakeCanId = 18;
     public static final int kAgitatorCurrentLimit = 40;//set this
     public static final IdleMode kAgitatorIdleMode = IdleMode.kBrake;
     public static final double kAgitatorDefaultSpeed = 0.1;

@@ -18,7 +18,7 @@ public class AimAssistCommand extends Command {
 
 
     // PID constants (same as DriveSubsystem)
-    private static final double kP = 0.03;
+    private static final double kP = 0.04;
     private static final double kI = 0.00;
     private static final double kD = 0.00;
     

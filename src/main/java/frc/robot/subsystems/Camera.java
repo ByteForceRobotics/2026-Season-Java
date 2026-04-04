@@ -80,7 +80,7 @@ public class Camera
             PhotonPipelineResult CamResult = CamResults.get(CamResults.size() - 1);
 
             if (this.poseEstimator != null) {
-                this.latestEstimatedPose = this.poseEstimator.update(CamResult);
+                //this.latestEstimatedPose = this.poseEstimator.update(CamResult);
                 this.latestEstimatedPose.ifPresent(est -> this.robotPose = est.estimatedPose.toPose2d());
             }
 
@@ -89,7 +89,7 @@ public class Camera
                     //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
                     PhotonTrackedTarget target = CamResult.getTargets().get(i);
                     this.targetId = target.getFiducialId();
-                    if(this.targetId != 10&&this.targetId != 26){continue;}//check which ones this is
+                    if(this.targetId != 27&&this.targetId != 24&&this.targetId != 11&&this.targetId != 8){continue;}//check which ones this is
 
                     //all measurements are in degrees
                     this.yaw = target.getYaw();// horizontal  rotation

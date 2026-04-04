@@ -17,15 +17,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "race",
           "data": {
-            "name": "LifterLower"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "ToFuelPathLeft"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "ToFuelPathLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LifterLower"
+                }
+              }
+            ]
           }
         },
         {

@@ -50,23 +50,12 @@ public class LauncherSubsystem extends SubsystemBase {
 
   public LauncherSubsystem(){
     
-    leftFlywheelRoutine = new SysIdRoutine(
-		  new SysIdRoutine.Config(),
-		  new SysIdRoutine.Mechanism(
-			voltage -> {
-				m_launcherTopLeft.setVoltage(voltage.in(Units.Volts));
-			},
-			log -> {
-				log.motor("left-shooter-motor")
-				  .voltage(appliedVoltsRoutine.mut_replace(Units.Volts.mutable(m_launcherTopLeft.getAppliedOutput()*m_launcherTopLeft.getBusVoltage())))
-				  .angularPosition(angleRoutine.mut_replace(Units.Rotations.mutable(MathUtil.clamp(m_launcherTopLeft.getEncoder().getPosition(),-1,1))))
-				  .angularVelocity(angularVelocityRoutine.mut_replace(Units.RPM.mutable(m_launcherTopLeft.getEncoder().getVelocity())));
-			},
-			this
-		  )
-		);
+    leftFlywheelRoutine = new SysIdRoutine(new Config(),
+                                                        new Mechanism((volts) -> launchTopLeftVolts(volts.in(Units.Volts)),
+                                                                        null,
+                                                                        this));
     //"borrowed from gearcats"
-    rightFlywheelRoutine = new SysIdRoutine(new Config(),// Use default timeout (10 s)
+    rightFlywheelRoutine = new SysIdRoutine(new Config(),
                                                         new Mechanism((volts) -> launchTopRightVolts(volts.in(Units.Volts)),
                                                                         null,
                                                                         this));
@@ -90,7 +79,7 @@ public class LauncherSubsystem extends SubsystemBase {
     SparkFlexConfig TopConfig = new SparkFlexConfig();
     // all tolerances are zero so command always tries to get to speed
     TopConfig
-        .apply(topSignalsConfig)
+        //.apply(topSignalsConfig)
         .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
         .allowedClosedLoopError(0, ClosedLoopSlot.kSlot0)
         .feedForward.sva(0.056957,0.0018109,0.00022182);

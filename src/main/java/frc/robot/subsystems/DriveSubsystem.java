@@ -103,14 +103,15 @@ public class DriveSubsystem extends SubsystemBase{
   SwerveDrivePoseEstimator m_driveEstimator;
 
   /** Creates a new DriveSubsystem. */
-
+  
   public DriveSubsystem(){
+
     var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
     var visionStdDevs = VecBuilder.fill(1, 1, 1);
 
     m_driveEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle()),
+      m_gyro.getRotation2d(),
       getModulePositions(),
       new Pose2d(),
       stateStdDevs,
@@ -168,7 +169,7 @@ public class DriveSubsystem extends SubsystemBase{
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                     new PIDConstants(0.04, 0, 0), // Translation PID constants
                     new PIDConstants(1, 0, 0) // Rotation PID constants
-            ),
+            ),//-41.129
             config, // The robot configuration
             () -> {
               // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -189,15 +190,15 @@ public class DriveSubsystem extends SubsystemBase{
   public void periodic() {
     // Update the odometry in the periodic block
     Pose2d robPose = m_driveEstimator.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        m_gyro.getRotation2d(),
         getModulePositions());
     
     // Do this in either robot periodic or subsystem periodic
-    m_field.setRobotPose(m_driveEstimator.getEstimatedPosition());
+    m_field.setRobotPose(robPose);
 
     SmartDashboard.putData("Field", m_field);
     SmartDashboard.putNumber("gyro Heading", getHeading()); //keeps counting past 180
-    SmartDashboard.putNumber("gyro Angle", m_gyro.getAngle());
+    SmartDashboard.putNumber("gyro Angle", m_gyro.getRotation2d().getDegrees());
     SmartDashboard.putNumber("X Pose", getPose().getX());
     SmartDashboard.putNumber("Y Pose", getPose().getY());
     SmartDashboard.putNumber("gyro Pose Angle", getPose().getRotation().getDegrees());
@@ -261,14 +262,14 @@ public class DriveSubsystem extends SubsystemBase{
    */
   public void resetOdometry(Pose2d pose) {
     m_driveEstimator.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        m_gyro.getRotation2d(),
         getModulePositions(),
         pose);
   }
 
   public void resetOdometry() {
     m_driveEstimator.resetPosition(
-        Rotation2d.fromDegrees(m_gyro.getAngle()),
+        m_gyro.getRotation2d(),
         getModulePositions(),
         getPose());
   }
@@ -331,8 +332,8 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   public void turnToRotationFnc(double targetDegrees){
-    double output = PIDTurnGyro.calculate(m_gyro.getAngle(), targetDegrees);
-    System.out.println("output: " + output + "gyro ang: " + m_gyro.getAngle() + "target deg: " + targetDegrees);
+    double output = PIDTurnGyro.calculate(m_gyro.getRotation2d().getDegrees(), targetDegrees);
+    System.out.println("output: " + output + "gyro ang: " + m_gyro.getRotation2d().getDegrees() + "target deg: " + targetDegrees);
     drive(0, 0, output, false);
   }
 
@@ -397,7 +398,7 @@ public class DriveSubsystem extends SubsystemBase{
    * @return the robot's heading in degrees, from -180 to 180 <- that is incorrect it keeps counting past 180
    */
   public double getHeading() {
-    return Rotation2d.fromDegrees(m_gyro.getAngle()).getDegrees();
+    return m_gyro.getRotation2d().getDegrees();
   }
 
   /**
