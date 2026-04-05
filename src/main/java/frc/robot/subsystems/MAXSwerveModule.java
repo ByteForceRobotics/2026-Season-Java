@@ -95,6 +95,12 @@ public class MAXSwerveModule {
         m_drivingEncoder.getPosition(),
         new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   }
+  public void setDriveVoltage(double volts) {
+		m_drivingSpark.setVoltage(volts);
+	}
+  public void setTurnVoltage(double volts) {
+		m_turningSpark.setVoltage(volts);
+	}
 
   /**
    * Sets the desired state for the module.

@@ -256,17 +256,17 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kA.value)
     //     .whileTrue(new TurnToTagCommand(m_robotDrive, m_vision));
 
-    new JoystickButton(m_driverController, Button.kB.value)
-        .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //     .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
-    new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLift));
+    // new JoystickButton(m_driverController, Button.kY.value)
+    //     .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLift));
     
-    new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //     .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
 
-     new JoystickButton(m_driverController, Button.kX.value)
-        .onTrue(m_agitator.agitateMainToggleCommand());
+    //  new JoystickButton(m_driverController, Button.kX.value)
+    //     .onTrue(m_agitator.agitateMainToggleCommand());
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
         .onTrue(m_intake.intakeToggleCommand());
@@ -290,6 +290,46 @@ public class RobotContainer {
     
     // new JoystickButton(m_driverController, Button.kX.value)
     //   .whileTrue(m_launcher.RightsysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //   .whileTrue(m_launcher.LeftsysIdDynamic(SysIdRoutine.Direction.kForward));
+    
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //   .whileTrue(m_launcher.LeftsysIdDynamic(SysIdRoutine.Direction.kReverse));
+    
+    // new JoystickButton(m_driverController, Button.kY.value)
+    //   .whileTrue(m_launcher.LeftsysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //   .whileTrue(m_launcher.LeftsysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+    // Drivetrain SysId routines
+    //driving
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //   .whileTrue(m_robotDrive.driveQuasiForward());
+    
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //   .whileTrue(m_robotDrive.driveQuasiReverse());
+    
+    // new JoystickButton(m_driverController, Button.kY.value)
+    //   .whileTrue(m_robotDrive.driveDynamicForward());
+    
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //   .whileTrue(m_robotDrive.driveDynamicReverse());
+
+    //turning
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //   .whileTrue(m_robotDrive.turnQuasiForward());
+    
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //   .whileTrue(m_robotDrive.turnQuasiReverse());
+    
+    // new JoystickButton(m_driverController, Button.kY.value)
+    //   .whileTrue(m_robotDrive.turnDynamicForward());
+    
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //   .whileTrue(m_robotDrive.turnDynamicReverse());
+
 
 
     // new JoystickButton(m_driverController, Button.kY.value)
@@ -360,4 +400,3 @@ public class RobotContainer {
         .withTimeout(seconds);
   }
 }
-          

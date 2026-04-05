@@ -3,6 +3,8 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import static edu.wpi.first.units.Units.Volts;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -26,11 +28,13 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.DriveConstants;
 
 public class DriveSubsystem extends SubsystemBase{
@@ -64,7 +68,8 @@ public class DriveSubsystem extends SubsystemBase{
   static final double kI = 0.00;
   static final double kD = 0.00;
   static final double kF = 0.00;
-
+  private final SysIdRoutine driveRoutine;
+  private final SysIdRoutine turnRoutine;
   //simulation
   private final Field2d m_field = new Field2d();
   
@@ -101,10 +106,24 @@ public class DriveSubsystem extends SubsystemBase{
   
   // Odometry class for tracking robot pose
   SwerveDrivePoseEstimator m_driveEstimator;
-
+  
   /** Creates a new DriveSubsystem. */
 
   public DriveSubsystem(){
+  this.driveRoutine= new SysIdRoutine(
+  new SysIdRoutine.Config(),
+  new SysIdRoutine.Mechanism(
+    (voltage) -> driveVoltsStraight(voltage.in(Volts)),
+    null, // No log consumer, since data is recorded by URCL
+    this
+  ));
+  this.turnRoutine= new SysIdRoutine(
+  new SysIdRoutine.Config(),
+  new SysIdRoutine.Mechanism(
+    (voltage) -> turnVolts(voltage.in(Volts)),
+    null, // No log consumer, since data is recorded by URCL
+    this
+  ));
 
     var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
     var visionStdDevs = VecBuilder.fill(1, 1, 1);
@@ -245,6 +264,46 @@ public class DriveSubsystem extends SubsystemBase{
     rrTurnSetpointLog.append(rrDesired.angle.getRadians());
     rrTurnMeasuredLog.append(rrState.angle.getRadians());
   }
+
+  public void driveVoltsStraight(double volts) {
+    m_frontLeft.setDesiredState(new SwerveModuleState(m_frontLeft.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
+    m_frontRight.setDesiredState(new SwerveModuleState(m_frontRight.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
+    m_rearLeft.setDesiredState(new SwerveModuleState(m_rearLeft.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
+    m_rearRight.setDesiredState(new SwerveModuleState(m_rearRight.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
+    m_frontLeft.setDriveVoltage(volts);
+    m_frontRight.setDriveVoltage(volts);
+    m_rearLeft.setDriveVoltage(volts);
+    m_rearRight.setDriveVoltage(volts);
+  }
+  public void turnVolts(double volts) {
+    m_frontLeft.setDesiredState(new SwerveModuleState(m_frontLeft.getDesiredState().speedMetersPerSecond, m_frontLeft.getDesiredState().angle));
+    m_frontRight.setDesiredState(new SwerveModuleState(m_frontRight.getDesiredState().speedMetersPerSecond, m_frontRight.getDesiredState().angle));
+    m_rearLeft.setDesiredState(new SwerveModuleState(m_rearLeft.getDesiredState().speedMetersPerSecond, m_rearLeft.getDesiredState().angle));
+    m_rearRight.setDesiredState(new SwerveModuleState(m_rearRight.getDesiredState().speedMetersPerSecond, m_rearRight.getDesiredState().angle));
+    m_frontLeft.setTurnVoltage(volts);
+    m_frontRight.setTurnVoltage(volts);
+    m_rearLeft.setTurnVoltage(volts);
+    m_rearRight.setTurnVoltage(volts);
+  }
+  public Command driveVoltsCommand(double volts){
+    return this.run(()->driveVoltsStraight(volts));
+  }
+  public Command driveQuasiForward() {return driveRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
+
+	public Command driveQuasiReverse() {return driveRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
+
+	public Command driveDynamicForward() {return driveRoutine.dynamic(SysIdRoutine.Direction.kForward);}
+
+	public Command driveDynamicReverse() {return driveRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
+
+	public Command turnQuasiForward() {return turnRoutine.quasistatic(SysIdRoutine.Direction.kForward);}
+
+	public Command turnQuasiReverse() {return turnRoutine.quasistatic(SysIdRoutine.Direction.kReverse);}
+
+	public Command turnDynamicForward() {return turnRoutine.dynamic(SysIdRoutine.Direction.kForward);}
+
+	public Command turnDynamicReverse() {return turnRoutine.dynamic(SysIdRoutine.Direction.kReverse);}
+
 
   /**
    * Returns the currently-estimated pose of the robot.
