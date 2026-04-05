@@ -80,7 +80,7 @@ public class LauncherPIDCommand extends Command {
      * @param targetTopRPM Target RPM for top launcher
      * @param targetBottomRPM Target RPM for bottom launcher
      */
-    public LauncherPIDCommand(LauncherSubsystem launcher, VisionSubsystem vision,IntakeSubsystem intake,AgitatorSubsystem agitator, double targetTopRPM, double targetBottomRPM) {
+    public LauncherPIDCommand(LauncherSubsystem launcher, VisionSubsystem vision, IntakeSubsystem intake, AgitatorSubsystem agitator, double targetTopRPM, double targetBottomRPM) {
         this.launcher = launcher;
         this.vision = vision;
         this.intake = intake;
@@ -125,6 +125,7 @@ public class LauncherPIDCommand extends Command {
         bottomActiveLog = new BooleanLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/Active");
      
         
+        addRequirements(launcher, intake, agitator);
     }
     
     /**

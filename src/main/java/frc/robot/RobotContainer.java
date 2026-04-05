@@ -36,6 +36,7 @@ import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 import frc.robot.subsystems.LauncherSubsystem;
+import frc.robot.subsystems.LifterSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /*
@@ -53,6 +54,7 @@ public class RobotContainer {
   //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
+  private final LifterSubsystem m_lifter = new LifterSubsystem();
   private final AgitatorSubsystem m_agitator = new AgitatorSubsystem();
   private double slowdownMultiplier = 1;
   double launcherSpeed = LauncherConstants.kLauncherSpeed;
@@ -97,8 +99,8 @@ public class RobotContainer {
     //NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
     NamedCommands.registerCommand("TurnToTagCommand", turnToTagCommand());
     NamedCommands.registerCommand("IntakeToggleCommand", m_intake.intakeToggleCommand());
-    NamedCommands.registerCommand("LifterLower", new GoToPositionLifterCommand(m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
-    NamedCommands.registerCommand("LifterLift", new GoToPositionLifterCommand(m_intake, m_agitator, IntakeConstants.kLifterMaxLift));
+    NamedCommands.registerCommand("LifterLower", new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
+    NamedCommands.registerCommand("LifterLift", new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLift));
     
     
     // Add RPM sliders for manual control (range 0-5700 RPM for NEO motors)
@@ -258,10 +260,10 @@ public class RobotContainer {
         .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
     new JoystickButton(m_driverController, Button.kY.value)
-        .onTrue(new GoToPositionLifterCommand(m_intake,m_agitator, IntakeConstants.kLifterMaxLift));
+        .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLift));
     
     new JoystickButton(m_driverController, Button.kA.value)
-        .onTrue(new GoToPositionLifterCommand(m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
+        .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
 
      new JoystickButton(m_driverController, Button.kX.value)
         .onTrue(m_agitator.agitateMainToggleCommand());
@@ -358,4 +360,3 @@ public class RobotContainer {
         .withTimeout(seconds);
 }
           
-}

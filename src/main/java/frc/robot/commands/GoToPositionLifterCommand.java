@@ -4,39 +4,43 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
-import frc.robot.Constants.LauncherConstants;
 import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.LifterSubsystem;
 
 /**
  * Command to move the intake lifter to a target position using a PID controller.
  */
 public class GoToPositionLifterCommand extends Command {
+    private final LifterSubsystem lifter;
     private final IntakeSubsystem intake;
     private final AgitatorSubsystem agitator;
     private final double targetPosition;
     private final PIDController pidController;
     
     // PID constants for lifter position control
-    private static final double kP = IntakeConstants.kP;   // Proportional gain
-    private static final double kI = IntakeConstants.kI;   // Integral gain
-    private static final double kD = IntakeConstants.kD;   // Derivative gain
-    private static final double kTolerance = IntakeConstants.kTolerance;  // Position tolerance in rotations
+    private static final double kP = IntakeConstants.kP;
+    private static final double kI = IntakeConstants.kI;
+    private static final double kD = IntakeConstants.kD;
+    private static final double kTolerance = IntakeConstants.kTolerance;
     
     /**
      * Creates a new GoToPositionCommand for the intake lifter.
      * 
+     * @param lifter The LifterSubsystem instance
      * @param intake The IntakeSubsystem instance
+     * @param agitator The AgitatorSubsystem instance
      * @param targetPosition Target position in rotations (encoder counts)
      */
-    public GoToPositionLifterCommand(IntakeSubsystem intake,AgitatorSubsystem agitator, double targetPosition) {
+    public GoToPositionLifterCommand(LifterSubsystem lifter, IntakeSubsystem intake, AgitatorSubsystem agitator, double targetPosition) {
+        this.lifter = lifter;
         this.intake = intake;
         this.agitator = agitator;
         this.targetPosition = targetPosition;
         this.pidController = new PIDController(kP, kI, kD);
         this.pidController.setTolerance(kTolerance);
         
-        addRequirements(intake);
+        addRequirements(lifter);
     }
     
     @Override
@@ -55,7 +59,7 @@ public class GoToPositionLifterCommand extends Command {
         //System.out.println("GoToPosition: Updated PID constants from SmartDashboard - P: " + newP + " I: " + newI + " D: " + newD + " Tolerance: " + newTolerance);
         this.updatePIDConstants(newP, newI, newD, newTolerance);
 
-        double currentPosition = intake.getLifterPosition();
+        double currentPosition = lifter.getLifterPosition();
         
         // Calculate PID output (error is target - current)
         double output = pidController.calculate(currentPosition, targetPosition);
@@ -63,7 +67,7 @@ public class GoToPositionLifterCommand extends Command {
         // Clamp output to [-1, 1] for motor speed
         output = Math.max(-1.0, Math.min(1.0, output));
         
-        intake.lift(output);
+        lifter.lift(output);
         
         if(targetPosition==0){
             intake.intake_stop();
@@ -80,11 +84,11 @@ public class GoToPositionLifterCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         // Stop the lifter when command ends
-        intake.lift_stop();
+        lifter.lift_stop();
         if (interrupted) {
-            System.out.println("GoToPosition: Command interrupted at position " + intake.getLifterPosition());
+            System.out.println("GoToPosition: Command interrupted at position " + lifter.getLifterPosition());
         } else {
-            System.out.println("GoToPosition: Command finished at position " + intake.getLifterPosition());
+            System.out.println("GoToPosition: Command finished at position " + lifter.getLifterPosition());
         }
     }
     
@@ -93,6 +97,7 @@ public class GoToPositionLifterCommand extends Command {
         // Command finishes when PID controller reaches setpoint
         return false;
     }
+
     public void updatePIDConstants(double kP, double kI, double kD, double tolerance) {
         pidController.setPID(kP, kI, kD);
         pidController.setTolerance(tolerance);

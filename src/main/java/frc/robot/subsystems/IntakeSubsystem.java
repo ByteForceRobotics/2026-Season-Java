@@ -8,7 +8,6 @@ import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SoftLimitConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,38 +17,20 @@ import frc.robot.Constants.IntakeConstants;
 
 
 public class IntakeSubsystem extends SubsystemBase {
-  // Create MAXSwerveModules
   SparkMax m_intake;
-  SparkMax m_intakeLifter;
   boolean intakeOn = false;
-
 
   public IntakeSubsystem(){
     m_intake = new SparkMax(IntakeConstants.kIntakeCanId, MotorType.kBrushless);
-    m_intakeLifter = new SparkMax(IntakeConstants.kIntakeLifterCanId, MotorType.kBrushless);
 
     SparkMaxConfig intakeConfig = new SparkMaxConfig();
-    SparkMaxConfig intakeLifterConfig = new SparkMaxConfig();
-    SoftLimitConfig softLimitConfig = new SoftLimitConfig();
   
-    softLimitConfig
-      .forwardSoftLimit(0.3)//positive
-      .reverseSoftLimit(0)
-      .forwardSoftLimitEnabled(false)
-      .reverseSoftLimitEnabled(false);
-
     intakeConfig
       .smartCurrentLimit(IntakeConstants.kIntakeCurrentLimit)
       .idleMode(IntakeConstants.kIntakeIdleMode);
 
 
-    intakeLifterConfig
-      //.apply(softLimitConfig)
-      .smartCurrentLimit(IntakeConstants.kIntakeLifterCurrentLimit)
-      .idleMode(IntakeConstants.kLifterIdleMode);
-
      m_intake.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-     m_intakeLifter.configure(intakeLifterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
   public void intake(double xSpeed) {
     if(xSpeed == 0){
@@ -76,25 +57,6 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeOn = true;
     }
   }
-  public void lift(double xSpeed) {
-    m_intakeLifter.set(xSpeed);
-  }
-
-  public void lift_stop() {
-    m_intakeLifter.set(0.0);
-    
-
-  }
-  public double getLifterPosition() {
-    return m_intakeLifter.getAbsoluteEncoder().getPosition();
-  }
-
-  public Command liftCommand(double xSpeed) {
-    return this.run(() -> lift(xSpeed)).finallyDo(() -> lift_stop());
-  }
-  public Command liftStopCommand() {
-    return this.runOnce(() -> lift_stop());
-  }
   public Command intakeCommand(double xSpeed) {
     return this.run(() -> intake(xSpeed)).finallyDo(() -> intake_stop());
   }
@@ -108,8 +70,6 @@ public class IntakeSubsystem extends SubsystemBase {
   
   @Override
   public void periodic(){
-    double lifterPos = m_intakeLifter.getEncoder().getPosition();
-    SmartDashboard.putNumber("lifterPos", lifterPos);
     SmartDashboard.putBoolean("Intake On", intakeOn);
   }
 }
