@@ -76,13 +76,22 @@ public class LauncherSubsystem extends SubsystemBase {
     topSignalsConfig
       .primaryEncoderPositionAlwaysOn(true)
       .primaryEncoderVelocityAlwaysOn(true);
-    SparkFlexConfig TopConfig = new SparkFlexConfig();
+    SparkFlexConfig TopRightConfig = new SparkFlexConfig();
+    SparkFlexConfig TopLeftConfig = new SparkFlexConfig();
     // all tolerances are zero so command always tries to get to speed
-    TopConfig
+    TopRightConfig
         //.apply(topSignalsConfig)
         .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
         .allowedClosedLoopError(0, ClosedLoopSlot.kSlot0)
         .feedForward.sva(0.056957,0.0018109,0.00022182);
+
+    TopLeftConfig
+        //.apply(topSignalsConfig)
+        .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
+        .allowedClosedLoopError(0, ClosedLoopSlot.kSlot0)
+        .feedForward.sva(0.064555,0.0017413,0.00022597);
+
+
 
     SparkMaxConfig MiddleConfig = new SparkMaxConfig();
     MiddleConfig
@@ -100,13 +109,13 @@ public class LauncherSubsystem extends SubsystemBase {
       .inverted(true)
       .idleMode(kLauncherTopIdleMode)
       .smartCurrentLimit(kLauncher1CurrentLimit)
-      .apply(TopConfig);
+      .apply(TopRightConfig);
 
     topLeftLauncherConfig
       .inverted(false)
       .idleMode(kLauncherTopIdleMode)
       .smartCurrentLimit(kLauncher1CurrentLimit)
-      .apply(TopConfig);
+      .apply(TopLeftConfig);
 
     middleLauncherConfig
       .inverted(false)
