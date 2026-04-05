@@ -1,6 +1,8 @@
 TODO:
-* tomorrow Selma
-  * interpolation
+* Future/Next Seasons
+  * Vision Pose Estimation
+  * Autonomous
+  * switch to advantage kit swerve and advantage kit layout, might help with auto
   * 
 * General
   * figure out balancing via the Navx
@@ -12,7 +14,6 @@ TODO:
 
 * launcher
   * add seperate target RPMs for middle and bottom wheels// unsure if this is actually neededd
-  * run Sysid on left shooter
   * run sysid on bottom and middle wheels// ideally
 
 * intake
