@@ -103,7 +103,7 @@ public class DriveSubsystem extends SubsystemBase{
   SwerveDrivePoseEstimator m_driveEstimator;
 
   /** Creates a new DriveSubsystem. */
-  
+
   public DriveSubsystem(){
 
     var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
@@ -165,7 +165,7 @@ public class DriveSubsystem extends SubsystemBase{
             this::getPose, // Robot pose supplier
             this::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
             this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-            (speeds, feedforwards) -> drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+            (speeds) -> drive(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond,speeds.omegaRadiansPerSecond,false), // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
             new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
                     new PIDConstants(0.04, 0, 0), // Translation PID constants
                     new PIDConstants(1, 0, 0) // Rotation PID constants
