@@ -22,7 +22,7 @@ public class AgitatorSubsystem extends SubsystemBase {
   SparkMax m_agitatorIntake;
   public boolean agitateMainVar = false;
   public boolean agitateIntakeVar = false;
-  public int agitatorIntakeMultiplier = 1;
+  public double agitatorIntakeMultiplier = 1.05;
 
   public AgitatorSubsystem(){
     m_agitatorMain = new SparkMax(AgitatorConstants.kAgitatorMainCanId, MotorType.kBrushless);
