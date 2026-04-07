@@ -37,6 +37,9 @@ public class IntakeSubsystem extends SubsystemBase {
       intakeOn = false;
     }
     else{
+      if(m_intake.getEncoder().getVelocity()<=4){
+        m_intake.set(1);
+      }
       intakeOn = true;
     }
     m_intake.set(xSpeed);
