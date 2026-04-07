@@ -88,9 +88,9 @@ public final class Constants {
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
-    public static final double kLifterMaxLower = 0.343;//0.267;
+    public static final double kLifterMaxLower = 0.325;
     public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
-    public static final double kIntakeDefaultSpeed = 0.55;
+    public static final double kIntakeDefaultSpeed = 0.60;
     public static final double kLiftDefaultSpeed = 0.3;
     public static final double kP = 1;   // Proportional gain
     public static final double kI = 0.01;   // Integral gain  
