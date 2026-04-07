@@ -290,6 +290,7 @@ public class LauncherPIDCommand extends Command {
         // Stop the launcher when command ends
         launcher.launch_stop();
         agitator.agitateMain_stop();
+        agitator.agitateIntake_stop();
         if (interrupted) {
             System.out.println("LauncherPID: Command interrupted");
         } else {
