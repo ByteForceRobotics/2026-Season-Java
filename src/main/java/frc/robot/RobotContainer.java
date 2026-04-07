@@ -305,17 +305,17 @@ public class RobotContainer {
 
     // Drivetrain SysId routines
     //driving
-    // new JoystickButton(m_driverController, Button.kA.value)
-    //   .whileTrue(m_robotDrive.driveQuasiForward());
+    new JoystickButton(m_driverController, Button.kA.value)
+      .whileTrue(m_robotDrive.driveQuasiForward());
     
-    // new JoystickButton(m_driverController, Button.kB.value)
-    //   .whileTrue(m_robotDrive.driveQuasiReverse());
+    new JoystickButton(m_driverController, Button.kB.value)
+      .whileTrue(m_robotDrive.driveQuasiReverse());
     
-    // new JoystickButton(m_driverController, Button.kY.value)
-    //   .whileTrue(m_robotDrive.driveDynamicForward());
+    new JoystickButton(m_driverController, Button.kY.value)
+      .whileTrue(m_robotDrive.driveDynamicForward());
     
-    // new JoystickButton(m_driverController, Button.kX.value)
-    //   .whileTrue(m_robotDrive.driveDynamicReverse());
+    new JoystickButton(m_driverController, Button.kX.value)
+      .whileTrue(m_robotDrive.driveDynamicReverse());
 
     //turning
     // new JoystickButton(m_driverController, Button.kA.value)
@@ -364,11 +364,11 @@ public class RobotContainer {
           estimate.estimatedPose.toPose2d(),
           estimate.timestampSeconds,
           m_vision.getEstimationStdDevs(estimate));
-      SmartDashboard.putNumber("Vision/PoseX", estimate.estimatedPose.getX());
-      SmartDashboard.putNumber("Vision/PoseY", estimate.estimatedPose.getY());
-      SmartDashboard.putNumber("Vision/PoseHeadingDeg", estimate.estimatedPose.getRotation().toRotation2d().getDegrees());
+      //SmartDashboard.putNumber("Vision/PoseX", estimate.estimatedPose.getX());
+      //SmartDashboard.putNumber("Vision/PoseY", estimate.estimatedPose.getY());
+      //SmartDashboard.putNumber("Vision/PoseHeadingDeg", estimate.estimatedPose.getRotation().toRotation2d().getDegrees());
     });
-    SmartDashboard.putBoolean("Vision/HasEstimatedPose", visionEstimate.isPresent());
+    //SmartDashboard.putBoolean("Vision/HasEstimatedPose", visionEstimate.isPresent());
 
     // Initialize launch power on dashboard if not already present
     

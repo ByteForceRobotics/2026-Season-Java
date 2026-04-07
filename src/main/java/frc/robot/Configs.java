@@ -3,6 +3,7 @@ package frc.robot;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.FeedbackSensor;
 import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SignalsConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.ModuleConstants;
@@ -10,6 +11,8 @@ import frc.robot.Constants.ModuleConstants;
 public final class Configs {
     public static final class MAXSwerveModule {
         public static final SparkMaxConfig drivingConfig = new SparkMaxConfig();
+        
+        
         public static final SparkMaxConfig turningConfig = new SparkMaxConfig();
 
         static {
@@ -19,8 +22,11 @@ public final class Configs {
             double drivingPosFactor = ((Math.PI*ModuleConstants.kWheelDiameterMeters)/ModuleConstants.kDrivingMotorReduction);
             double turningFactor = 2 * Math.PI;
             double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
-
+            SignalsConfig signalsConfig = new SignalsConfig()
+                .primaryEncoderPositionAlwaysOn(true)
+                .primaryEncoderVelocityAlwaysOn(true);
             drivingConfig
+                    .apply(signalsConfig)
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(60,60);
             drivingConfig.encoder
@@ -34,6 +40,7 @@ public final class Configs {
                     .outputRange(-1, 1);
 
             turningConfig
+                    //.apply(signalsConfig)
                     .idleMode(IdleMode.kCoast)
                     .smartCurrentLimit(20);
             turningConfig.absoluteEncoder
