@@ -26,7 +26,7 @@ public final class Configs {
                 .primaryEncoderPositionAlwaysOn(true)
                 .primaryEncoderVelocityAlwaysOn(true);
             drivingConfig
-                    .apply(signalsConfig)
+                    //.apply(signalsConfig)
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(60,60);
             drivingConfig.encoder

@@ -184,59 +184,14 @@ public class RobotContainer {
    * and then calling passing it to a {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    /* 
-    new JoystickButton(m_climberController, Button.kStart.value)
-    .onTrue(new RunCommand(
-      () -> m_reef.moveCoral(0.165),
-      m_climber).withTimeout(1.0).andThen(new InstantCommand(
-        () -> m_reef.moveCoral_stop(),
-        m_climber)));
-    */
-    
-    /*
-    new JoystickButton(m_climberController, Button.kBack.value)//toggles limits on and off
-        .onTrue(new InstantCommand(
-            () -> m_climber.toggleElevatorFixMode(),m_climber));
-    */
-    /* 
-    old bumper keybinds
-    new JoystickButton(m_climberController, Button.kLeftBumper.value)
-        .whileTrue(new RunCommand(
-            () -> m_reef.moveCoral(-0.165),m_reef))//takes coral back in
-            .onFalse(new InstantCommand(
-                () -> m_reef.moveCoral_stop(),m_reef));
-
-    new JoystickButton(m_climberController, Button.kRightBumper.value)
-        .whileTrue(new RunCommand(
-            () -> m_reef.moveCoral(0.165),m_reef))//dispenses coral
-            .onFalse(new InstantCommand(
-                () -> m_reef.moveCoral_stop(),m_reef));
-    */
 
     new JoystickButton(m_driverController, Button.kLeftStick.value)
         .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
-
-    // new POVButton(m_driverController, 0)
-    //     .whileTrue(new InstantCommand(
-    //         () -> m_climber.climb(ClimbConstants.kClimbSpeed),
-    //         m_climber)).onFalse(new InstantCommand(
-    //             () -> m_climber.pull_stop(),
-    //             m_climber));
-    
-    // new POVButton(m_driverController, 180)
-    //     .whileTrue(new InstantCommand(
-    //         () -> m_climber.climb(-ClimbConstants.kClimbSpeed),
-    //         m_climber)).onFalse(new InstantCommand(
-    //             () -> m_climber.pull_stop(),
-    //             m_climber));
-    
-
-
     
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value)/4)))
       .onFalse(new InstantCommand(() -> slowdown_stop()));
-    ///*
+
     new JoystickButton(m_driverController, Button.kBack.value)// small left button, the two rectangles
       .onTrue(m_agitator.stopAllCommand());
     
@@ -245,8 +200,6 @@ public class RobotContainer {
     
     triggerButton(m_driverController,Axis.kRightTrigger)
       .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,m_intake,m_agitator,6767,10));
-    
-
 
     new JoystickButton(m_driverController, Button.kRightStick.value)
         .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateMainCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))
@@ -256,23 +209,23 @@ public class RobotContainer {
     // new JoystickButton(m_driverController, Button.kA.value)
     //     .whileTrue(new TurnToTagCommand(m_robotDrive, m_vision));
 
-    // new JoystickButton(m_driverController, Button.kB.value)
-    //     .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
+    //the four below are actual control bindings, other kX n stuff are sysid
+    //true bindings
+    new JoystickButton(m_driverController, Button.kB.value)
+        .onTrue(new InstantCommand(() -> m_robotDrive.zeroHeading(), m_robotDrive));
 
-    // new JoystickButton(m_driverController, Button.kY.value)
-    //     .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLift));
+    new JoystickButton(m_driverController, Button.kY.value)
+        .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLift));
     
-    // new JoystickButton(m_driverController, Button.kA.value)
-    //     .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
+    new JoystickButton(m_driverController, Button.kA.value)
+        .onTrue(new GoToPositionLifterCommand(m_lifter, m_intake, m_agitator, IntakeConstants.kLifterMaxLower));
 
-    //  new JoystickButton(m_driverController, Button.kX.value)
-    //     .onTrue(m_agitator.agitateMainToggleCommand());
+     new JoystickButton(m_driverController, Button.kX.value)
+        .onTrue(m_agitator.agitateMainToggleCommand());
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)// make the intake toggleable/ and or left bumper
         .onTrue(m_intake.intakeToggleCommand());
       
-   
-    
     new JoystickButton(m_driverController, Button.kStart.value)
       .whileTrue(m_agitator.agitateMainCommand(AgitatorConstants.kAgitatorDefaultSpeed))
       .onFalse(m_agitator.agitateMainStopCommand(0));
@@ -305,17 +258,17 @@ public class RobotContainer {
 
     // Drivetrain SysId routines
     //driving
-    new JoystickButton(m_driverController, Button.kA.value)
-      .whileTrue(m_robotDrive.driveQuasiForward());
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //   .whileTrue(m_robotDrive.driveQuasiForward());
     
-    new JoystickButton(m_driverController, Button.kB.value)
-      .whileTrue(m_robotDrive.driveQuasiReverse());
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //   .whileTrue(m_robotDrive.driveQuasiReverse());
     
-    new JoystickButton(m_driverController, Button.kY.value)
-      .whileTrue(m_robotDrive.driveDynamicForward());
+    // new JoystickButton(m_driverController, Button.kY.value)
+    //   .whileTrue(m_robotDrive.driveDynamicForward());
     
-    new JoystickButton(m_driverController, Button.kX.value)
-      .whileTrue(m_robotDrive.driveDynamicReverse());
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //   .whileTrue(m_robotDrive.driveDynamicReverse());
 
     //turning
     // new JoystickButton(m_driverController, Button.kA.value)
@@ -329,10 +282,24 @@ public class RobotContainer {
     
     // new JoystickButton(m_driverController, Button.kX.value)
     //   .whileTrue(m_robotDrive.turnDynamicReverse());
-
-
-
+    
+    // Intake SysId routines
+    // new JoystickButton(m_driverController, Button.kA.value)
+    //   .whileTrue(m_intake.intakeQuasiForward());
+    
+    // new JoystickButton(m_driverController, Button.kB.value)
+    //   .whileTrue(m_intake.intakeQuasiReverse());
+    
     // new JoystickButton(m_driverController, Button.kY.value)
+    //   .whileTrue(m_intake.intakeDynamicForward());
+    
+    // new JoystickButton(m_driverController, Button.kX.value)
+    //   .whileTrue(m_intake.intakeDynamicReverse());
+
+
+
+
+//     // new JoystickButton(m_driverController, Button.kY.value)
     //   .toggleOnTrue(new AimAssistCommand(m_robotDrive, m_vision, () -> -m_driverController.getLeftY(), () -> -m_driverController.getLeftX()));
 
   }

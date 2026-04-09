@@ -88,14 +88,14 @@ public final class Constants {
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
-    public static final double kLifterMaxLower = 0.325;
-    public static final double kLifterMaxLift = 0; //intilaizze lifter when lifted, it is zero
+    public static final double kLifterMaxLower = 0.33;
+    public static final double kLifterMaxLift = 0; //initialize absolute encoder when lifted to zero
     public static final double kIntakeDefaultSpeed = 0.60;
     public static final double kLiftDefaultSpeed = 0.3;
     public static final double kP = 1;   // Proportional gain
     public static final double kI = 0.01;   // Integral gain  
     public static final double kD = 0.1;   // Derivative gain
-    public static final double kTolerance = 0.01; 
+    public static final double kTolerance = 0.001; 
   }
   
   public static final class LauncherConstants {
@@ -121,7 +121,7 @@ public final class Constants {
     public static final double kBottomTolerance = 0;  // RPM tolerance
     public static final double kLauncherDefaultBottomRPM = 800;
     public static final double kLauncherDefaultTopRPM = 3800;
-    public static final boolean kManualControl = false;//true uses smartdashboard values, false uses interpolation/defualt values
+    public static final boolean kManualControl = true;//true uses smartdashboard values, false uses interpolation/defualt values
     public static final double kBottomLauncherDelay = 0.8;//max distance we can shoot from, in meters
     //interpolation is credited to team 2059 hitchhikers
     public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(

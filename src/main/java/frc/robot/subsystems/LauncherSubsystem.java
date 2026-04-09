@@ -9,26 +9,20 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SignalsConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
-import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Mechanism;
-import edu.wpi.first.units.BaseUnits;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import static frc.robot.Constants.LauncherConstants.*;
 import edu.wpi.first.units.Units;
 
@@ -51,14 +45,14 @@ public class LauncherSubsystem extends SubsystemBase {
   public LauncherSubsystem(){
     
     leftFlywheelRoutine = new SysIdRoutine(new Config(),
-                                                        new Mechanism((volts) -> launchTopLeftVolts(volts.in(Units.Volts)),
-                                                                        null,
-                                                                        this));
-    //"borrowed from gearcats"
+        new Mechanism((volts) -> launchTopLeftVolts(volts.in(Units.Volts)),
+        null,
+        this));
+
     rightFlywheelRoutine = new SysIdRoutine(new Config(),
-                                                        new Mechanism((volts) -> launchTopRightVolts(volts.in(Units.Volts)),
-                                                                        null,
-                                                                        this));
+      new Mechanism((volts) -> launchTopRightVolts(volts.in(Units.Volts)),
+      null,
+      this));
     m_launcherTopLeft = new SparkFlex(kLauncherTopLeftCanId, MotorType.kBrushless);//top
     m_launcherTopRight = new SparkFlex(kLauncherTopRightCanId, MotorType.kBrushless);//bottom
     m_launcherBottomTop = new SparkMax(kLauncherBottomTopCanId, MotorType.kBrushless);//top
@@ -90,8 +84,6 @@ public class LauncherSubsystem extends SubsystemBase {
         .closedLoop.pid(kTopP, kTopI, kTopD).outputRange(0, 1)
         .allowedClosedLoopError(0, ClosedLoopSlot.kSlot0)
         .feedForward.sva(0.064555,0.0017413,0.00022597);
-
-
 
     SparkMaxConfig MiddleConfig = new SparkMaxConfig();
     MiddleConfig
@@ -128,9 +120,8 @@ public class LauncherSubsystem extends SubsystemBase {
       .idleMode(kLauncherBottomIdleMode)
       .smartCurrentLimit(kLauncher1CurrentLimit)
       .apply(BottomConfig);
-    
 
-    
+
     m_launcherTopLeft.configure(topLeftLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherTopRight.configure(topRightLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     m_launcherBottomTop.configure(middleLauncherConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -168,7 +159,6 @@ public class LauncherSubsystem extends SubsystemBase {
   public Command LeftsysIdDynamic(SysIdRoutine.Direction direction) {
     return leftFlywheelRoutine.dynamic(direction);
   }
-
   
   public void launchTop(double xSpeed) {
     m_launcherTopLeft.set(xSpeed);
@@ -263,8 +253,6 @@ public class LauncherSubsystem extends SubsystemBase {
   public Command launchBottomCommand(double xSpeed){
     return this.run(() -> launchBottom(xSpeed)).finallyDo(() -> launch_stop());
   }
-
-
 
   //method  overloading to have adjustable power, and adjustablle auto power
   public Command launchCommand() {

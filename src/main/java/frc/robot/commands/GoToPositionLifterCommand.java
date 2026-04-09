@@ -70,7 +70,7 @@ public class GoToPositionLifterCommand extends Command {
         lifter.lift(output);
         
         if(targetPosition==0){
-            intake.intake(0.1);
+            intake.intake(0.2);
             agitator.agitateIntake_stop();
         }
         else{

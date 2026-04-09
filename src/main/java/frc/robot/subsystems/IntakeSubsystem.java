@@ -66,14 +66,12 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public void intake_toggle(){
-    System.out.println(" Intake On: " + intakeOn);
+    System.out.println("   Intake On: " + intakeOn);
     if(intakeOn){
-      intake(0);
-      intakeOn = false;
+      intake_stop();
     }
     else{
-      m_intake.set(IntakeConstants.kIntakeDefaultSpeed);
-      intakeOn = true;
+      intake(IntakeConstants.kIntakeDefaultSpeed);
     }
   }
 

@@ -89,10 +89,22 @@ public class AgitatorSubsystem extends SubsystemBase {
       agitateIntake(AgitatorConstants.kAgitatorDefaultSpeed*agitatorIntakeMultiplier);
     }
   }
+
+  public void agitateToggleBoth(){
+    if(agitateMainVar == true){
+      stopAll();
+    }
+    else{
+      agitateMain();
+      agitateIntake();
+    }
+  }
+
   public void stopAll(){
     agitateMain_stop();
     agitateIntake_stop();
   }
+
   public Command stopAllCommand(){
     return this.runOnce(() -> stopAll());
   }
@@ -116,11 +128,13 @@ public class AgitatorSubsystem extends SubsystemBase {
   public Command agitateIntakeToggleCommand() {
     return this.runOnce(() -> agitateIntake_toggle());
   }
-  
+  public Command agitateBothToggleCommand() {
+    return this.runOnce(() -> agitateToggleBoth());
+  }
+
   @Override
   public void periodic(){
     SmartDashboard.putBoolean("agitatorMain enabled", agitateMainVar);
     SmartDashboard.putBoolean("agitatorIntake enabled", agitateIntakeVar);
   }
-  
 }
