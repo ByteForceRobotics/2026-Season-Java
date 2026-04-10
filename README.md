@@ -18,9 +18,11 @@ TODO:
 
 * intake
   * maybe run Sysid for lifter arm, or just bs some values
+  * create a pid controller for intake
+
   
 * agitator
-  * add in the new agitator
+  * update kX.value to run both agitators
 
 * photon vision
   * April Tag detection
@@ -31,7 +33,7 @@ TODO:
   * quality of life: fix the bug that has the wheels snap to position when going to deadband
     * look into advantage scope
   * play with PID controls
-  * characterize drivetrain
+  * characterize drivetrain// ts lowkey not working
 
 * Controller Button Bindings
   * possible optimizations of the keybinds via the CommandXboxController.

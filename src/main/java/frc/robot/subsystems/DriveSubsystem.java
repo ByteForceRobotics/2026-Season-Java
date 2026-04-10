@@ -111,7 +111,7 @@ public class DriveSubsystem extends SubsystemBase{
 
   public DriveSubsystem(){
   this.driveRoutine= new SysIdRoutine(
-  new SysIdRoutine.Config(),
+  new SysIdRoutine.Config(),//set a shortertimeout
   new SysIdRoutine.Mechanism(
     (voltage) -> driveVoltsStraight(voltage.in(Volts)),
     null, // No log consumer, since data is recorded by URCL
@@ -266,20 +266,22 @@ public class DriveSubsystem extends SubsystemBase{
   }
 
   public void driveVoltsStraight(double volts) {
-    m_frontLeft.setDesiredState(new SwerveModuleState(m_frontLeft.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
-    m_frontRight.setDesiredState(new SwerveModuleState(m_frontRight.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
-    m_rearLeft.setDesiredState(new SwerveModuleState(m_rearLeft.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(180)));
-    m_rearRight.setDesiredState(new SwerveModuleState(m_rearRight.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
+    
+    // m_frontLeft.setDesiredState(new SwerveModuleState(m_frontLeft.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
+    // m_frontRight.setDesiredState(new SwerveModuleState(m_frontRight.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
+    // m_rearLeft.setDesiredState(new SwerveModuleState(m_rearLeft.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(180)));
+    // m_rearRight.setDesiredState(new SwerveModuleState(m_rearRight.getDesiredState().speedMetersPerSecond, Rotation2d.fromDegrees(0)));
     m_frontLeft.setDriveVoltage(volts);//lift onto cart and see which ones need fixing, make sure that you get the right ones by checking canIDs
     m_frontRight.setDriveVoltage(volts);
     m_rearLeft.setDriveVoltage(volts);
     m_rearRight.setDriveVoltage(volts);
+    turnVolts(0);
   }
   public void turnVolts(double volts) {
-    m_frontLeft.setDesiredState(new SwerveModuleState(m_frontLeft.getDesiredState().speedMetersPerSecond, m_frontLeft.getDesiredState().angle));
-    m_frontRight.setDesiredState(new SwerveModuleState(m_frontRight.getDesiredState().speedMetersPerSecond, m_frontRight.getDesiredState().angle));
-    m_rearLeft.setDesiredState(new SwerveModuleState(m_rearLeft.getDesiredState().speedMetersPerSecond, m_rearLeft.getDesiredState().angle));
-    m_rearRight.setDesiredState(new SwerveModuleState(m_rearRight.getDesiredState().speedMetersPerSecond, m_rearRight.getDesiredState().angle));
+    // m_frontLeft.setDesiredState(new SwerveModuleState(m_frontLeft.getDesiredState().speedMetersPerSecond, m_frontLeft.getDesiredState().angle));
+    // m_frontRight.setDesiredState(new SwerveModuleState(m_frontRight.getDesiredState().speedMetersPerSecond, m_frontRight.getDesiredState().angle));
+    // m_rearLeft.setDesiredState(new SwerveModuleState(m_rearLeft.getDesiredState().speedMetersPerSecond, m_rearLeft.getDesiredState().angle));
+    // m_rearRight.setDesiredState(new SwerveModuleState(m_rearRight.getDesiredState().speedMetersPerSecond, m_rearRight.getDesiredState().angle));
     m_frontLeft.setTurnVoltage(volts);
     m_frontRight.setTurnVoltage(volts);
     m_rearLeft.setTurnVoltage(volts);
@@ -388,6 +390,10 @@ public class DriveSubsystem extends SubsystemBase{
   public Command driveCommand(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
     return this.run(() -> drive(xSpeed,ySpeed,rot,true))
       .finallyDo(() -> drive(0,0,0,true));
+  }
+  public Command bumperCommand(double speed, double rot){
+    return this.run(() -> bumper(speed,rot))
+      .finallyDo(() -> bumper(0,0));
   }
 
   public void turnToRotationFnc(double targetDegrees){
