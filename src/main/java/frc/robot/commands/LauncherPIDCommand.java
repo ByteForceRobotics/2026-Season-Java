@@ -57,7 +57,7 @@ public class LauncherPIDCommand extends Command {
     // Timer for delaying bottom launcher spinup to avoid stutter
     private double commandStartTime = 0;
     private double bottomLauncherDelay = LauncherConstants.kBottomLauncherDelay; // Default 300ms delay (adjustable via SmartDashboard)
-    
+    boolean isRunning = false;
     // PID constants for launcher RPM control - separate for all motors
     // private static final double kPTop = LauncherConstants.kTopP;
     // private static final double kITop = LauncherConstants.kTopI;
@@ -88,6 +88,7 @@ public class LauncherPIDCommand extends Command {
         this.agitator = agitator;
         this.targetTopRPM = getTargetTopRPM(targetTopRPM);
         this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
+        this.isRunning = true;
         
         // Create individual PID controllers for each motor
         // // Top launcher motors use top PID constants
@@ -160,6 +161,9 @@ public class LauncherPIDCommand extends Command {
         //System.out.println("LauncherPID: Starting control to Top=" + targetTopRPM + " RPM, Bottom=" + targetBottomRPM + " RPM (bottom delay=" + bottomLauncherDelay + "s)");
     }
     
+    public boolean getIsRunning() {
+        return this.isRunning;
+    }
     @Override
     public void execute() {
         intake.intake_stop();
@@ -294,6 +298,7 @@ public class LauncherPIDCommand extends Command {
         launcher.launch_stop();
         agitator.agitateMain_stop();
         agitator.agitateIntake_stop();
+        isRunning = false;
         if (interrupted) {
             System.out.println("LauncherPID: Command interrupted");
         } else {
@@ -363,7 +368,7 @@ public class LauncherPIDCommand extends Command {
             return targetRPM;
         }
         else if (targetTopRPM ==123){
-            return 3400;//this value controls autonomous power
+            return 3330;//this value controls autonomous power
         }
         else if(targetTopRPM == 6767){
             return 4500;//test that

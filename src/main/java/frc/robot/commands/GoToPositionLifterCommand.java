@@ -45,6 +45,14 @@ public class GoToPositionLifterCommand extends Command {
     
     @Override
     public void initialize() {
+        if(targetPosition==0){
+            intake.intake(0.2);
+            agitator.agitateIntake_stop();
+        }
+        else{
+            intake.intake(IntakeConstants.kIntakeDefaultSpeed);
+            agitator.agitateIntake();
+        }
         // Reset PID controller when command starts
         pidController.reset();
         //System.out.println("GoToPosition: Moving lifter to position " + targetPosition);
@@ -69,14 +77,7 @@ public class GoToPositionLifterCommand extends Command {
         
         lifter.lift(output);
         
-        if(targetPosition==0){
-            intake.intake(0.2);
-            agitator.agitateIntake_stop();
-        }
-        else{
-            intake.intake(IntakeConstants.kIntakeDefaultSpeed);
-            agitator.agitateIntake();
-        }
+        
         // Debug logging
         //System.out.println("GoToPosition: current=" + currentPosition + " target=" + targetPosition + " output=" + output);
     }
