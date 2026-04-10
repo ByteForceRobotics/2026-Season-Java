@@ -50,8 +50,6 @@ public class RobotContainer {
   private final SendableChooser<Command> autoChooser;
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private final VisionSubsystem m_vision = new VisionSubsystem();
-  //private final ClimbSubsystem m_climber = new ClimbSubsystem();
-  //private final VisionSubsystem m_vision = new VisionSubsystem();
   private final LauncherSubsystem m_launcher = new LauncherSubsystem();
   private final IntakeSubsystem m_intake = new IntakeSubsystem();
   private final LifterSubsystem m_lifter = new LifterSubsystem();
@@ -89,7 +87,8 @@ public class RobotContainer {
   //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
   
   double autoShootLaunchSpeed = 0.65;
-  ParallelRaceGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,m_intake,m_agitator,123,10).withTimeout(5);
+  ParallelRaceGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,m_intake,m_agitator,123,10)
+  .withTimeout(8);
   //ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0,true).withTimeout(2);
   //SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
   
