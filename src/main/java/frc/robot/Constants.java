@@ -28,6 +28,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static final class DriveConstants {
+    
+    public static final boolean kSysID_characterization_enable = false; // keep false unless characterizing PID etc
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 3;// Earlier max was 4.8
@@ -99,6 +101,7 @@ public final class Constants {
   }
   
   public static final class LauncherConstants {
+    public static final boolean kManualControl = true;//true uses smartdashboard values, false uses interpolation/defualt values
     public static final int kLauncherTopLeftCanId = 13;
     public static final int kLauncherTopRightCanId = 14;
     public static final int kLauncherBottomTopCanId = 15;//bottom
@@ -121,7 +124,6 @@ public final class Constants {
     public static final double kBottomTolerance = 0;  // RPM tolerance
     public static final double kLauncherDefaultBottomRPM = 800;
     public static final double kLauncherDefaultTopRPM = 3800;
-    public static final boolean kManualControl = true;//true uses smartdashboard values, false uses interpolation/defualt values
     public static final double kBottomLauncherDelay = 0.8;//max distance we can shoot from, in meters
     //interpolation is credited to team 2059 hitchhikers
     public static final InterpolatingTreeMap<Double, ShooterParams> SHOOTER_MAP = new InterpolatingTreeMap<>(

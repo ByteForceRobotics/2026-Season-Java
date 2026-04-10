@@ -77,32 +77,32 @@ public class DriveSubsystem extends SubsystemBase{
   private double m_lastCmdVy = 0.0;
   private double m_lastCmdOmega = 0.0;
 
-  private final DoubleLogEntry cmdVxLog;
-  private final DoubleLogEntry cmdVyLog;
-  private final DoubleLogEntry cmdOmegaLog;
-  private final DoubleLogEntry measVxLog;
-  private final DoubleLogEntry measVyLog;
-  private final DoubleLogEntry measOmegaLog;
+  private DoubleLogEntry cmdVxLog;
+  private DoubleLogEntry cmdVyLog;
+  private DoubleLogEntry cmdOmegaLog;
+  private DoubleLogEntry measVxLog;
+  private DoubleLogEntry measVyLog;
+  private DoubleLogEntry measOmegaLog;
 
-  private final DoubleLogEntry flDriveSetpointLog;
-  private final DoubleLogEntry flDriveMeasuredLog;
-  private final DoubleLogEntry flTurnSetpointLog;
-  private final DoubleLogEntry flTurnMeasuredLog;
+  private DoubleLogEntry flDriveSetpointLog;
+  private DoubleLogEntry flDriveMeasuredLog;
+  private DoubleLogEntry flTurnSetpointLog;
+  private DoubleLogEntry flTurnMeasuredLog;
 
-  private final DoubleLogEntry frDriveSetpointLog;
-  private final DoubleLogEntry frDriveMeasuredLog;
-  private final DoubleLogEntry frTurnSetpointLog;
-  private final DoubleLogEntry frTurnMeasuredLog;
+  private DoubleLogEntry frDriveSetpointLog;
+  private DoubleLogEntry frDriveMeasuredLog;
+  private DoubleLogEntry frTurnSetpointLog;
+  private DoubleLogEntry frTurnMeasuredLog;
 
-  private final DoubleLogEntry rlDriveSetpointLog;
-  private final DoubleLogEntry rlDriveMeasuredLog;
-  private final DoubleLogEntry rlTurnSetpointLog;
-  private final DoubleLogEntry rlTurnMeasuredLog;
+  private DoubleLogEntry rlDriveSetpointLog;
+  private DoubleLogEntry rlDriveMeasuredLog;
+  private DoubleLogEntry rlTurnSetpointLog;
+  private DoubleLogEntry rlTurnMeasuredLog;
 
-  private final DoubleLogEntry rrDriveSetpointLog;
-  private final DoubleLogEntry rrDriveMeasuredLog;
-  private final DoubleLogEntry rrTurnSetpointLog;
-  private final DoubleLogEntry rrTurnMeasuredLog;
+  private DoubleLogEntry rrDriveSetpointLog;
+  private DoubleLogEntry rrDriveMeasuredLog;
+  private DoubleLogEntry rrTurnSetpointLog;
+  private DoubleLogEntry rrTurnMeasuredLog;
   
   // Odometry class for tracking robot pose
   SwerveDrivePoseEstimator m_driveEstimator;
@@ -110,20 +110,20 @@ public class DriveSubsystem extends SubsystemBase{
   /** Creates a new DriveSubsystem. */
 
   public DriveSubsystem(){
-  this.driveRoutine= new SysIdRoutine(
-  new SysIdRoutine.Config(),//set a shortertimeout
-  new SysIdRoutine.Mechanism(
-    (voltage) -> driveVoltsStraight(voltage.in(Volts)),
-    null, // No log consumer, since data is recorded by URCL
-    this
-  ));
-  this.turnRoutine= new SysIdRoutine(
-  new SysIdRoutine.Config(),
-  new SysIdRoutine.Mechanism(
-    (voltage) -> turnVolts(voltage.in(Volts)),
-    null, // No log consumer, since data is recorded by URCL
-    this
-  ));
+    this.driveRoutine= new SysIdRoutine(
+      new SysIdRoutine.Config(),//set a shortertimeout
+      new SysIdRoutine.Mechanism(
+        (voltage) -> driveVoltsStraight(voltage.in(Volts)),
+        null, // No log consumer, since data is recorded by URCL
+        this
+    ));
+    this.turnRoutine= new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+        (voltage) -> turnVolts(voltage.in(Volts)),
+        null, // No log consumer, since data is recorded by URCL
+        this
+    ));
 
     var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
     var visionStdDevs = VecBuilder.fill(1, 1, 1);
@@ -151,32 +151,38 @@ public class DriveSubsystem extends SubsystemBase{
     PIDTurnGyro.setTolerance(5.0); // tolerance in degrees
     PIDTurnGyro.enableContinuousInput(-180, 180); // for continuous rotation
     
-    cmdVxLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VxCmdMps");
-    cmdVyLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VyCmdMps");
-    cmdOmegaLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/OmegaCmdRadPerSec");
-    measVxLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VxMeasMps");
-    measVyLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VyMeasMps");
-    measOmegaLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/OmegaMeasRadPerSec");
+    if (DriveConstants.kSysID_characterization_enable) {
+      // Set up SysID routines for drive and turn characterization
+      // These will be used to collect data for system identification
+      // You can run these routines from the dashboard or command-based framework
+      cmdVxLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VxCmdMps");
+      cmdVyLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VyCmdMps");
+      cmdOmegaLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/OmegaCmdRadPerSec");
+      measVxLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VxMeasMps");
+      measVyLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/VyMeasMps");
+      measOmegaLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/Chassis/OmegaMeasRadPerSec");
 
-    flDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/DriveSetpointMps");
-    flDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/DriveMeasuredMps");
-    flTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/TurnSetpointRad");
-    flTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/TurnMeasuredRad");
+      flDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/DriveSetpointMps");
+      flDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/DriveMeasuredMps");
+      flTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/TurnSetpointRad");
+      flTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FL/TurnMeasuredRad");
 
-    frDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/DriveSetpointMps");
-    frDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/DriveMeasuredMps");
-    frTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/TurnSetpointRad");
-    frTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/TurnMeasuredRad");
+      frDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/DriveSetpointMps");
+      frDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/DriveMeasuredMps");
+      frTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/TurnSetpointRad");
+      frTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/FR/TurnMeasuredRad");
 
-    rlDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/DriveSetpointMps");
-    rlDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/DriveMeasuredMps");
-    rlTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/TurnSetpointRad");
-    rlTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/TurnMeasuredRad");
+      rlDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/DriveSetpointMps");
+      rlDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/DriveMeasuredMps");
+      rlTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/TurnSetpointRad");
+      rlTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RL/TurnMeasuredRad");
 
-    rrDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/DriveSetpointMps");
-    rrDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/DriveMeasuredMps");
-    rrTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/TurnSetpointRad");
-    rrTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/TurnMeasuredRad");
+      rrDriveSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/DriveSetpointMps");
+      rrDriveMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/DriveMeasuredMps");
+      rrTurnSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/TurnSetpointRad");
+      rrTurnMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Swerve/RR/TurnMeasuredRad");
+    }
+    
     
     
     // Configure AutoBuilder last
@@ -237,32 +243,34 @@ public class DriveSubsystem extends SubsystemBase{
     SwerveModuleState rlDesired = m_rearLeft.getDesiredState();
     SwerveModuleState rrDesired = m_rearRight.getDesiredState();
 
-    cmdVxLog.append(m_lastCmdVx);
-    cmdVyLog.append(m_lastCmdVy);
-    cmdOmegaLog.append(m_lastCmdOmega);
-    measVxLog.append(measuredSpeeds.vxMetersPerSecond);
-    measVyLog.append(measuredSpeeds.vyMetersPerSecond);
-    measOmegaLog.append(measuredSpeeds.omegaRadiansPerSecond);
+    if(DriveConstants.kSysID_characterization_enable){
+      cmdVxLog.append(m_lastCmdVx);
+      cmdVyLog.append(m_lastCmdVy);
+      cmdOmegaLog.append(m_lastCmdOmega);
+      measVxLog.append(measuredSpeeds.vxMetersPerSecond);
+      measVyLog.append(measuredSpeeds.vyMetersPerSecond);
+      measOmegaLog.append(measuredSpeeds.omegaRadiansPerSecond);
 
-    flDriveSetpointLog.append(flDesired.speedMetersPerSecond);
-    flDriveMeasuredLog.append(flState.speedMetersPerSecond);
-    flTurnSetpointLog.append(flDesired.angle.getRadians());
-    flTurnMeasuredLog.append(flState.angle.getRadians());
+      flDriveSetpointLog.append(flDesired.speedMetersPerSecond);
+      flDriveMeasuredLog.append(flState.speedMetersPerSecond);
+      flTurnSetpointLog.append(flDesired.angle.getRadians());
+      flTurnMeasuredLog.append(flState.angle.getRadians());
 
-    frDriveSetpointLog.append(frDesired.speedMetersPerSecond);
-    frDriveMeasuredLog.append(frState.speedMetersPerSecond);
-    frTurnSetpointLog.append(frDesired.angle.getRadians());
-    frTurnMeasuredLog.append(frState.angle.getRadians());
+      frDriveSetpointLog.append(frDesired.speedMetersPerSecond);
+      frDriveMeasuredLog.append(frState.speedMetersPerSecond);
+      frTurnSetpointLog.append(frDesired.angle.getRadians());
+      frTurnMeasuredLog.append(frState.angle.getRadians());
 
-    rlDriveSetpointLog.append(rlDesired.speedMetersPerSecond);
-    rlDriveMeasuredLog.append(rlState.speedMetersPerSecond);
-    rlTurnSetpointLog.append(rlDesired.angle.getRadians());
-    rlTurnMeasuredLog.append(rlState.angle.getRadians());
+      rlDriveSetpointLog.append(rlDesired.speedMetersPerSecond);
+      rlDriveMeasuredLog.append(rlState.speedMetersPerSecond);
+      rlTurnSetpointLog.append(rlDesired.angle.getRadians());
+      rlTurnMeasuredLog.append(rlState.angle.getRadians());
 
-    rrDriveSetpointLog.append(rrDesired.speedMetersPerSecond);
-    rrDriveMeasuredLog.append(rrState.speedMetersPerSecond);
-    rrTurnSetpointLog.append(rrDesired.angle.getRadians());
-    rrTurnMeasuredLog.append(rrState.angle.getRadians());
+      rrDriveSetpointLog.append(rrDesired.speedMetersPerSecond);
+      rrDriveMeasuredLog.append(rrState.speedMetersPerSecond);
+      rrTurnSetpointLog.append(rrDesired.angle.getRadians());
+      rrTurnMeasuredLog.append(rrState.angle.getRadians());
+    }
   }
 
   public void driveVoltsStraight(double volts) {

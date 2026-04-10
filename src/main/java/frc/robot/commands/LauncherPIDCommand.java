@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.subsystems.AgitatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
@@ -31,27 +32,27 @@ public class LauncherPIDCommand extends Command {
     // private final PIDController topRightPIDController;
     // private final PIDController bottomTopPIDController;
     // private final PIDController bottomBottomPIDController;
-    private final DoubleLogEntry topLeftSetpointLog;
-    private final DoubleLogEntry topLeftMeasuredLog;
-    private final DoubleLogEntry topLeftErrorLog;
-    private final DoubleLogEntry topLeftOutputLog;
+    private DoubleLogEntry topLeftSetpointLog=null;
+    private DoubleLogEntry topLeftMeasuredLog=null;
+    private DoubleLogEntry topLeftErrorLog=null;
+    private DoubleLogEntry topLeftOutputLog=null;
 
-    private final DoubleLogEntry topRightSetpointLog;
-    private final DoubleLogEntry topRightMeasuredLog;
-    private final DoubleLogEntry topRightErrorLog;
-    private final DoubleLogEntry topRightOutputLog;
+    private DoubleLogEntry topRightSetpointLog=null;
+    private DoubleLogEntry topRightMeasuredLog=null;
+    private DoubleLogEntry topRightErrorLog=null;
+    private DoubleLogEntry topRightOutputLog=null;
 
-    private final DoubleLogEntry bottomTopSetpointLog;
-    private final DoubleLogEntry bottomTopMeasuredLog;
-    private final DoubleLogEntry bottomTopErrorLog;
-    private final DoubleLogEntry bottomTopOutputLog;
+    private DoubleLogEntry bottomTopSetpointLog=null;
+    private DoubleLogEntry bottomTopMeasuredLog=null;
+    private DoubleLogEntry bottomTopErrorLog=null;
+    private DoubleLogEntry bottomTopOutputLog=null;
 
-    private final DoubleLogEntry bottomBottomSetpointLog;
-    private final DoubleLogEntry bottomBottomMeasuredLog;
-    private final DoubleLogEntry bottomBottomErrorLog;
-    private final DoubleLogEntry bottomBottomOutputLog;
+    private DoubleLogEntry bottomBottomSetpointLog=null;
+    private DoubleLogEntry bottomBottomMeasuredLog=null;
+    private DoubleLogEntry bottomBottomErrorLog=null;
+    private DoubleLogEntry bottomBottomOutputLog=null;
 
-    private final BooleanLogEntry bottomActiveLog;
+    private BooleanLogEntry bottomActiveLog=null;
     
     // Timer for delaying bottom launcher spinup to avoid stutter
     private double commandStartTime = 0;
@@ -102,28 +103,29 @@ public class LauncherPIDCommand extends Command {
         
         // this.bottomBottomPIDController = new PIDController(kPBottomBottom, kIBottomBottom, kDBottomBottom);
         // this.bottomBottomPIDController.setTolerance(kToleranceBottomBottom);
-         topLeftSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/SetpointRPM");
-        topLeftMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/MeasuredRPM");
-        topLeftErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/ErrorRPM");
-        topLeftOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/Output");
-        
+        if (DriveConstants.kSysID_characterization_enable) {
+            topLeftSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/SetpointRPM");
+            topLeftMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/MeasuredRPM");
+            topLeftErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/ErrorRPM");
+            topLeftOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopLeft/Output");
+            
 
-        topRightSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/SetpointRPM");
-        topRightMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/MeasuredRPM");
-        topRightErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/ErrorRPM");
-        topRightOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/Output");
+            topRightSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/SetpointRPM");
+            topRightMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/MeasuredRPM");
+            topRightErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/ErrorRPM");
+            topRightOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/TopRight/Output");
 
-        bottomTopSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/SetpointRPM");
-        bottomTopMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/MeasuredRPM");
-        bottomTopErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/ErrorRPM");
-        bottomTopOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/Output");
+            bottomTopSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/SetpointRPM");
+            bottomTopMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/MeasuredRPM");
+            bottomTopErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/ErrorRPM");
+            bottomTopOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomTop/Output");
 
-        bottomBottomSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/SetpointRPM");
-        bottomBottomMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/MeasuredRPM");
-        bottomBottomErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/ErrorRPM");
-        bottomBottomOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/Output");
-        bottomActiveLog = new BooleanLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/Active");
-     
+            bottomBottomSetpointLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/SetpointRPM");
+            bottomBottomMeasuredLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/MeasuredRPM");
+            bottomBottomErrorLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/ErrorRPM");
+            bottomBottomOutputLog = new DoubleLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/Output");
+            bottomActiveLog = new BooleanLogEntry(DataLogManager.getLog(), "PID/Launcher/BottomBottom/Active");
+        }
         
         addRequirements(launcher, intake, agitator);
     }
@@ -228,46 +230,47 @@ public class LauncherPIDCommand extends Command {
             agitator.agitateMain_stop();
             agitator.agitateIntake_stop();
         }
+        if(DriveConstants.kSysID_characterization_enable){
+            double topLeftOutput = launcher.getTopLeftOutput();
+            topLeftSetpointLog.append(targetTopRPM);
+            topLeftMeasuredLog.append(currentTopLeftRPM);
+            topLeftErrorLog.append(targetTopRPM - currentTopLeftRPM);
+            topLeftOutputLog.append(topLeftOutput);
+            
+            // SmartDashboard.putNumber("Launcher/TopLeft/SetpointRPM", targetTopRPM);
+            // SmartDashboard.putNumber("Launcher/TopLeft/MeasuredRPM", currentTopLeftRPM);
+            // SmartDashboard.putNumber("Launcher/TopLeft/ErrorRPM", targetTopRPM - currentTopLeftRPM);
+            //SmartDashboard.putNumber("Launcher/TopLeft/Output", topLeftOutput);
 
-        double topLeftOutput = launcher.getTopLeftOutput();
-        topLeftSetpointLog.append(targetTopRPM);
-        topLeftMeasuredLog.append(currentTopLeftRPM);
-        topLeftErrorLog.append(targetTopRPM - currentTopLeftRPM);
-        topLeftOutputLog.append(topLeftOutput);
-        
-        // SmartDashboard.putNumber("Launcher/TopLeft/SetpointRPM", targetTopRPM);
-        // SmartDashboard.putNumber("Launcher/TopLeft/MeasuredRPM", currentTopLeftRPM);
-        // SmartDashboard.putNumber("Launcher/TopLeft/ErrorRPM", targetTopRPM - currentTopLeftRPM);
-        //SmartDashboard.putNumber("Launcher/TopLeft/Output", topLeftOutput);
+            double topRightOutput = launcher.getTopRightOutput();
+            topRightSetpointLog.append(targetTopRPM);
+            topRightMeasuredLog.append(currentTopRightRPM);
+            topRightErrorLog.append(targetTopRPM - currentTopRightRPM);
+            topRightOutputLog.append(topRightOutput);
+            
+            // SmartDashboard.putNumber("Launcher/TopRight/SetpointRPM", targetTopRPM);
+            // SmartDashboard.putNumber("Launcher/TopRight/MeasuredRPM", currentTopRightRPM);
+            // SmartDashboard.putNumber("Launcher/TopRight/ErrorRPM", targetTopRPM - currentTopRightRPM);
+            //SmartDashboard.putNumber("Launcher/TopRight/Output", topRightOutput);
 
-        double topRightOutput = launcher.getTopRightOutput();
-        topRightSetpointLog.append(targetTopRPM);
-        topRightMeasuredLog.append(currentTopRightRPM);
-        topRightErrorLog.append(targetTopRPM - currentTopRightRPM);
-        topRightOutputLog.append(topRightOutput);
-        
-        // SmartDashboard.putNumber("Launcher/TopRight/SetpointRPM", targetTopRPM);
-        // SmartDashboard.putNumber("Launcher/TopRight/MeasuredRPM", currentTopRightRPM);
-        // SmartDashboard.putNumber("Launcher/TopRight/ErrorRPM", targetTopRPM - currentTopRightRPM);
-        //SmartDashboard.putNumber("Launcher/TopRight/Output", topRightOutput);
+            double middleOutput = launcher.getMiddleOutput();
+            bottomTopSetpointLog.append(targetBottomRPM);
+            bottomTopMeasuredLog.append(currentBottomTopRPM);
+            bottomTopErrorLog.append(targetBottomRPM - currentBottomTopRPM);
+            bottomTopOutputLog.append(middleOutput);
+            
+            // SmartDashboard.putNumber("Launcher/BottomTop/SetpointRPM", targetBottomRPM);
+            // SmartDashboard.putNumber("Launcher/BottomTop/MeasuredRPM", currentBottomTopRPM);
+            // SmartDashboard.putNumber("Launcher/BottomTop/ErrorRPM", targetBottomRPM - currentBottomTopRPM);
+            //SmartDashboard.putNumber("Launcher/BottomTop/Output", middleOutput);
 
-        double middleOutput = launcher.getMiddleOutput();
-        bottomTopSetpointLog.append(targetBottomRPM);
-        bottomTopMeasuredLog.append(currentBottomTopRPM);
-        bottomTopErrorLog.append(targetBottomRPM - currentBottomTopRPM);
-        bottomTopOutputLog.append(middleOutput);
-        
-        // SmartDashboard.putNumber("Launcher/BottomTop/SetpointRPM", targetBottomRPM);
-        // SmartDashboard.putNumber("Launcher/BottomTop/MeasuredRPM", currentBottomTopRPM);
-        // SmartDashboard.putNumber("Launcher/BottomTop/ErrorRPM", targetBottomRPM - currentBottomTopRPM);
-        //SmartDashboard.putNumber("Launcher/BottomTop/Output", middleOutput);
-
-        double bottomBottomOutput = launcher.getBottomOutput();
-        bottomBottomSetpointLog.append(targetBottomRPM/2);
-        bottomBottomMeasuredLog.append(currentBottomBottomRPM);
-        bottomBottomErrorLog.append(targetBottomRPM/2 - currentBottomBottomRPM);
-        bottomBottomOutputLog.append(bottomBottomOutput);
-        bottomActiveLog.append(readyToLaunch);
+            double bottomBottomOutput = launcher.getBottomOutput();
+            bottomBottomSetpointLog.append(targetBottomRPM/2);
+            bottomBottomMeasuredLog.append(currentBottomBottomRPM);
+            bottomBottomErrorLog.append(targetBottomRPM/2 - currentBottomBottomRPM);
+            bottomBottomOutputLog.append(bottomBottomOutput);
+            bottomActiveLog.append(readyToLaunch);
+        }
         
         // SmartDashboard.putNumber("Launcher/BottomBottom/SetpointRPM", targetBottomRPM/2);
         // SmartDashboard.putNumber("Launcher/BottomBottom/MeasuredRPM", currentBottomBottomRPM);
@@ -360,7 +363,7 @@ public class LauncherPIDCommand extends Command {
             return targetRPM;
         }
         else if (targetTopRPM ==123){
-            return 3400;//test this
+            return 3400;//this value controls autonomous power
         }
         else if(targetTopRPM == 6767){
             return 4500;//test that
