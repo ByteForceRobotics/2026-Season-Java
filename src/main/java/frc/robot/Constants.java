@@ -86,7 +86,7 @@ public final class Constants {
   public static final class IntakeConstants {
     public static final int kIntakeLifterCanId = 11;
     public static final int kIntakeCanId = 12;
-    public static final int kIntakeCurrentLimit = 40;//set this
+    public static final int kIntakeCurrentLimit = 50;//set this
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
@@ -101,7 +101,7 @@ public final class Constants {
   }
   
   public static final class LauncherConstants {
-    public static final boolean kManualControl = true;//true uses smartdashboard values, false uses interpolation/defualt values
+    public static final boolean kManualControl = false;//true uses smartdashboard values, false uses interpolation/defualt values
     public static final int kLauncherTopLeftCanId = 13;
     public static final int kLauncherTopRightCanId = 14;
     public static final int kLauncherBottomTopCanId = 15;//bottom
@@ -131,12 +131,12 @@ public final class Constants {
 
 		  // Value interpolator: blends RPMs and flight times based on distance ratio, t
 		  (start, end, t) -> new ShooterParams(
-			MathUtil.interpolate(start.rpm(), end.rpm(), t),
-			MathUtil.interpolate(start.timeOfFlight(), end.timeOfFlight(), t)
+			  MathUtil.interpolate(start.rpm(), end.rpm(), t),
+			  MathUtil.interpolate(start.timeOfFlight(), end.timeOfFlight(), t)
 		  )
 		);
     static {
-			//DISTANCE FROM CENTER OF SHOOTER TO CENTER OF HUB, IN METERS
+			//DISTANCE FROM CENTER OF SHOOTER TO tag, IN METERS
       //distance meters, rpm, time of flight seconds
       //time of flight is only needed for shooting while moving
       SHOOTER_MAP.put(1.89, new ShooterParams(3130, 0.68));
@@ -183,7 +183,8 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
-    public static final double kWheelDiameterMeters = 0.0762;
+    public static final double kWheelRadiusMeters = 0.0381;
+    public static final double kWheelDiameterMeters = 2*kWheelRadiusMeters;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
     // teeth on the bevel pinion
