@@ -169,6 +169,9 @@ public class LauncherPIDCommand extends Command {
         intake.intake_stop();
         this.targetTopRPM = getTargetTopRPM(targetTopRPM);
         this.targetBottomRPM = getTargetBottomRPM(targetBottomRPM);
+        
+        // System.out.println("LauncherPID: TopRPM =" + String.format("%.0f", launcher.getTopRPM()) + 
+        //                     " RPM, Bottom=" + String.format("%.0f", launcher.getBottomRPM()) + " RPM");
         // Get current RPM values for each motor
         // Read separate PID constants from SmartDashboard for top, bottom-top, and bottom-bottom
         // double newPTop = SmartDashboard.getNumber("Launcher/PID/Top/kP", kPTop);
@@ -372,6 +375,9 @@ public class LauncherPIDCommand extends Command {
         }
         else if(targetTopRPM == 6767){
             return 4500;//test that
+        }
+        else if(targetTopRPM == 3000){
+            return 3000;//test that
         }
         else if(!vision.hasTarget()){
             System.out.println("No Target");

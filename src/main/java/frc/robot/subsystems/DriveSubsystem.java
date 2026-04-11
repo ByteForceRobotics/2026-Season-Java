@@ -233,6 +233,13 @@ public class DriveSubsystem extends SubsystemBase{
     SmartDashboard.putNumber("leftrear", m_rearLeft.getPosition().angle.getDegrees());
     SmartDashboard.putNumber("Robot Gyro velocity", Math.hypot(m_gyro.getVelocityX(), m_gyro.getVelocityY()));
     SmartDashboard.putNumber("Robot Wheel velocity", Math.hypot(getRobotRelativeSpeeds().vxMetersPerSecond, getRobotRelativeSpeeds().vyMetersPerSecond));
+    
+    // Debug odometry
+    SmartDashboard.putNumber("FL Position (m)", m_frontLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("FR Position (m)", m_frontRight.getPosition().distanceMeters);
+    SmartDashboard.putNumber("RL Position (m)", m_rearLeft.getPosition().distanceMeters);
+    SmartDashboard.putNumber("RR Position (m)", m_rearRight.getPosition().distanceMeters);
+    
      ChassisSpeeds measuredSpeeds = getRobotRelativeSpeeds();
     SwerveModuleState flState = m_frontLeft.getState();
     SwerveModuleState frState = m_frontRight.getState();

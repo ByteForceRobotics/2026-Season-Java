@@ -87,14 +87,18 @@ public class RobotContainer {
   //       .andThen(new InstantCommand(() -> m_climber.pull_stop(), m_climber));
   
   double autoShootLaunchSpeed = 0.65;
-  ParallelRaceGroup autoShoot =new LauncherPIDCommand(m_launcher,m_vision,m_intake,m_agitator,123,10)
-  .withTimeout(8);
+  ParallelRaceGroup autoShoot = new LauncherPIDCommand(m_launcher,m_vision,m_intake,m_agitator,123,10)
+    .withTimeout(8);
+  
+  ParallelRaceGroup autoShootClose = new LauncherPIDCommand(m_launcher,m_vision,m_intake,m_agitator,3000,10)
+    .withTimeout(8);
   //ParallelRaceGroup driveBackwards1Seconds = m_robotDrive.driveCommand(0,-.5,0,true).withTimeout(2);
   //SequentialCommandGroup hopeCore  = driveBackwards1Seconds.andThen(turnToTagCommand().withTimeout(2)).andThen(autoShoot);
   
   public RobotContainer() {
     //NamedCommands.registerCommand("LevelOneClimb", climblvl1);
     NamedCommands.registerCommand("ShootAllBalls", autoShoot);
+    NamedCommands.registerCommand("ShootAllBallsClose", autoShootClose);
     //NamedCommands.registerCommand("DriveBackwards1Seconds", driveBackwards1Seconds);
     NamedCommands.registerCommand("TurnToTagCommand", turnToTagCommand());
     NamedCommands.registerCommand("IntakeToggleCommand", m_intake.intakeToggleCommand());
