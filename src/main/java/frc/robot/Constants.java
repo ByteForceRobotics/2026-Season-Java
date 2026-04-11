@@ -32,8 +32,8 @@ public final class Constants {
     public static final boolean kSysID_characterization_enable = false; // keep false unless characterizing PID etc
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 3;// Earlier max was 4.8
-    public static final double kMaxAngularSpeed = 1.2* Math.PI; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 3.8;// Earlier max was 4.8
+    public static final double kMaxAngularSpeed = 1.6* Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(23.5);
