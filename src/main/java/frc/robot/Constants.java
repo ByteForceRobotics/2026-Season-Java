@@ -182,7 +182,7 @@ public final class Constants {
     public static final int kDrivingMotorPinionTeeth = 13;
 
     // Calculations required for driving motor conversion factors and feed forward
-    public static final double kDrivingMotorFreeSpeedRps = NeoMotorConstants.kFreeSpeedRpm / 60;
+    public static final double kDrivingMotorFreeSpeedRps = MotorConstants.kFreeSpeedRpmVortex / 60;
     public static final double kWheelRadiusMeters = 0.0381;
     public static final double kWheelDiameterMeters = 2*kWheelRadiusMeters;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
@@ -214,7 +214,8 @@ public final class Constants {
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
   }
 
-  public static final class NeoMotorConstants {
-    public static final double kFreeSpeedRpm = 5676;
+  public static final class MotorConstants {
+    public static final double kFreeSpeedRpmVortex = 6784;
+    public static final double kFreeSpeedRpmNeo = 5676;
   }
 }
