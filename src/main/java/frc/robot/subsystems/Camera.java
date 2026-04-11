@@ -89,7 +89,7 @@ public class Camera
                     //List<PhotonTrackedTarget> targetList = CamResult.getTargets();
                     PhotonTrackedTarget target = CamResult.getTargets().get(i);
                     this.targetId = target.getFiducialId();
-                    if(this.targetId != 27&&this.targetId != 24&&this.targetId != 11&&this.targetId != 8){continue;}//check which ones this is
+                    if(this.targetId != 10&&this.targetId != 26){continue;}//check which ones this is
 
                     //all measurements are in degrees
                     this.yaw = target.getYaw();// horizontal  rotation
@@ -138,7 +138,7 @@ public class Camera
                 this.yaw = -1;
                 this.pitch = -1;
                 this.area = -1;
-                this.distance=-1;
+                //this.distance=-1;
                 this.robotPose = new Pose2d();
             }
             else{

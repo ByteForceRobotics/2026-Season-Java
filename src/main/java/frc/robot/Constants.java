@@ -32,8 +32,8 @@ public final class Constants {
     public static final boolean kSysID_characterization_enable = false; // keep false unless characterizing PID etc
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 3.8;// Earlier max was 4.8
-    public static final double kMaxAngularSpeed = 1.6* Math.PI; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 3.3*3.8;// Earlier max was 4.8
+    public static final double kMaxAngularSpeed = 3.3*1.6* Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(23.5);
@@ -90,7 +90,7 @@ public final class Constants {
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
-    public static final double kLifterMaxLower = 0.33;
+    public static final double kLifterMaxLower = 0.333;
     public static final double kLifterMaxLift = 0; //initialize absolute encoder when lifted to zero
     public static final double kIntakeDefaultSpeed = 0.60;
     public static final double kLiftDefaultSpeed = 0.3;
@@ -139,15 +139,14 @@ public final class Constants {
 			//DISTANCE FROM CENTER OF SHOOTER TO tag, IN METERS
       //distance meters, rpm, time of flight seconds
       //time of flight is only needed for shooting while moving
-      SHOOTER_MAP.put(1.89, new ShooterParams(3130, 0.68));
-      SHOOTER_MAP.put(2.28, new ShooterParams(3240, 0.68));
-			 SHOOTER_MAP.put(3.37, new ShooterParams(3550, 0.68));
-			 SHOOTER_MAP.put(4.0, new ShooterParams(3600, 0.8));
-       SHOOTER_MAP.put(4.8, new ShooterParams(3780, 0.8));
-			// SHOOTER_MAP.put(3.5, new ShooterParams(2950, 0.9));
-			// SHOOTER_MAP.put(4.0, new ShooterParams(3150, 1.0));
-			// SHOOTER_MAP.put(4.865, new ShooterParams(3550, 1.3));
-			// SHOOTER_MAP.put(5.269, new ShooterParams(3800, 1.34));
+      SHOOTER_MAP.put(1.756, new ShooterParams(3300, 0.68));
+      SHOOTER_MAP.put(1.87, new ShooterParams(3350, 0.68));
+      SHOOTER_MAP.put(1.92, new ShooterParams(3370, 0.68));
+      SHOOTER_MAP.put(2.144, new ShooterParams(3600, 0.68));
+      SHOOTER_MAP.put(2.22, new ShooterParams(3625, 0.68));
+      SHOOTER_MAP.put(2.55, new ShooterParams(3710, 0.68));
+      SHOOTER_MAP.put(2.76, new ShooterParams(3800, 0.68));
+
 		}
 
 
@@ -160,7 +159,7 @@ public final class Constants {
     public static final int kAgitatorIntakeCanId = 18;
     public static final int kAgitatorCurrentLimit = 40;//set this
     public static final IdleMode kAgitatorIdleMode = IdleMode.kBrake;
-    public static final double kAgitatorDefaultSpeed = 0.1;
+    public static final double kAgitatorDefaultSpeed = 0.15;
   }
 
   public static final class CameraConstants {

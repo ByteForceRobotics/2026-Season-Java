@@ -76,7 +76,7 @@ public class RobotContainer {
   
   // differnet speed modes
   double speedScaleHigh = 1.0;
-  double speedScaleLow= 0.33;
+  double speedScaleLow= 0.67;
   double speedScale = speedScaleHigh;
   double launchPower = LauncherConstants.kLauncherSpeed;
   
@@ -188,8 +188,8 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    new JoystickButton(m_driverController, Button.kLeftStick.value)
-        .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
+    // new JoystickButton(m_driverController, Button.kLeftStick.value)
+    //     .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
     
     triggerButton(m_driverController,Axis.kLeftTrigger)
       .whileTrue(new RunCommand(() -> slowdown(m_driverController.getRawAxis(Axis.kLeftTrigger.value)/4)))
@@ -204,9 +204,9 @@ public class RobotContainer {
     triggerButton(m_driverController,Axis.kRightTrigger)
       .whileTrue(new LauncherPIDCommand(m_launcher,m_vision,m_intake,m_agitator,6767,10));
 
-    new JoystickButton(m_driverController, Button.kRightStick.value)
-        .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateMainCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))
-        .onFalse(m_launcher.launchStopCommand());
+    // new JoystickButton(m_driverController, Button.kRightStick.value)
+    //     .whileTrue(m_launcher.ejectCommand().alongWith(m_agitator.agitateMainCommand(-AgitatorConstants.kAgitatorDefaultSpeed)))
+    //     .onFalse(m_launcher.launchStopCommand());
 
     
     // new JoystickButton(m_driverController, Button.kA.value)

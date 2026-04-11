@@ -16,9 +16,8 @@ public final class Configs {
 
         static {
             // Use module constants to calculate conversion factors and feed forward gain.
-            double drivingFactor = (ModuleConstants.kWheelDiameterMeters * Math.PI
-                    /(60* ModuleConstants.kDrivingMotorReduction));
-            double drivingPosFactor = ((Math.PI*ModuleConstants.kWheelDiameterMeters)/ModuleConstants.kDrivingMotorReduction);
+            double drivingPosFactor = ((Math.PI * ModuleConstants.kWheelDiameterMeters) / ( ModuleConstants.kDrivingMotorReduction));
+            double drivingFactor = drivingPosFactor/60; // RPM to meters per second
             double turningFactor = 2 * Math.PI;
             double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
             SignalsConfig signalsConfig = new SignalsConfig()

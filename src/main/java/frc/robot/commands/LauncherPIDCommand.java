@@ -371,7 +371,7 @@ public class LauncherPIDCommand extends Command {
             return targetRPM;
         }
         else if (targetTopRPM ==123){
-            return 3330;//this value controls autonomous power
+            return 3480;//this value controls autonomous power
         }
         else if(targetTopRPM == 6767){
             return 4500;//test that
@@ -385,7 +385,7 @@ public class LauncherPIDCommand extends Command {
         }
         else{
             double horizDistance = vision.getHorizDistance();
-            double targetRPM = 3800;//LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
+            double targetRPM = LauncherConstants.SHOOTER_MAP.get(horizDistance).rpm();
             System.out.println("Target Distance: "+horizDistance+"  target RPM: "+targetRPM);
             return targetRPM;
         }
