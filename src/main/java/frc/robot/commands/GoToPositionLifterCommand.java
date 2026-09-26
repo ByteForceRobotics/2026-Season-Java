@@ -45,7 +45,7 @@ public class GoToPositionLifterCommand extends Command {
     
     @Override
     public void initialize() {
-        if(targetPosition==0){
+        if(targetPosition==IntakeConstants.kLifterMaxLift){
             intake.intake(0.2);
             agitator.agitateIntake_stop();
         }
