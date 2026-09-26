@@ -182,7 +182,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = MotorConstants.kFreeSpeedRpmVortex / 60;
-    public static final double kWheelRadiusMeters = 0.0381;
+    public static final double kWheelRadiusMeters = Units.inchesToMeters(1.5);
     public static final double kWheelDiameterMeters = 2*kWheelRadiusMeters;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
