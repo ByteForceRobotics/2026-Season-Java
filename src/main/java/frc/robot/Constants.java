@@ -32,7 +32,7 @@ public final class Constants {
     public static final boolean kSysID_characterization_enable = false; // keep false unless characterizing PID etc
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 3.8;//*3.3// Earlier max was 4.8
+    public static final double kMaxSpeedMetersPerSecond = 3.8*3.3;// Earlier max was 4.8
     public static final double kMaxAngularSpeed = 3.3*1.6* Math.PI; // radians per second
 
     // Chassis configuration
@@ -90,9 +90,9 @@ public final class Constants {
     public static final int kIntakeLifterCurrentLimit = 40;//set this
     public static final IdleMode kIntakeIdleMode = IdleMode.kCoast;
     public static final IdleMode kLifterIdleMode = IdleMode.kCoast;
-    public static final double kLifterMaxLower = 0.345;
+    public static final double kLifterMaxLower = 0.35;
     public static final double kLifterMaxLift = 0.017; //initialize absolute encoder when lifted to zero
-    public static final double kIntakeDefaultSpeed = 0.60;
+    public static final double kIntakeDefaultSpeed = 0.60;  
     public static final double kLiftDefaultSpeed = 0.3;
     public static final double kP = 1;   // Proportional gain
     public static final double kI = 0.01;   // Integral gain  
@@ -182,7 +182,7 @@ public final class Constants {
 
     // Calculations required for driving motor conversion factors and feed forward
     public static final double kDrivingMotorFreeSpeedRps = MotorConstants.kFreeSpeedRpmVortex / 60;
-    public static final double kWheelRadiusMeters = Units.inchesToMeters(1.5);
+    public static final double kWheelRadiusMeters = Units.inchesToMeters(2.0);
     public static final double kWheelDiameterMeters = 2*kWheelRadiusMeters;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
