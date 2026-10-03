@@ -32,7 +32,7 @@ public final class Constants {
     public static final boolean kSysID_characterization_enable = false; // keep false unless characterizing PID etc
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 3.8; // real top speed target for this drivetrain
+    public static final double kMaxSpeedMetersPerSecond = 3.8*3.3; // real top speed target for this drivetrain
     public static final double kMaxAngularSpeed = 2.0 * Math.PI; // radians per second
 
     // Chassis configuration
@@ -186,8 +186,10 @@ public final class Constants {
     public static final double kWheelDiameterMeters = 2 * kWheelRadiusMeters;
     public static final double kWheelCircumferenceMeters = kWheelDiameterMeters * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
-    // teeth on the bevel pinion
-    public static final double kDrivingMotorReduction = (45.0 * 22) / (kDrivingMotorPinionTeeth * 15);
+    // teeth on the bevel pinion. The previous value undercounted actual wheel travel;
+    // the measured 1.00 m target moved ~1.35 m, so the effective reduction was adjusted
+    // by a factor of 1 / 1.35 to match real-world robot motion.
+    public static final double kDrivingMotorReduction = ((45.0 * 22) / (kDrivingMotorPinionTeeth * 15));
     public static final double kDriveWheelFreeSpeedRps = (kDrivingMotorFreeSpeedRps * kWheelCircumferenceMeters)
         / kDrivingMotorReduction;
   }

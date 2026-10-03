@@ -125,17 +125,16 @@ public class DriveSubsystem extends SubsystemBase{
         this
     ));
 
-    var stateStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
-    var visionStdDevs = VecBuilder.fill(1, 1, 1);
+    var stateStdDevs = VecBuilder.fill(1, 1, 1);
+    var visionStdDevs = VecBuilder.fill(0.1, 0.1, 0.1);
 
     m_driveEstimator = new SwerveDrivePoseEstimator(
       DriveConstants.kDriveKinematics,
       m_gyro.getRotation2d(),
       getModulePositions(),
-      new Pose2d()
-      //stateStdDevs,
-      //visionStdDevs
-      );
+      new Pose2d(),
+      stateStdDevs,
+      visionStdDevs);
     
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);

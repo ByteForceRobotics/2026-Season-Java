@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveDistanceCommand extends Command {
@@ -13,11 +14,11 @@ public class DriveDistanceCommand extends Command {
   private Pose2d m_startPose;
   private double targetDistance;
 
-  public DriveDistanceCommand(DriveSubsystem drive, double xMeters, double yMeters, double targetSpeed) {
+  public DriveDistanceCommand(DriveSubsystem drive, double xMeters, double yMeters, double targetSpeedMetersPerSecond) {
     m_drive = drive;
     m_xMeters = xMeters;
     m_yMeters = yMeters;
-    m_targetSpeed = targetSpeed;
+    m_targetSpeed = targetSpeedMetersPerSecond;
     targetDistance = Math.hypot(xMeters, yMeters);
     addRequirements(m_drive);
   }
@@ -35,8 +36,9 @@ public class DriveDistanceCommand extends Command {
 
   @Override
   public void execute() {
-    double xCommand = Math.abs(m_xMeters) > 1e-9 ? Math.copySign(m_targetSpeed, m_xMeters) : 0.0;
-    double yCommand = Math.abs(m_yMeters) > 1e-9 ? Math.copySign(m_targetSpeed, m_yMeters) : 0.0;
+    double maxSpeed = Constants.DriveConstants.kMaxSpeedMetersPerSecond;
+    double xCommand = Math.abs(m_xMeters) > 1e-9 ? Math.copySign(m_targetSpeed / maxSpeed, m_xMeters) : 0.0;
+    double yCommand = Math.abs(m_yMeters) > 1e-9 ? Math.copySign(m_targetSpeed / maxSpeed, m_yMeters) : 0.0;
     m_drive.drive(xCommand, yCommand, 0.0, false);
 
     double dx = m_drive.getPose().getX() - m_startPose.getX();

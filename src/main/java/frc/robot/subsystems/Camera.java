@@ -80,7 +80,7 @@ public class Camera
             PhotonPipelineResult CamResult = CamResults.get(CamResults.size() - 1);
 
             if (this.poseEstimator != null) {
-                //this.latestEstimatedPose = this.poseEstimator.update(CamResult);
+                this.latestEstimatedPose = this.poseEstimator.update(CamResult);
                 this.latestEstimatedPose.ifPresent(est -> this.robotPose = est.estimatedPose.toPose2d());
             }
 
