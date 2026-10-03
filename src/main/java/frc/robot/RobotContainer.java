@@ -188,6 +188,19 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
+    // 1-meter drivetrain calibration commands
+    new POVButton(m_driverController, 0)
+        .onTrue(driveDistanceCommand(1.0, 0.0));
+
+    new POVButton(m_driverController, 180)
+        .onTrue(driveDistanceCommand(-1.0, 0.0));
+
+    new POVButton(m_driverController, 90)
+        .onTrue(driveDistanceCommand(0.0, -1.0));
+
+    new POVButton(m_driverController, 270)
+        .onTrue(driveDistanceCommand(0.0, 1.0));
+
     // new JoystickButton(m_driverController, Button.kLeftStick.value)
     //     .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
     
@@ -321,6 +334,21 @@ public class RobotContainer {
 
   public void slowdown_stop(){
     slowdownMultiplier = 1;
+  }
+
+  private Command driveDistanceCommand(double xMeters, double yMeters) {
+    final double targetSpeedMps = 0.75;
+    final double xCommand = (Math.abs(xMeters) > 1e-9)
+        ? Math.copySign(targetSpeedMps / Constants.DriveConstants.kMaxSpeedMetersPerSecond, xMeters)
+        : 0.0;
+    final double yCommand = (Math.abs(yMeters) > 1e-9)
+        ? Math.copySign(targetSpeedMps / Constants.DriveConstants.kMaxSpeedMetersPerSecond, yMeters)
+        : 0.0;
+    final double duration = Math.max(Math.abs(xMeters), Math.abs(yMeters)) / targetSpeedMps;
+
+    return new RunCommand(() -> m_robotDrive.drive(xCommand, yCommand, 0.0, false), m_robotDrive)
+        .withTimeout(duration)
+        .andThen(new InstantCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, false), m_robotDrive));
   }
   
   public Command turnToTagCommand(){
