@@ -29,6 +29,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.AimAssistCommand;
+import frc.robot.commands.DriveDistanceCommand;
 import frc.robot.commands.GoToPositionLifterCommand;
 import frc.robot.commands.LauncherPIDCommand;
 import frc.robot.commands.TurnToTagCommand;
@@ -190,16 +191,16 @@ public class RobotContainer {
 
     // 1-meter drivetrain calibration commands
     new POVButton(m_driverController, 0)
-        .onTrue(driveDistanceCommand(1.0, 0.0));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 2.0, 0.0, 0.5));
 
     new POVButton(m_driverController, 180)
-        .onTrue(driveDistanceCommand(-1.0, 0.0));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, -2.0, 0.0, 0.5));
 
     new POVButton(m_driverController, 90)
-        .onTrue(driveDistanceCommand(0.0, -1.0));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, -2.0, 0.5));
 
     new POVButton(m_driverController, 270)
-        .onTrue(driveDistanceCommand(0.0, 1.0));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, 2.0, 0.5));
 
     // new JoystickButton(m_driverController, Button.kLeftStick.value)
     //     .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
@@ -336,28 +337,6 @@ public class RobotContainer {
     slowdownMultiplier = 1;
   }
 
-  private Command driveDistanceCommand(double xMeters, double yMeters) {
-    final double targetSpeedMps = Constants.DriveConstants.kMaxSpeedMetersPerSecond / 2.0;
-    final double xCommand = (Math.abs(xMeters) > 1e-9)
-        ? Math.copySign(targetSpeedMps / Constants.DriveConstants.kMaxSpeedMetersPerSecond, xMeters)
-        : 0.0;
-    final double yCommand = (Math.abs(yMeters) > 1e-9)
-        ? Math.copySign(targetSpeedMps / Constants.DriveConstants.kMaxSpeedMetersPerSecond, yMeters)
-        : 0.0;
-    final double targetDistance = Math.hypot(xMeters, yMeters);
-    final var startPose = m_robotDrive.getPose();
-
-    return new RunCommand(() -> {
-        m_robotDrive.drive(xCommand, yCommand, 0.0, false);
-      }, m_robotDrive)
-      .until(() -> {
-        double dx = m_robotDrive.getPose().getX() - startPose.getX();
-        double dy = m_robotDrive.getPose().getY() - startPose.getY();
-        return Math.hypot(dx, dy) >= targetDistance;
-      })
-      .andThen(new InstantCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, false), m_robotDrive));
-  }
-  
   public Command turnToTagCommand(){
     return new TurnToTagCommand(m_robotDrive, m_vision);
   }
