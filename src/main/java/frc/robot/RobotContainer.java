@@ -189,7 +189,7 @@ public class RobotContainer {
    * and then calling passing it to a {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    halfspeed = Constants.DriveConstants.kMaxSpeedMetersPerSecond/2;
+    double halfspeed = Constants.DriveConstants.kMaxSpeedMetersPerSecond/2;
     // 1-meter drivetrain calibration commands
     new POVButton(m_driverController, 0)
         .onTrue(new DriveDistanceCommand(m_robotDrive, 1.0, 0.0,
