@@ -337,18 +337,25 @@ public class RobotContainer {
   }
 
   private Command driveDistanceCommand(double xMeters, double yMeters) {
-    final double targetSpeedMps = 0.75;
+    final double targetSpeedMps = Constants.DriveConstants.kMaxSpeedMetersPerSecond / 2.0;
     final double xCommand = (Math.abs(xMeters) > 1e-9)
         ? Math.copySign(targetSpeedMps / Constants.DriveConstants.kMaxSpeedMetersPerSecond, xMeters)
         : 0.0;
     final double yCommand = (Math.abs(yMeters) > 1e-9)
         ? Math.copySign(targetSpeedMps / Constants.DriveConstants.kMaxSpeedMetersPerSecond, yMeters)
         : 0.0;
-    final double duration = Math.max(Math.abs(xMeters), Math.abs(yMeters)) / targetSpeedMps;
+    final double targetDistance = Math.hypot(xMeters, yMeters);
+    final var startPose = m_robotDrive.getPose();
 
-    return new RunCommand(() -> m_robotDrive.drive(xCommand, yCommand, 0.0, false), m_robotDrive)
-        .withTimeout(duration)
-        .andThen(new InstantCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, false), m_robotDrive));
+    return new RunCommand(() -> {
+        m_robotDrive.drive(xCommand, yCommand, 0.0, false);
+      }, m_robotDrive)
+      .until(() -> {
+        double dx = m_robotDrive.getPose().getX() - startPose.getX();
+        double dy = m_robotDrive.getPose().getY() - startPose.getY();
+        return Math.hypot(dx, dy) >= targetDistance;
+      })
+      .andThen(new InstantCommand(() -> m_robotDrive.drive(0.0, 0.0, 0.0, false), m_robotDrive));
   }
   
   public Command turnToTagCommand(){
