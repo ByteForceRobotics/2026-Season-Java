@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.AgitatorConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.LauncherConstants;
 import frc.robot.Constants.OIConstants;
@@ -188,19 +189,23 @@ public class RobotContainer {
    * and then calling passing it to a {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-
+    halfspeed = Constants.DriveConstants.kMaxSpeedMetersPerSecond/2;
     // 1-meter drivetrain calibration commands
     new POVButton(m_driverController, 0)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, 1.0, 0.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 1.0, 0.0,
+            halfspeed));
 
     new POVButton(m_driverController, 180)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, -1.0, 0.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, -1.0, 0.0,
+            halfspeed));
 
     new POVButton(m_driverController, 90)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, -1.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, -1.0,
+            halfspeed));
 
     new POVButton(m_driverController, 270)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, 1.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, 1.0,
+            halfspeed));
 
     // new JoystickButton(m_driverController, Button.kLeftStick.value)
     //     .onTrue(new InstantCommand(() -> changeScale()));//make this trigger
