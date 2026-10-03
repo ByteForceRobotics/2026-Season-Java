@@ -191,16 +191,16 @@ public class RobotContainer {
 
     // 1-meter drivetrain calibration commands
     new POVButton(m_driverController, 0)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, 2.0, 0.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 1.0, 0.0, 0.5));
 
     new POVButton(m_driverController, 180)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, -2.0, 0.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, -1.0, 0.0, 0.5));
 
     new POVButton(m_driverController, 90)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, -2.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, -1.0, 0.5));
 
     new POVButton(m_driverController, 270)
-        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, 2.0, 0.5));
+        .onTrue(new DriveDistanceCommand(m_robotDrive, 0.0, 1.0, 0.5));
 
     // new JoystickButton(m_driverController, Button.kLeftStick.value)
     //     .onTrue(new InstantCommand(() -> changeScale()));//make this trigger

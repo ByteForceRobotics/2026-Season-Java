@@ -132,9 +132,10 @@ public class DriveSubsystem extends SubsystemBase{
       DriveConstants.kDriveKinematics,
       m_gyro.getRotation2d(),
       getModulePositions(),
-      new Pose2d(),
-      stateStdDevs,
-      visionStdDevs);
+      new Pose2d()
+      //stateStdDevs,
+      //visionStdDevs
+      );
     
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
