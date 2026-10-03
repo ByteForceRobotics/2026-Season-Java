@@ -33,7 +33,7 @@ public final class Constants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double kMaxSpeedMetersPerSecond = 3.8*3.3; // real top speed target for this drivetrain
-    public static final double kMaxAngularSpeed = 2.0 * Math.PI; // radians per second
+    public static final double kMaxAngularSpeed =  3.3*1.6* Math.PI; // radians per second
 
     // Chassis configuration
     public static final double kTrackWidth = Units.inchesToMeters(23.5);

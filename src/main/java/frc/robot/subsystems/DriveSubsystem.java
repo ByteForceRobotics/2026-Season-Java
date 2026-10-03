@@ -358,9 +358,15 @@ public class DriveSubsystem extends SubsystemBase{
           m_rearRight.getState()
       });
   }
+  /*
+   * Method to drive the robot using joystick inputs
+   */
 
+  public void driveNormalized(double xInput, double yInput, double rotInput, boolean fieldRelative) {
+    drive(xInput * DriveConstants.kMaxSpeedMetersPerSecond, yInput * DriveConstants.kMaxSpeedMetersPerSecond, rotInput * DriveConstants.kMaxAngularSpeed, fieldRelative);
+  }
   /**
-   * Method to drive the robot using joystick info.
+   * Method to drive the robot using given x/y/rotation speeds.
    *
    * @param xSpeed        Speed of the robot in the x direction (forward).
    * @param ySpeed        Speed of the robot in the y direction (sideways).
@@ -369,18 +375,14 @@ public class DriveSubsystem extends SubsystemBase{
    *                      field.
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative) {
-    // Convert the commanded speeds into the correct units for the drivetrain
-    double xSpeedDelivered = xSpeed * DriveConstants.kMaxSpeedMetersPerSecond;
-    double ySpeedDelivered = ySpeed * DriveConstants.kMaxSpeedMetersPerSecond;
-    double rotDelivered = rot * DriveConstants.kMaxAngularSpeed;
-    m_lastCmdVx = xSpeedDelivered;
-    m_lastCmdVy = ySpeedDelivered;
-    m_lastCmdOmega = rotDelivered;
+    m_lastCmdVx = xSpeed;
+    m_lastCmdVy = ySpeed;
+    m_lastCmdOmega = rot;
     var swerveModuleStates = DriveConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered,
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot,
                 Rotation2d.fromDegrees(-m_gyro.getAngle()))
-            : new ChassisSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered));
+            : new ChassisSpeeds(xSpeed, ySpeed, rot));
     //SmartDashboard.putNumber("modstates0pre", swerveModuleStates[0].speedMetersPerSecond);
     SwerveDriveKinematics.desaturateWheelSpeeds(
         swerveModuleStates, DriveConstants.kMaxSpeedMetersPerSecond);

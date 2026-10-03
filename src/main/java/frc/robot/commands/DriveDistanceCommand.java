@@ -36,9 +36,8 @@ public class DriveDistanceCommand extends Command {
 
   @Override
   public void execute() {
-    double maxSpeed = Constants.DriveConstants.kMaxSpeedMetersPerSecond;
-    double xCommand = Math.abs(m_xMeters) > 1e-9 ? Math.copySign(m_targetSpeed / maxSpeed, m_xMeters) : 0.0;
-    double yCommand = Math.abs(m_yMeters) > 1e-9 ? Math.copySign(m_targetSpeed / maxSpeed, m_yMeters) : 0.0;
+    double xCommand = Math.abs(m_xMeters) > 1e-9 ? Math.copySign(m_targetSpeed, m_xMeters) : 0.0;
+    double yCommand = Math.abs(m_yMeters) > 1e-9 ? Math.copySign(m_targetSpeed, m_yMeters) : 0.0;
     m_drive.drive(xCommand, yCommand, 0.0, false);
 
     double dx = m_drive.getPose().getX() - m_startPose.getX();

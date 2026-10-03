@@ -164,7 +164,7 @@ public class RobotContainer {
         double sqLeftX = Math.copySign(dbLeftX * dbLeftX, dbLeftX);
         double sqRightX = Math.copySign(dbRightX * dbRightX, dbRightX);
 
-        m_robotDrive.drive(-sqLeftY, -sqLeftX, -sqRightX, fieldRelative);
+        m_robotDrive.driveNormalized(-sqLeftY, -sqLeftX, -sqRightX, fieldRelative);
       },
       m_robotDrive));
 
